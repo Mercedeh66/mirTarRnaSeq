@@ -37,3 +37,14 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+.Rproj.user
+
+# ignore generated documentation
+/man
+
+# ignore testing files
+/test
+
+# ignore some mac-specific files
+.DS_Store
+Icon?
