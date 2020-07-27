@@ -3,7 +3,7 @@
 #devtools::document()
 #devtools::load_all()
 library(dplyr)
-library(miRTarRNASeq)
+library(mirTarRnaSeq)
 
 
 #Part1
@@ -18,7 +18,7 @@ DiffExpmRNA <- DiffExpmRNA %>% dplyr::select(-stom_286)
 
 # get miranda data
 #Add thershold for other variables
-miranda <- getInputSpecies("Epstein_Barr", threshold = 60)
+miranda <- getInputSpecies("Epstein_Barr", threshold = 140)
 DiffExpmRNASub <- miRanComp(DiffExpmRNA, miranda)
 
 #miRNA selection
@@ -35,7 +35,7 @@ geneVariant<-geneVari(Combine,miRNA_select)
 MRun<- runModels(Combine,geneVariant,miRNA_select,mode="multi")
 
 #FFDRsig
-FDRModel<-FDRsig(MRun, value=0.1,method="fdr")
+FDRModel<-fdrSig(MRun, value=0.1,method="fdr")
 table(FDRModel$FDR_significant)
 
 ## make a plottings
@@ -83,7 +83,7 @@ mirRnaDensityCor(corr_0, outs)
 sig_corrs <- threshSig(corr_0, outs)
 
 # get miranda data
-miranda <- getInputSpecies("Mouse", threshold = 60)
+miranda <- getInputSpecies("Mouse", threshold = 150)
 
 # make heatmap
 newcorr <- corMirnaRnaMiranda(mrna, mirna, -0.7, miranda)
@@ -124,7 +124,7 @@ mirRnaDensityInter(inter0, outs)
 sig_InterR <- threshSigInter(inter0, outs)
 
 # get miranda data
-miranda <- getInputSpecies("Mouse", threshold = 60)
+miranda <- getInputSpecies("Mouse", threshold = 150)
 # now intersect the "significant" correlations with miranda
 results <- miRandaIntersectInter(sig_InterR, outs, mrna, mirna, miranda)
 #Make a data frame for results
