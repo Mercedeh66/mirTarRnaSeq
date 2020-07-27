@@ -230,6 +230,8 @@ importMirandaFile <- function(fn) {
 #'
 #' Reads Miranda file for a given speicies and returns it as
 #' a data.frame, thresholded by percent identity.
+#' Header options are Score (threshold), Energy-Kcal/Mol(energy),
+#' Subject-IdentityPercent(targetId), Query-IdentityPercent (mirnaId)
 #' @param selection Species
 #' @return data.frame with Miranda data.
 #' @keywords miranda, species
@@ -238,7 +240,7 @@ importMirandaFile <- function(fn) {
 #' \donttest{
 #' x <- getInputSpecies("Mouse")
 #' }
-getInputSpecies <- function(selection, threshold=60) {
+getInputSpecies <- function(selection, threshold=60, energy, targetId, mirnaId) {
   if (selection == "Human") {
     ret <- importMirandaFile("Human_miRanda.txt")
   } else if (selection == "Mouse") {
