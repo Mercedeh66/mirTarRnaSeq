@@ -1,5 +1,5 @@
-Package: miRTarRNASeq
-Title: miRTarRNASeq a Package for Interactive mRNA miRNA Sequencing Statistical Analysis
+Package: mirTarRnaSeq
+Title: mirTarRnaSeq a Package for Interactive mRNA miRNA Sequencing Statistical Analysis
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Mercedeh",
@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "mercedeh@ds.dfci.harvard.edu",
            comment = c(ORCID = "https://orcid.org/0000-0001-7690-0230"))
-Description: This package utilizes differential and expression mRNA and miRNA 
+Description: This package utilizes expression or differential expression mRNA and miRNA 
              sequencing results and performs interactive correlation and various GLMs
              (Regular GLM, Multivariate GLM, and Interaction GLMs ) analysis between mRNA
              and miRNA expriments. These experiments can be time point experiments, and or
