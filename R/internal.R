@@ -127,8 +127,8 @@ makeFormulaRightSide <- function(variables, mode="multi") {
 #' @param combination the combined file for mRNA and selected miRNAs output of combiner function
 #' @param geneVariable the output of
 #' @param select_miRNA The vector of miRNA/s to be investigated
-#' @param mode the mode of analysis if more than one miRNA is being investigated multivariate "multi" or covariate/interaction
-#'  analysis "inter" is being used
+#' @param mode the mode of analysis if more than one miRNA is being investigated multivariate "multi"
+#' or covariate/interaction analysis "inter" is being used
 #' @return A list of p vlaues, annova, and significance for each gene and the miRNA/s of interest
 #' @export
 #' @keywords runModels multivariate interaction glm
@@ -136,7 +136,6 @@ makeFormulaRightSide <- function(variables, mode="multi") {
 #' \donttest{
 #' x <- runModels(combination,geneVariable,miRNA_selectedVec,mode="multi")
 #' }
-
 
 runModels <- function(combination,geneVari,select_miRNA,mode="multi") {
   is_significant <- c()
@@ -193,7 +192,7 @@ runModels <- function(combination,geneVari,select_miRNA,mode="multi") {
 #F9 fdrSig ruturns FDR significant genes
 ##Desc: The User Can Here Define fdrSig value and get the FDR sig Samples, AllModelsGLMs annova value ,sig_genes names, and pvalues for all sig genes. In put is
 ## the run model file obj and a value for FDR correction
-fdrSig <- function(RMObj, value=0.1,method="fdr"){
+fdrSig <- function(RMObj, value=0.05,method="fdr"){
   is_significant <- p.adjust(RMObj$pvalues, method=method) < value
   aaa <- RMObj$aaa[is_significant]
   all_models <- RMObj$all_models[is_significant]
@@ -202,6 +201,7 @@ fdrSig <- function(RMObj, value=0.1,method="fdr"){
   return( list(
     sanova = aaa,
     FDR_significant = is_significant,
+    FDR_Value= p.adjust(RMObj$pvalues[is_significant], method=method),
     all_models = all_models,
     sig_genes = sig_genes,
     pvalues = pvalues
@@ -659,15 +659,26 @@ miRandaIntersectInter <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpecies
 #' \donttest{
 #' plot2d(model)
 #' }
+#AddPValueSigAswell
 plotFit <- function(model) {
   m <- model$model
   m$Fitted <- model$fitted.values
   last <- ncol(m)
   names(m)[last] <- "Fitted values\nlm(model_formula)"
   par(mar=c(5, 5, 4, 2) + 0.1)
-  plot(m[, c(1, last)], type="n", main=formula.tools:::as.character.formula(model$terms))
+  plot(m[, c(1, last)], type="n", main=formula.tools:::as.character.formula(model$terms),
+       cex.main=1)
   abline(lm(m[, last] ~ m[, 1]), lwd=2, col="red")
   points(m[, c(1, last)])
+
+  k <- length(model$coefficients)-1 # Number of mirnas in model!
+  n <- length(model$fitted.values)
+  rs <- summary(model)$r.squared
+  Pvalue<-pf((rs/k)/((1-rs)/(n-1-k)), k, n-1-k, lower.tail=F) # p value for R-squared
+
+  mtext(sprintf("P value: %.2g", Pvalue), line=.74)
+  mtext(sprintf("R-squared: %.2f", summary(model)$r.squared), line=.01)
+
 }
 
 #' Plot residuals
@@ -697,6 +708,13 @@ plotResiduals <- function(model) {
 plotTerms <- function(model) {
   m <- model$model
   plot(m, main=formula.tools:::as.character.formula(model$terms))
+  k <- length(model$coefficients)-1 # Number of mirnas in model!
+  n <- length(model$fitted.values)
+  rs <- summary(model)$r.squared
+  Pvalue<-pf((rs/k)/((1-rs)/(n-1-k)), k, n-1-k, lower.tail=F) # p value for R-squared
+
+  mtext(sprintf("P value of model fit: %.2g", Pvalue), line=.74)
+  mtext(sprintf("R-squared of model fit: %.2f", summary(model)$r.squared), line=.01)
 }
 #' twoTimePoint miRNA and mRNA interrelation in two timepoints
 #'

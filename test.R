@@ -23,7 +23,8 @@ DiffExpmRNASub <- miRanComp(DiffExpmRNA, miranda)
 
 #miRNA selection
 miRNA_select<-c("ebv-mir-BART8","ebv-mir-BART9")
-#miRNA_select<-c("ebv-mir-BART9")
+miRNA_select<-c("ebv-mir-BART8")
+
 
 #combiner
 Combine<-combiner(DiffExpmRNA,DiffExpmiRNA,miRNA_select)
@@ -34,12 +35,15 @@ geneVariant<-geneVari(Combine,miRNA_select)
 #ActualModelRan
 MRun<- runModels(Combine,geneVariant,miRNA_select,mode="multi")
 
-#FFDRsig
-FDRModel<-fdrSig(MRun, value=0.1,method="fdr")
+#Bonferroni sig Genes
+FDRModel<-fdrSig(MRun, value=0.05,method="bonferroni")
 table(FDRModel$FDR_significant)
+SigFDRGenes<-as.data.frame(cbind(FDRModel$pvalues,FDRModel$FDR_Value))
+names(SigFDRGenes)<-c("P Value","Bonferroni P")
 
-## make a plottings
-mymodel <- FDRModel$all_models[[20]]  # pick the first
+## make a plots
+View(FDRModel$all_models)
+mymodel <- FDRModel$all_models[[1]]  # pick the first
 plotFit(mymodel)
 plotResiduals(mymodel)
 plotTerms(mymodel)
@@ -115,8 +119,7 @@ mirna <- one2OneRnaMiRNA(mirna_files)$foldchanges
 inter0 <- twoTimePoint(mrna, mirna)
 
 # make background correlation distr.
-outs <- twoTimePointSamp(mrna, mirna,Shrounds =100 )
-
+outs <- twoTimePointSamp(mrna, mirna,Shrounds = 10 )
 # plot density polots for background and corrs in our data
 mirRnaDensityInter(inter0, outs)
 
@@ -124,8 +127,10 @@ mirRnaDensityInter(inter0, outs)
 sig_InterR <- threshSigInter(inter0, outs)
 
 # get miranda data
-miranda <- getInputSpecies("Mouse", threshold = 150)
+miranda <- getInputSpecies("Mouse", threshold = 180)
 # now intersect the "significant" correlations with miranda
+
+###Sth Wrong
 results <- miRandaIntersectInter(sig_InterR, outs, mrna, mirna, miranda)
 #Make a data frame for results
 final_results <- finInterResult(results)
