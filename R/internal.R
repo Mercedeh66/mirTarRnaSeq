@@ -6,6 +6,13 @@
 #' @importFrom viridis inferno
 #' @importFrom reshape2 dcast melt
 #' @importFrom pheatmap pheatmap
+#' @importFrom corrplot corrplot
+#' @importFrom graphics par plot abline lines points mtext
+#' @importFrom stats cor quantile lm anova p.adjust density coefficients pf formula
+#' @importFrom utils read.table
+#' @importFrom doParallel registerDoParallel
+#' @importFrom foreach `%dopar%` foreach
+#' @importFrom grDevices colorRampPalette
 NULL
 
 #'  tzTransTranspose and z-score transformation
@@ -17,7 +24,7 @@ NULL
 #' @keywords zscore, scale, transform, transpose
 #' @examples
 #' \donttest{
-#' x <- tzTrans(matrix(runif(100), nrow=10))
+#' x <- tzTrans(matrix(runif(100), nrow = 10))
 #' }
 tzTrans <- function(x) {
   tx <- t(x)
@@ -41,7 +48,7 @@ tzTrans <- function(x) {
 #' @keywords miRanda expression Intersection
 #' @examples
 #' \donttest{
-#' x <- miRanComp(TZmRNA,mirandadf)
+#' x <- miRanComp(TZmRNA, mirandadf)
 #' }
 miRanComp <- function(TZmRNA, mirandadf) {
   subset <- intersect(rownames(TZmRNA), mirandadf$V2)
@@ -64,14 +71,14 @@ miRanComp <- function(TZmRNA, mirandadf) {
 #' @keywords miRNA_mRNA_Intersection
 #' @examples
 #' \donttest{
-#' miRNA_select<-c("let7")
-#' x <- miRanComp(mRNA,miRNA,miRNA_select)
+#' miRNA_select <- c("let7")
+#' x <- miRanComp(mRNA, miRNA, miRNA_select)
 #' }
-combiner<-function(mRNA,miRNA,miRNA_select){
-  sub_miRNA<-miRNA[miRNA_select,]
+combiner <- function(mRNA, miRNA, miRNA_select) {
+  sub_miRNA <- miRNA[miRNA_select, ]
   common_samples <- intersect(names(mRNA), names(sub_miRNA))
-  combination<-as.data.frame(t(rbind(mRNA[, common_samples],sub_miRNA[, common_samples])))
-  combination<-combination[,!apply(is.na(combination), 2, any)]
+  combination <- as.data.frame(t(rbind(mRNA[, common_samples], sub_miRNA[, common_samples])))
+  combination <- combination[, !apply(is.na(combination), 2, any)]
   return(combination)
 }
 
@@ -86,11 +93,11 @@ combiner<-function(mRNA,miRNA,miRNA_select){
 #' @keywords dimensions
 #' @examples
 #' \donttest{
-#' x <- geneVari(Combined,miRNA_select)
+#' x <- geneVari(Combined, miRNA_select)
 #' }
-
-geneVari<-function(Combined,miRNA_select){
-  geneVari1<-colnames(Combined[,1:(ncol(Combined)-length(miRNA_select))])
+#'
+geneVari <- function(Combined, miRNA_select) {
+  geneVari1 <- colnames(Combined[, 1:(ncol(Combined) - length(miRNA_select))])
   return(geneVari1)
 }
 
@@ -103,18 +110,21 @@ geneVari<-function(Combined,miRNA_select){
 #' @return data.frame containing Miranda data
 #' @examples
 #' \donttest{
-#' x <- makeFormulaRightSide(variables,mode="multi")
+#' x <- makeFormulaRightSide(variables, mode = "multi")
 #' }
-
-makeFormulaRightSide <- function(variables, mode="multi") {
+#'
+makeFormulaRightSide <- function(variables, mode = "multi") {
   # be sure to properly quote variable names: `varname`.
-  replace <- !grepl('^`.*`$', variables)   # all that don't look like `somevar`
-  variables[replace] <- paste('`', variables[replace], '`', sep="")
-  rightside <- paste(variables, collapse=' + ')   # "~ a + b"
+  if (is.null(mode)) {
+    mode <- "multi"
+  }
+  replace <- !grepl("^`.*`$", variables) # all that don't look like `somevar`
+  variables[replace] <- paste("`", variables[replace], "`", sep = "")
+  rightside <- paste(variables, collapse = " + ") # "~ a + b"
   if ("inter" == mode) {
-    for (i in 1:(length(variables)-1)) {
-      for (j in (i+1):length(variables)) {
-        rightside <- paste(rightside, paste(variables[i], variables[j], sep=" * "), sep=" + ")  # "~ a + b + a * b"
+    for (i in 1:(length(variables) - 1)) {
+      for (j in (i + 1):length(variables)) {
+        rightside <- paste(rightside, paste(variables[i], variables[j], sep = " * "), sep = " + ") # "~ a + b + a * b"
       }
     }
   }
@@ -134,15 +144,15 @@ makeFormulaRightSide <- function(variables, mode="multi") {
 #' @keywords runModels multivariate interaction glm
 #' @examples
 #' \donttest{
-#' x <- runModels(combination,geneVariable,miRNA_selectedVec,mode="multi")
+#' x <- runModels(combination, geneVariable, miRNA_selectedVec, mode = "multi")
 #' }
-
-runModels <- function(combination,geneVari,select_miRNA,mode="multi") {
+#'
+runModels <- function(combination, geneVari, select_miRNA, mode = "multi") {
   is_significant <- c()
   all_models <- c()
   for (x in geneVari) {
     # construct formula by combining x with makeFormulaRightSide()'s output
-    model_formula <- formula(paste(sprintf("`%s`", x), makeFormulaRightSide(select_miRNA, mode), sep=" ~ "))
+    model_formula <- formula(paste(sprintf("`%s`", x), makeFormulaRightSide(select_miRNA, mode), sep = " ~ "))
     modelln <- lm(model_formula, data = combination)
     a <- anova(modelln)$`Pr(>F)`
     a <- a[!is.na(a)]
@@ -152,10 +162,10 @@ runModels <- function(combination,geneVari,select_miRNA,mode="multi") {
   }
   aaa <- lapply(all_models, anova) # retrieve the anovas for each model
   pvalues <- sapply(all_models, function(x) {
-    k <- length(x$coefficients)-1 # Number of mirnas in model!
+    k <- length(x$coefficients) - 1 # Number of mirnas in model!
     n <- nrow(combination)
     rs <- summary(x)$r.squared
-    p <- pf((rs/k)/((1-rs)/(n-1-k)), k, n-1-k, lower.tail=F) # p value for R-squared
+    p <- pf((rs / k) / ((1 - rs) / (n - 1 - k)), k, n - 1 - k, lower.tail = F) # p value for R-squared
     return(p)
   })
   names(is_significant) <- geneVari
@@ -187,26 +197,26 @@ runModels <- function(combination,geneVari,select_miRNA,mode="multi") {
 #' @keywords p_adjust, correction
 #' @examples
 #' \donttest{
-#' x <- fdrSig(RMObj, value=0.1,method="fdr")
+#' x <- fdrSig(RMObj, value = 0.1, method = "fdr")
 #' }
-#F9 fdrSig ruturns FDR significant genes
-##Desc: The User Can Here Define fdrSig value and get the FDR sig Samples, AllModelsGLMs annova value ,sig_genes names, and pvalues for all sig genes. In put is
-## the run model file obj and a value for FDR correction
-fdrSig <- function(RMObj, value=0.05,method="fdr"){
-  is_significant <- p.adjust(RMObj$pvalues, method=method) < value
+#' # F9 fdrSig ruturns FDR significant genes
+#' ## Desc: The User Can Here Define fdrSig value and get the FDR sig Samples, AllModelsGLMs annova value ,sig_genes names, and pvalues for all sig genes. In put is
+#' ## the run model file obj and a value for FDR correction
+fdrSig <- function(RMObj, value = 0.05, method = "fdr") {
+  is_significant <- p.adjust(RMObj$pvalues, method = method) < value
   aaa <- RMObj$aaa[is_significant]
   all_models <- RMObj$all_models[is_significant]
   sig_genes <- RMObj$geneVari[is_significant]
   pvalues <- RMObj$pvalues[is_significant]
-  return( list(
+  return(list(
     sanova = aaa,
     FDR_significant = is_significant,
-    FDR_Value= p.adjust(RMObj$pvalues[is_significant], method=method),
+    # FDR_Value= p.adjust(RMObj$pvalues[is_significant], method=method),
+    FDR_Value = p.adjust(RMObj$pvalues, method = method)[is_significant],
     all_models = all_models,
     sig_genes = sig_genes,
     pvalues = pvalues
-  )
-  )
+  ))
 }
 
 #' importMirandaFile Read internal Miranda file
@@ -220,8 +230,10 @@ fdrSig <- function(RMObj, value=0.05,method="fdr"){
 #' }
 importMirandaFile <- function(fn) {
   ret1 <- read.table(system.file("extdata", "miRandaPrepFiles", fn,
-                                 package="mirTarRnaSeq", mustWork=T),
-                     as.is=TRUE)
+    package = "mirTarRnaSeq", mustWork = T
+  ),
+  as.is = TRUE
+  )
   return(ret1)
 }
 
@@ -238,9 +250,9 @@ importMirandaFile <- function(fn) {
 #' @export
 #' @examples
 #' \donttest{
-#' x <- getInputSpecies("Epstein_Barr",threshold=60, energy=-170, targetIden=19, mirnaIden=19) #Default is threshold 60
+#' x <- getInputSpecies("Epstein_Barr", threshold = 60, energy = -170, targetIden = 19, mirnaIden = 19) # Default is threshold 60
 #' }
-getInputSpecies <- function(selection, threshold=60, energy=NULL, targetIden=NULL, mirnaIden=NULL) {
+getInputSpecies <- function(selection, threshold = 60, energy = NULL, targetIden = NULL, mirnaIden = NULL) {
   if (selection == "Human") {
     ret <- importMirandaFile("Human_miRanda.txt.gz")
   } else if (selection == "Mouse") {
@@ -251,7 +263,7 @@ getInputSpecies <- function(selection, threshold=60, energy=NULL, targetIden=NUL
     ret <- importMirandaFile("C.elegans_miRanda.txt.gz")
   } else if (selection == "Drosophila") {
     ret <- importMirandaFile("Drosophila_miRanda.txt.gz")
-  } else if (selection == "CMV") {
+  } else if (selection == "Cytomegalovirus") {
     ret <- importMirandaFile("CMV_miRanda.txt.gz")
   } else if (selection == "Kaposi_Sarcoma") {
     ret <- importMirandaFile("Kaposi_miRanda.txt.gz")
@@ -264,20 +276,20 @@ getInputSpecies <- function(selection, threshold=60, energy=NULL, targetIden=NUL
   }
   ret <- dplyr::filter(ret, V3 >= threshold)
   if (!is.null(energy)) {
-    ret <-dplyr::filter(ret, V4 <= energy)
+    ret <- dplyr::filter(ret, V4 <= energy)
   }
   if (!is.null(targetIden)) {
-    ret <-dplyr::filter(ret, V5 >= targetIden)
+    ret <- dplyr::filter(ret, V5 >= targetIden)
   }
   if (!is.null(mirnaIden)) {
-    ret <-dplyr::filter(ret, V6 >= mirnaIden)
+    ret <- dplyr::filter(ret, V6 >= mirnaIden)
   }
-  ret <- ret %>% dplyr::select(V1, V2)
+  ret <- ret %>% dplyr::select(V1, V2, V3, V4, V5, V6)
   ret <- unique(ret)
   return(ret)
 }
 
-##Inputs mRNA or miRNA dif expression file
+## Inputs mRNA or miRNA dif expression file
 
 #' one2OneRnaMiRNA correlation for miRNA and mRNA  using differntial expression
 #' fold change and if/when available p-value
@@ -297,11 +309,11 @@ getInputSpecies <- function(selection, threshold=60, energy=NULL, targetIden=NUL
 #' @keywords correlation
 #' @examples
 #' \donttest{
-#' x<-corAnmiRNAmRNA(mRNA,miRNA,Cor=-0.9,getInputSpeciesDF)
+#' x <- corAnmiRNAmRNA(mRNA, miRNA, Cor = -0.9, getInputSpeciesDF)
 #' }
-
-one2OneRnaMiRNA <- function(files, gene_colname="Gene", fc_colname="FC",
-                             pval_colname="pvalue", pthreshold=NULL) {
+#'
+one2OneRnaMiRNA <- function(files, gene_colname = "Gene", fc_colname = "FC",
+                            pval_colname = "pvalue", pthreshold = NULL) {
 
 
   # asser file......
@@ -319,59 +331,59 @@ one2OneRnaMiRNA <- function(files, gene_colname="Gene", fc_colname="FC",
   # grab fold changes and gene names from each data.frame supplied
   foldchanges <- lapply(files, function(x) {
     ret <- x[, c(gene_colname, fc_colname)]
-    rownames(ret) <- ret[, gene_colname, drop=T]
+    rownames(ret) <- ret[, gene_colname, drop = T]
     return(ret)
   })
 
-  if(!is.null(pthreshold)) {
+  if (!is.null(pthreshold)) {
     # grab p-values and gene names from each data.frame supplied
     pvalues <- lapply(files, function(x) {
       ret <- x[, c(gene_colname, pval_colname)]
-      rownames(ret) <- ret[, gene_colname, drop=T]
+      rownames(ret) <- ret[, gene_colname, drop = T]
       return(ret)
     })
 
     # produce set of genes significant in any of the gene lists
     # all genes concatenated in one long unique list
     siggenes <- unique(unlist(sapply(pvalues, function(x) {
-      ret <- filter(x, pvalue < pthreshold)[, gene_colname, drop=T]
+      ret <- filter(x, pvalue < pthreshold)[, gene_colname, drop = T]
       return(ret)
     }))) # for some reason sapply doesn't simplify here... hence the 'unlist'
   } else {
     # get set of genes regardless of p-value
     pvalues <- NULL
     siggenes <- unique(unlist(sapply(foldchanges, function(x) {
-      x[, gene_colname, drop=T] # we're producing a long vector here...
+      x[, gene_colname, drop = T] # we're producing a long vector here...
     })))
   }
 
   # filter siggenes for gene names present in all input lists!
   for (x in foldchanges) {
-    siggenes <- intersect(siggenes, x[, gene_colname, drop=T]) # we're intersecting _vectors_ here
+    siggenes <- intersect(siggenes, x[, gene_colname, drop = T]) # we're intersecting _vectors_ here
   }
 
   # filter and reorder FCs by sig genes
   foldchanges <- lapply(foldchanges, function(x) {
-    return(x[siggenes, fc_colname, drop=F])
+    return(x[siggenes, fc_colname, drop = F])
   })
 
   # make one data frame with _just_ the FC columns.
   foldchanges <- do.call(cbind.data.frame, foldchanges)
-  colnames(foldchanges) <- paste("FC", 1:ncol(foldchanges), sep="") # cleanup column names
+  colnames(foldchanges) <- paste("FC", 1:ncol(foldchanges), sep = "") # cleanup column names
 
   if (!is.null(pthreshold)) {
     # filter and reorder pvalues by sig genes
     pvalues <- lapply(pvalues, function(x) {
-      return(x[siggenes, pval_colname, drop=F])
+      return(x[siggenes, pval_colname, drop = F])
     })
 
     # make one data frame with _just_ the pvalue columns.
     pvalues <- do.call(cbind.data.frame, pvalues)
-    colnames(pvalues) <- paste("P", 1:ncol(pvalues), sep="") # cleanup column names
+    colnames(pvalues) <- paste("P", 1:ncol(pvalues), sep = "") # cleanup column names
   }
 
   # now 'foldchanges' and 'pvalues' are _data.frame_ with _just_ FC/P columns.
-  return(list(foldchanges=foldchanges, pvalues=pvalues))
+  return(list(foldchanges = foldchanges, pvalues = pvalues))
 }
 
 #' corMirnaRna correlation for miRNA and mRNA
@@ -385,19 +397,19 @@ one2OneRnaMiRNA <- function(files, gene_colname="Gene", fc_colname="FC",
 #' @keywords Correlation with miRanda, miRanda Threshold
 #' @examples
 #' \donttest{
-#' x <- corMirnaRna(mRNA, miRNA, method="spearman")
+#' x <- corMirnaRna(mRNA, miRNA, method = "spearman")
 #' }
-corMirnaRna <- function(mRNA, miRNA, method="pearson") {
+corMirnaRna <- function(mRNA, miRNA, method = "pearson") {
   tmRNA <- t(mRNA)
   tmiRNA <- t(miRNA)
-  mycor <- cor(cbind(tmRNA, tmiRNA), method=method)
+  mycor <- cor(cbind(tmRNA, tmiRNA), method = method)
   mmycor <- reshape2::melt(mycor)
-  names(mmycor) <- c("V1","V2","value")
-  #Makes a square matrix the correlation should not be squared
-  mycorf <- dplyr::filter(mmycor,!(V2 %in% rownames(miRNA)))
-  mycorf <- dplyr::filter(mycorf,!(V1 %in% rownames(mRNA)))
-  mycorf$V1<-as.character(mycorf$V1)
-  mycorf$V2<-as.character(mycorf$V2)
+  names(mmycor) <- c("V1", "V2", "value")
+  # Makes a square matrix the correlation should not be squared
+  mycorf <- dplyr::filter(mmycor, !(V2 %in% rownames(miRNA)))
+  mycorf <- dplyr::filter(mycorf, !(V1 %in% rownames(mRNA)))
+  mycorf$V1 <- as.character(mycorf$V1)
+  mycorf$V2 <- as.character(mycorf$V2)
   return(as.data.frame(mycorf))
 }
 
@@ -416,7 +428,7 @@ corMirnaRna <- function(mRNA, miRNA, method="pearson") {
 #' @keywords Correlation with miRanda, miRanda Threshold
 #' @examples
 #' \donttest{
-#' x<-corMirnaRnaMiranda(mRNA,miRNA,Cor=-0.9,getInputSpeciesDF)
+#' x <- corMirnaRnaMiranda(mRNA, miRNA, Cor = -0.9, getInputSpeciesDF)
 #' }
 corMirnaRnaMiranda <- function(mRNA, miRNA, CorVal, getInputSpeciesDF, method = "pearson") {
   tmRNA <- t(mRNA)
@@ -442,7 +454,7 @@ corMirnaRnaMiranda <- function(mRNA, miRNA, CorVal, getInputSpeciesDF, method = 
 #' @param finalF data.frame results of corMirnaRnaMiranda or corMirnaRna function
 #' @param ... arguments passed onto pheatmap
 #' @param upper_bound is the upper_bound of the correlation pheatmap scale
-#'  default is zero user can set to value from -1 to 1
+#'  default is zero user can set to values based on output of correlation result (value)
 #' @param main is the title of the pheatmap
 #' @param color default inferno(50) from the library viridis R base,
 #'  R colorbrewer and viridis compatible
@@ -452,19 +464,57 @@ corMirnaRnaMiranda <- function(mRNA, miRNA, CorVal, getInputSpeciesDF, method = 
 #' @keywords heatmap, pheatmap, color, correlation plot,correlation_plot
 #' @examples
 #' \donttest{
-#' x<-mirRnaHeatmap(finalF,upper_bound=-0.1,color=rainbow(50),fontsize=10 )
+#' x <- mirRnaHeatmap(finalF, upper_bound = -0.1, color = rainbow(50), fontsize = 10)
 #' }
 mirRnaHeatmap <- function(finalF, ..., upper_bound = 0,
-                           main = "Default mRNA miRNA heatmap",
-                           color = viridis::inferno(50), fontsize = 7) {
+                          main = "Default mRNA miRNA heatmap",
+                          color = c(viridis::inferno(50),"grey90"), fontsize = 7) {
   dfinalF <- dcast(finalF, V1 ~ V2, fun.aggregate = mean)
   dfinalF[is.na(dfinalF)] <- upper_bound
   rownames(dfinalF) <- dfinalF$V1
   dfinalF <- dfinalF %>% dplyr::select(-V1)
-  p <- pheatmap::pheatmap(dfinalF, color = color, fontsize = fontsize,
-                          main = main, ...)
+  p <- pheatmap::pheatmap(dfinalF,
+    color = color, fontsize = fontsize,
+    main = main, ...
+  )
   return(p)
 }
+
+
+
+#' mirRnaHeatmapDiff pheatmap for miRTarRNASeq miRNA and mRNA correlation
+#'
+#' This function draws pheatmaps for miRNA and mRNA correlation while
+#' using default and pheatmap for all other parameters
+#' @param finalF data.frame results of corMirnaRnaMiranda or corMirnaRna function
+#' @param ... arguments passed onto pheatmap
+#' @param upper_bound is the upper_bound of the correlation pheatmap scale
+#'  default is zero user can set to values based on output of correlation result (value)
+#' @param main is the title of the pheatmap
+#' @param color default inferno(50) from the library viridis R base,
+#'  R colorbrewer and viridis compatible
+#' @param fontsize default is 7 user adjustable
+#' @return pheatmap Obj
+#' @export
+#' @keywords heatmap, pheatmap, color, correlation plot,correlation_plot
+#' @examples
+#' \donttest{
+#' x <- mirRnaHeatmapDiff(finalF, upper_bound = -0.1, color = rainbow(50), fontsize = 10)
+#' }
+mirRnaHeatmapDiff <- function(finalF, ..., upper_bound = 0,
+                          main = "Default mRNA miRNA heatmap",
+                          color = c("grey90",viridis::inferno(50)), fontsize = 7) {
+  dfinalF <- dcast(finalF, V1 ~ V2, fun.aggregate = mean)
+  dfinalF[is.na(dfinalF)] <- upper_bound
+  rownames(dfinalF) <- dfinalF$V1
+  dfinalF <- dfinalF %>% dplyr::select(-V1)
+  p <- pheatmap::pheatmap(dfinalF,
+                          color = color, fontsize = fontsize,
+                          main = main, ...
+  )
+  return(p)
+}
+
 
 #' sampCorRnaMirna sampling for correlation for miRNA and mRNA
 #'
@@ -480,7 +530,7 @@ mirRnaHeatmap <- function(finalF, ..., upper_bound = 0,
 #' @keywords sampling, sampling, correlation, shuffling
 #' @examples
 #' \donttest{
-#' x<-sampCorRnaMirna(mRNA,miRNA,method="pearson",Shrounds=100,Srounds=1000)
+#' x <- sampCorRnaMirna(mRNA, miRNA, method = "pearson", Shrounds = 100, Srounds = 1000)
 #' }
 sampCorRnaMirna <- function(mRNA, miRNA, method = "pearson", Shrounds = 100, Srounds = 1000) {
   outs <- c()
@@ -492,7 +542,7 @@ sampCorRnaMirna <- function(mRNA, miRNA, method = "pearson", Shrounds = 100, Sro
       shuffled_mrna[, col] <- sample(shuffled_mrna[, col]) # this shuffles all values in column _col_
       shuffled_mirna[, col] <- sample(shuffled_mirna[, col]) # this shuffles all values in column _col_
     }
-    cc <- corMirnaRna(shuffled_mrna, shuffled_mirna, method=method) # run correlation on shuffled data
+    cc <- corMirnaRna(shuffled_mrna, shuffled_mirna, method = method) # run correlation on shuffled data
     outs <- c(outs, sample(cc$value, Srounds, replace = T)) # take a sample of the corralations and add to _outs_
   }
   return(outs)
@@ -512,13 +562,12 @@ sampCorRnaMirna <- function(mRNA, miRNA, method = "pearson", Shrounds = 100, Sro
 #' @keywords Density plot
 #' @examples
 #' \donttest{
-#' x<-mirRnaDensityCor(corr0, corrS,pvalue=0.05)
+#' x <- mirRnaDensityCor(corr0, corrS, pvalue = 0.05)
 #' }
 #'
-
-mirRnaDensityCor <- function(corr0, corrS, pvalue=0.05) {
+mirRnaDensityCor <- function(corr0, corrS, pvalue = 0.05) {
   dens_corr_0 <- density(corr_0$value)
-  dens_outs <-density(corrS) # this is the distribution for correlations for shuffled data
+  dens_outs <- density(corrS) # this is the distribution for correlations for shuffled data
   mx_y <- max(dens_corr_0$y, dens_outs$y)
 
   plot(
@@ -529,12 +578,14 @@ mirRnaDensityCor <- function(corr0, corrS, pvalue=0.05) {
     lwd = 2
   )
   lines(dens_corr_0, col = "red", lwd = 2) # this is what we got for our original data
-  abline(v = c(-1, 1),
-         col = "grey90",
-         lty = 2) # indicate -1 and 1 in the plot.
+  abline(
+    v = c(-1, 1),
+    col = "grey90",
+    lty = 2
+  ) # indicate -1 and 1 in the plot.
   # find a threshold based on the shuffled data
   threshold <- quantile(corrS, pvalue) # 5% if else user can define
-  abline(v=threshold, col="blue", lty=2) # add theshold line to density plots
+  abline(v = threshold, col = "blue", lty = 2) # add theshold line to density plots
 }
 
 #' threshSig Using shuffling threshold finds appropriate significant miRNA-mRNA correlation
@@ -550,10 +601,10 @@ mirRnaDensityCor <- function(corr0, corrS, pvalue=0.05) {
 #' @keywords Signficance, Threshold
 #' @examples
 #' \donttest{
-#' x<-mirRnaHeatmap(corrS,corr0)
+#' x <- mirRnaHeatmap(corrS, corr0)
 #' }
 #'
-threshSig <- function(corr0, corrS, pvalue=0.05){
+threshSig <- function(corr0, corrS, pvalue = 0.05) {
   threshold <- quantile(corrS, pvalue) # 5% default
   sig_corrs <- corr0[corr0$value < threshold, ]
   return(sig_corrs)
@@ -572,10 +623,10 @@ threshSig <- function(corr0, corrS, pvalue=0.05){
 #' @keywords Signficance, Threshold
 #' @examples
 #' \donttest{
-#' x<-mirRnaHeatmap(corrS,corr0)
+#' x <- mirRnaHeatmap(corrS, corr0)
 #' }
 #'
-threshSigInter <- function(corr0, corrS, pvalue=0.05){
+threshSigInter <- function(corr0, corrS, pvalue = 0.05) {
   threshold <- quantile(corrS, 1 - pvalue) # 5% default
   sig_corrs <- corr0[corr0$value > threshold, ]
   return(sig_corrs)
@@ -599,10 +650,10 @@ threshSigInter <- function(corr0, corrS, pvalue=0.05){
 #' \donttest{
 #' x <- miRandaIntersect(sig_corrs, miranda)
 #' }
-miRandaIntersect <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpeciesDF){
-  result_corrs <- dplyr::inner_join(sig_corrs, getInputSpeciesDF, by=c("V1", "V2"))
-  result_mrna <- mRNA[result_corrs$V2,,drop=F]
-  result_mirna <- miRNA[result_corrs$V1,,drop=F]
+miRandaIntersect <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpeciesDF) {
+  result_corrs <- dplyr::inner_join(sig_corrs, getInputSpeciesDF, by = c("V1", "V2"))
+  result_mrna <- mRNA[result_corrs$V2, , drop = F]
+  result_mirna <- miRNA[result_corrs$V1, , drop = F]
   # calculate "p-values" for correlations. (TODO check this.)
   # count how many values in corrS are > each correlation and calculate 1 - "percentage".
   pvalueiods <- 1 - sapply(result_corrs$value, function(x) {
@@ -610,8 +661,8 @@ miRandaIntersect <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpeciesDF){
   }) / length(corrS)
 
   # add p-value for result_corrs df
-  result_corrs$pvalue <-  pvalueiods
-  return(list(mirna=result_mirna, mrna=result_mrna, corrs=result_corrs))
+  result_corrs$pvalue <- pvalueiods
+  return(list(mirna = result_mirna, mrna = result_mrna, corrs = result_corrs))
 }
 
 #' miRandaIntersectInter Looks for Intersection of Significant output results with miRanda Results from getInputSpeciesDF
@@ -632,10 +683,13 @@ miRandaIntersect <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpeciesDF){
 #' \donttest{
 #' x <- miRandaIntersect(sig_corrs, miranda)
 #' }
-miRandaIntersectInter <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpeciesDF){
-  result_corrs <- dplyr::inner_join(sig_corrs, getInputSpeciesDF, by=c("V1", "V2"))
-  result_mrna <- mRNA[result_corrs$V2,,drop=F]
-  result_mirna <- miRNA[result_corrs$V1,,drop=F]
+miRandaIntersectInter <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpeciesDF) {
+  result_corrs <- dplyr::inner_join(sig_corrs, getInputSpeciesDF, by = c("V1", "V2"))
+  if(nrow(result_corrs) == 0) {
+    stop("no common mRNA/miRNAs found.")
+  }
+  result_mrna <- mRNA[result_corrs$V2, , drop = F]
+  result_mirna <- miRNA[result_corrs$V1, , drop = F]
   # calculate "p-values" for correlations. (TODO check this.)
   # count how many values in corrS are > each correlation and calculate 1 - "percentage".
   pvalueiods <- 1 - sapply(result_corrs$value, function(x) {
@@ -644,7 +698,7 @@ miRandaIntersectInter <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpecies
 
   # add p-value for result_corrs df
   result_corrs$pvalue <- pvalueiods
-  return(list(mirna=result_mirna, mrna=result_mrna, corrs=result_corrs))
+  return(list(mirna = result_mirna, mrna = result_mrna, corrs = result_corrs))
 }
 
 
@@ -659,26 +713,41 @@ miRandaIntersectInter <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpecies
 #' \donttest{
 #' plot2d(model)
 #' }
-#AddPValueSigAswell
+#' # AddPValueSigAswell
 plotFit <- function(model) {
   m <- model$model
   m$Fitted <- model$fitted.values
   last <- ncol(m)
   names(m)[last] <- "Fitted values\nlm(model_formula)"
-  par(mar=c(5, 5, 4, 2) + 0.1)
-  plot(m[, c(1, last)], type="n", main=formula.tools:::as.character.formula(model$terms),
-       cex.main=1)
-  abline(lm(m[, last] ~ m[, 1]), lwd=2, col="red")
+  par(mar = c(5, 5, 4, 2) + 0.1)
+  plot(m[, c(1, last)],
+    type = "n", main = formula.tools:::as.character.formula(model$terms),
+    cex.main = 1
+  )
+  abline(lm(m[, last] ~ m[, 1]), lwd = 2, col = "red")
   points(m[, c(1, last)])
 
-  k <- length(model$coefficients)-1 # Number of mirnas in model!
+  k <- length(model$coefficients) - 1 # Number of mirnas in model!
   n <- length(model$fitted.values)
   rs <- summary(model)$r.squared
-  Pvalue<-pf((rs/k)/((1-rs)/(n-1-k)), k, n-1-k, lower.tail=F) # p value for R-squared
+  Pvalue <- pf((rs / k) / ((1 - rs) / (n - 1 - k)), k, n - 1 - k, lower.tail = F) # p value for R-squared
 
-  mtext(sprintf("P value: %.2g", Pvalue), line=.74)
-  mtext(sprintf("R-squared: %.2f", summary(model)$r.squared), line=.01)
+  mtext(sprintf("P value: %.2g", Pvalue), line = .74)
+  mtext(sprintf("R-squared: %.2f", summary(model)$r.squared), line = .01)
+}
 
+#' R-squared from model
+#'
+#' Obtrain R-squared from a linear model
+#' @param model linear model
+#' @export
+#' @keywords linear model, r-squared
+#' @examples
+#' \donttest{
+#' x <- modelRsquared(model)
+#' }
+modelRsquared <- function(model) {
+  return(summary(model)$r.squared)
 }
 
 #' Plot residuals
@@ -707,14 +776,14 @@ plotResiduals <- function(model) {
 #' }
 plotTerms <- function(model) {
   m <- model$model
-  plot(m, main=formula.tools:::as.character.formula(model$terms))
-  k <- length(model$coefficients)-1 # Number of mirnas in model!
+  plot(m, main = formula.tools:::as.character.formula(model$terms))
+  k <- length(model$coefficients) - 1 # Number of mirnas in model!
   n <- length(model$fitted.values)
   rs <- summary(model)$r.squared
-  Pvalue<-pf((rs/k)/((1-rs)/(n-1-k)), k, n-1-k, lower.tail=F) # p value for R-squared
+  Pvalue <- pf((rs / k) / ((1 - rs) / (n - 1 - k)), k, n - 1 - k, lower.tail = F) # p value for R-squared
 
-  mtext(sprintf("P value of model fit: %.2g", Pvalue), line=.74)
-  mtext(sprintf("R-squared of model fit: %.2f", summary(model)$r.squared), line=.01)
+  mtext(sprintf("P value of model fit: %.2g", Pvalue), line = .74)
+  mtext(sprintf("R-squared of model fit: %.2f", summary(model)$r.squared), line = .01)
 }
 #' twoTimePoint miRNA and mRNA interrelation in two timepoints
 #'
@@ -727,7 +796,7 @@ plotTerms <- function(model) {
 #' @keywords mRNA miRNA interelation
 #' @examples
 #' \donttest{
-#' x<-twoTimePoint(mRNA,miRNA)
+#' x <- twoTimePoint(mRNA, miRNA)
 #' }
 twoTimePoint <- function(mRNA, miRNA) {
   assertthat::assert_that(ncol(mRNA) == 1 && ncol(miRNA) == 1)
@@ -759,7 +828,7 @@ twoTimePoint <- function(mRNA, miRNA) {
 #' @keywords sampling, sampling, correlation, shuffling
 #' @examples
 #' \donttest{
-#' x<-twoTimePointSamp(mRNA,miRNA,Shrounds=100,Srounds=1000)
+#' x <- twoTimePointSamp(mRNA, miRNA, Shrounds = 100, Srounds = 1000)
 #' }
 twoTimePointSamp <- function(mRNA, miRNA, Shrounds = 100, Srounds = 1000) {
   outs <- c()
@@ -791,13 +860,12 @@ twoTimePointSamp <- function(mRNA, miRNA, Shrounds = 100, Srounds = 1000) {
 #' @keywords Density plot
 #' @examples
 #' \donttest{
-#' x<-mirRnaDensityInter(Inter0, OUTS,pvalue=0.05)
+#' x <- mirRnaDensityInter(Inter0, OUTS, pvalue = 0.05)
 #' }
 #'
-
-mirRnaDensityInter <- function(Inter0, OUTS, pvalue=0.05) {
+mirRnaDensityInter <- function(Inter0, OUTS, pvalue = 0.05) {
   dens_Inter_0 <- density(Inter0$value)
-  dens_outs <-density(OUTS) # this is the distribution for correlations for shuffled data
+  dens_outs <- density(OUTS) # this is the distribution for correlations for shuffled data
   mx_y <- max(dens_Inter_0$y, dens_outs$y)
   plot(
     dens_outs,
@@ -807,8 +875,8 @@ mirRnaDensityInter <- function(Inter0, OUTS, pvalue=0.05) {
   )
   lines(dens_Inter_0, col = "red", lwd = 2) # this is what we got for our original data
   # find a threshold based on the shuffled data
-  threshold <- quantile(OUTS, 1-pvalue) # 5% if else user can define
-  abline(v=threshold, col="blue", lty=2) # add theshold line to density plots
+  threshold <- quantile(OUTS, 1 - pvalue) # 5% if else user can define
+  abline(v = threshold, col = "blue", lty = 2) # add theshold line to density plots
 }
 
 #' finInterResult miRNA and mRNA interrelation in two timepoints  results in a dataframe.
@@ -821,16 +889,17 @@ mirRnaDensityInter <- function(Inter0, OUTS, pvalue=0.05) {
 #' @keywords Results dataframe
 #' @examples
 #' \donttest{
-#' x<-finInterResult(results)
+#' x <- finInterResult(results)
 #' }
-
-finInterResult<-function(results){
-final_results <- data.frame(
-  mRNA=rownames(results$mrna),
-  miRNA=rownames(results$mirna),
-  FC_mRNA=results$mrna$FC1,
-  FC_miRNA=results$mirna$FC1,
-  pvalue=results$corrs$pvalue)
+#'
+finInterResult <- function(results) {
+  final_results <- data.frame(
+    mRNA = rownames(results$mrna),
+    miRNA = rownames(results$mirna),
+    FC_mRNA = results$mrna$FC1,
+    FC_miRNA = results$mirna$FC1,
+    pvalue = results$corrs$pvalue
+  )
 }
 
 #' drawInterPlots for finInterResult miRNA and mRNA Interrelation real data
@@ -845,22 +914,187 @@ final_results <- data.frame(
 #' @keywords plot
 #' @examples
 #' \donttest{
-#' x<-drawInterPlots(mrna,mirna,final_results)
+#' x <- drawInterPlots(mrna, mirna, final_results)
 #' }
 #'
+drawInterPlots <- function(mrna, mirna, final_results) {
+  par(mfrow = c(2, 2))
 
-drawInterPlots<-function(mrna,mirna,final_results){
-  par(mfrow=c(2,2))
-
-# plot density of mRNA FCs
+  # plot density of mRNA FCs
   plot(density(mrna$FC1))
-  abline(v=0, col="grey80", lty=2)
+  abline(v = 0, col = "grey80", lty = 2)
 
-# plot density of miRNA FCs
+  # plot density of miRNA FCs
   plot(density(mirna$FC1))
-  abline(v=0, col="grey80", lty=2)
+  abline(v = 0, col = "grey80", lty = 2)
 
-# plot final results (i.e. p < 0.05) mRNA vs miRNA FCs
+  # plot final results (i.e. p < 0.05) mRNA vs miRNA FCs
   with(final_results, plot(FC_mRNA, FC_miRNA))
+}
+
+#' runAllMirnaModels run_model for all miRNAs
+#'
+#' This function runs the "run_model" function for all miRNAs and mRNA combinations of two and returns a
+#' list with significant genes and FDR models
+#' @param mirnas vector of unique miRNAs under investigation.
+#' @param DiffExpmRNA differentially/expressed mRNAs expression file.
+#' @param DiffExpmiRNA differentially/expressed miRNAs expression file.
+#' @param miranda_data getInputSpecies output file ( use low filters).
+#' @param nPar number of threads for parallel processing.
+#' @param prob user defined ratio for miranda distibution for miranda score selection default is 0.90.
+#' @param method finInterResult miRNA and mRNA interrelation in two timepoints  results in a dataframe.
+#' @param fdr_cutoff cutoff for FDR selection default is 0.1.
+#' @param all_coeff if true only models with negative coefficient will be selected if false at least one
+#' negative coefficient should be in the model; default is TRUE .
+#' @param mode model mode, default is Null, can be changed to "multi" and "inter".
+#' @return List of run models
+#' @export
+#' @keywords runAllMirnaModels
+#' @examples
+#' \donttest{
+#' x <- runAllMirnaModels(mirnas, DiffExpmRNA, DiffExpmiRNA, miranda_data,
+#'   nPar = 4, prob = 0.90, fdr_cutoff = 0.1,
+#'   method = "fdr", all_coeff = TRUE, mode = "multi"
+#' )
+#' }
+#'
+runAllMirnaModels <- function(mirnas, DiffExpmRNA, DiffExpmiRNA, miranda_data,
+                                 nPar = 4, prob = 0.75, fdr_cutoff = 0.1, method = "fdr",
+                                 all_coeff = FALSE, mode = NULL) {
+  # LoadLibrary(dopar)
+  registerDoParallel(nPar)
+
+  # make unique
+  unique_mirnas <- unique(mirnas)
+
+  # generate combinations of 2 miRNAs
+  if (!is.null(mode)) {
+    unique_mirnas <- caTools::combs(unique_mirnas, 2)
+    unique_mirnas <- lapply(1:nrow(unique_mirnas), function(x) unique_mirnas[x, ])
   }
 
+
+  # run models; parallellize by miRNA
+  ret <- foreach(mirna = unique_mirnas) %dopar% {
+    # ForDetermining Prob it needs to percent
+    valmMedia <- quantile(miranda_data$V3, probs = prob)[1]
+    # MirandaParsingOfmyRNA
+    DiffExpmRNASub <- miRanComp(DiffExpmRNA, miranda_data)
+
+    # everything <- lapply(uni_miRanda, function(mirna) {
+    # combiner
+    Combine <- combiner(DiffExpmRNASub, DiffExpmiRNA, mirna)
+
+    # GeneVari
+    geneVariant <- geneVari(Combine, mirna)
+
+    # ActualModelRan
+    MRun <- runModels(Combine, geneVariant, mirna, mode = mode)
+    # #Bonferroni sig Genes
+    FDRModel <- fdrSig(MRun, value = fdr_cutoff, method = method)
+
+    if (length(FDRModel$all_models) > 0) {
+      # look for negative coeffs; "-1" to exclude intercept while checking...#If true all if false any
+      if (all_coeff) {
+        valid_models <- sapply(FDRModel$all_models, function(m) all(coefficients(m)[-1] < 0))
+      } else {
+        valid_models <- sapply(FDRModel$all_models, function(m) any(coefficients(m)[-1] < 0))
+      }
+
+      # subset fdrmodel's things
+      FDRModel$all_models <- FDRModel$all_models[valid_models]
+      FDRModel$pvalues <- FDRModel$pvalues[valid_models]
+      FDRModel$FDR_Value <- FDRModel$FDR_Value[valid_models]
+      FDRModel$sig_genes <- FDRModel$sig_genes[valid_models]
+      FDRModel$sanova <- FDRModel$sanova[valid_models]
+    }
+
+    # make siggenes data.frame
+    SigFDRGenes <- data.frame(cbind(FDRModel$pvalues, FDRModel$FDR_Value))
+    names(SigFDRGenes) <- c("P Value", "FDR")
+    return(list(SigFDRGenes = SigFDRGenes, FDRModel = FDRModel))
+  }
+  names(ret) <- sapply(unique_mirnas, paste, collapse = " and ")
+  return(ret)
+}
+
+#' rsquRes returns r matrix of correlation
+#'
+#' This function parses R correlation value of the from the list of significant FDR adjusted models with
+#' negative/positive correlations.
+#' @param FDRSigList list of FDR adjusted models with negative/positive correlations.
+#' @return matrix of correlation
+#' @export
+#' @keywords R correlation
+#' @examples
+#' \donttest{
+#' x <- rsquRes(FDRSigList)
+#' }
+#'
+rsquRes <- function(FDRSigList) {
+  # for all mirnas, for all the models get the r-squares
+  rsquares <- lapply(FDRSigList, function(x) sapply(x[["FDRModel"]][["all_models"]], modelRsquared))
+
+  # make rownames and colnames for the matrix we want to make
+  colnames <- sort(unique(unlist(sapply(rsquares, names))))
+  rownames <- names(rsquares)
+
+  # make matrix with zeros
+  m <- matrix(0.0, nrow = length(rownames), ncol = length(colnames))
+
+  # set colnames and rownames
+  rownames(m) <- rownames
+  colnames(m) <- colnames
+
+  # for all mirnas, put the rsqaures in the right places (by name)
+  for (row in rownames) {
+    m[row, names(rsquares[[row]])] <- rsquares[[row]]
+  }
+
+  m1 <- -sqrt(m)
+  return(m1)
+}
+
+
+#' DrawCorPlot correlation plots for mRNA and miRNA regression results
+#'
+#' This function plots correlations for mRNA and miRNAs regression results (negative correlation for multi and
+#'  individual interactions and positive and negative for interactions)
+#' @param corMatrix correlation matrix obtained from rsquRes function
+#' @param ...  parameters form the corrplot package
+#' @return miRNA mRNA target correlation plot
+#' @export
+#' @keywords R correlation plot
+#' @examples
+#' \donttest{
+#' x <- DrawCorPlot(corMatrix)
+#' }
+#'
+DrawCorPlot <- function(corMatrix, ...) {
+  col2 <- colorRampPalette(
+    c(
+      colorRampPalette(c(
+        "black",
+        "#543005",
+        "#8c510a",
+        "#f46d43",
+        "#762a83",
+        "#9970ab",
+        "#c2a5cf",
+        "#e7d4e8",
+        "#f7f7f7",
+        "#d9f0d3",
+        "#a6dba0",
+        "#5aae61",
+        "#1b7837",
+        "#a6d96a",
+        "#9ecae1",
+        "#3182bd",
+        "#08306b"
+      ))(50),
+      "grey50",
+      colorRampPalette(c("red", "#fde0dd", "#fcc5c0", "#fa9fb5", "pink"))(50)
+    )
+  )
+  corrplot(corMatrix, ..., col = col2(211))
+}

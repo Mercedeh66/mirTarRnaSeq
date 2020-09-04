@@ -14,16 +14,14 @@ miRNAExp<-read.table("test/m_Stom_data_auto_miRNA.txt", as.is=TRUE, header=T, ro
 #tzTransFunction
 DiffExpmiRNA <- tzTrans(miRNAExp)
 DiffExpmRNA <- tzTrans(DiffExp)
-DiffExpmRNA <- DiffExpmRNA %>% dplyr::select(-stom_286)
 
 # get miranda data
 #Add thershold for other variables
 miranda <- getInputSpecies("Epstein_Barr", threshold = 140)
 DiffExpmRNASub <- miRanComp(DiffExpmRNA, miranda)
 
-#miRNA selection
-miRNA_select<-c("ebv-mir-BART8","ebv-mir-BART9")
-miRNA_select<-c("ebv-mir-BART8")
+
+miRNA_select<-c("ebv-mir-BART9")
 
 
 #combiner
@@ -35,11 +33,11 @@ geneVariant<-geneVari(Combine,miRNA_select)
 #ActualModelRan
 MRun<- runModels(Combine,geneVariant,miRNA_select,mode="multi")
 
-#Bonferroni sig Genes
-FDRModel<-fdrSig(MRun, value=0.05,method="bonferroni")
+#FDR sig Genes
+FDRModel<-fdrSig(MRun, value=0.1,method="fdr")
 table(FDRModel$FDR_significant)
 SigFDRGenes<-as.data.frame(cbind(FDRModel$pvalues,FDRModel$FDR_Value))
-names(SigFDRGenes)<-c("P Value","Bonferroni P")
+names(SigFDRGenes)<-c("P Value","FDR")
 
 ## make a plots
 View(FDRModel$all_models)
@@ -48,12 +46,37 @@ plotFit(mymodel)
 plotResiduals(mymodel)
 plotTerms(mymodel)
 
-## make a plottings
+## make interaction
+
+#miRNA selection
+miRNA_select<-as.vector(c("ebv-mir-BART2","ebv-mir-BART9"))
+
+#combiner
+Combine<-combiner(DiffExpmRNA,DiffExpmiRNA,miRNA_select)
+
+#GeneVari
+geneVariant<-geneVari(Combine,miRNA_select)
+
 MRun<- runModels(Combine,geneVariant,miRNA_select,mode="inter")
 mymodel <- MRun$all_models[[6]]  # pick the first
 plotFit(mymodel)
 plotResiduals(mymodel)
 plotTerms(mymodel)
+
+#ForAllmiRNAs
+miranda <- getInputSpecies("Epstein_Barr", threshold = 172)
+DiffExpmRNASub <- miRanComp(DiffExpmRNA, miranda)
+uni_miRanda<-unique(miranda$V1)
+uni_miRanda<-uni_miRanda[-28]
+mirtrial <- getInputSpecies("Epstein_Barr",threshold = 140)
+
+##Note you are doing only negative but there might be positive relationships
+testme <- run_all_mirna_models(uni_miRanda,DiffExpmRNA,DiffExpmiRNA, mirtrial, prob=0.90,
+                               method="fdr",all_coeff=TRUE,mode="inter")
+everything1 <- testme[sapply(testme, function(x) nrow(x$SigFDRGenes)) > 0]
+
+everything2<-rsquRes(everything1)
+DrawCorPlot(everything2)
 
 
 #Part2
@@ -80,7 +103,7 @@ corr_0 <- corMirnaRna(mrna, mirna)
 # make background correlation distr.
 outs <- sampCorRnaMirna(mrna, mirna)
 
-# plot density polots for background and corrs in our data
+# plot density plots for background and corrs in our data
 mirRnaDensityCor(corr_0, outs)
 
 # get correlations below threshold
