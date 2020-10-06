@@ -157,7 +157,7 @@ everything2<- rsquRes(everything1)
 ## Including correlation plots
 
 ```{r eval=TRUE, echo=TRUE, fig.width = 12, fig.height=5, out.width="90%", dpi=300, fig.align="center"}
-DrawCorPlot(everything2, tl.cex = 0.3,cl.lim = c(-1, 0),tl.col = "black")
+drawCorPlot(everything2, tl.cex = 0.3,cl.lim = c(-1, 0),tl.col = "black")
 ```
 
 # Part2
@@ -284,7 +284,7 @@ sig_InterR <- threshSigInter(inter0, outs)
 
 ## Miranda intersection with results
 ```{r eval=TRUE, echo=TRUE}
-results <- miRandaIntersectInter(sig_InterR, outs, mrna, mirna, miranda)
+results <- mirandaIntersectInter(sig_InterR, outs, mrna, mirna, miranda)
 ```
 
 ## Make dataframe and plots

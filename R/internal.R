@@ -8,11 +8,15 @@
 #' @importFrom pheatmap pheatmap
 #' @importFrom corrplot corrplot
 #' @importFrom graphics par plot abline lines points mtext
-#' @importFrom stats cor quantile lm anova p.adjust density coefficients pf formula
+#' @importFrom stats cor quantile lm anova p.adjust density coefficients pf formula glm BIC
 #' @importFrom utils read.table
 #' @importFrom doParallel registerDoParallel
 #' @importFrom foreach `%dopar%` foreach
 #' @importFrom grDevices colorRampPalette
+#' @importFrom car Anova
+#' @importFrom MASS glm.nb
+#' @importFrom rsq rsq
+#' @importFrom pscl zeroinfl
 NULL
 
 #'  tzTransTranspose and z-score transformation
@@ -97,7 +101,8 @@ combiner <- function(mRNA, miRNA, miRNA_select) {
 #' }
 #'
 geneVari <- function(Combined, miRNA_select) {
-  geneVari1 <- colnames(Combined[, 1:(ncol(Combined) - length(miRNA_select))])
+  # geneVari1 <- colnames(Combined[, 1:(ncol(Combined) - length(miRNA_select))])
+  geneVari1 <- setdiff(colnames(Combined), miRNA_select)
   return(geneVari1)
 }
 
@@ -107,13 +112,15 @@ geneVari <- function(Combined, miRNA_select) {
 #' This function make right hand side of formula for model variables: vector of indep. variables (i.e. miRNAs)
 #' mode: 'multi' for simple, 'inter' for model with interactions returns a string in the form "~ a + b", or "~ a + b + a * b"
 #' @param variables The vector created by miRNA_select
+#' @param mode Null versus "multi: versus "inter"
+#' @param zeroin if zero inflated user TRUE default FALSE
 #' @return data.frame containing Miranda data
 #' @examples
 #' \donttest{
 #' x <- makeFormulaRightSide(variables, mode = "multi")
 #' }
 #'
-makeFormulaRightSide <- function(variables, mode = "multi") {
+makeFormulaRightSide <- function(variables, mode = "multi", zeroin = FALSE) {
   # be sure to properly quote variable names: `varname`.
   if (is.null(mode)) {
     mode <- "multi"
@@ -128,10 +135,13 @@ makeFormulaRightSide <- function(variables, mode = "multi") {
       }
     }
   }
+  if (identical(zeroin, TRUE)) {
+    rightside <- paste(rightside, "|", "1")
+  }
   return(rightside)
 }
 
-#' runModels Makes a list of gene names to be used in the runModels function
+#' runModels runs miRNA mrna model model for various miRNA-mRNA data distributions
 #'
 #' This function defines the boudnaries of mRNA vs miRNAs of interest to be analysed by the runModels function
 #' @param combination the combined file for mRNA and selected miRNAs output of combiner function
@@ -139,46 +149,213 @@ makeFormulaRightSide <- function(variables, mode = "multi") {
 #' @param select_miRNA The vector of miRNA/s to be investigated
 #' @param mode the mode of analysis if more than one miRNA is being investigated multivariate "multi"
 #' or covariate/interaction analysis "inter" is being used
+#' @param scale factor to scale input data (for genes) by, prior to rounding and model
+#'              fitting. (\code{scale} must be greater than zero).
+#' @param family gaussian or poisson
 #' @return A list of p vlaues, annova, and significance for each gene and the miRNA/s of interest
 #' @export
-#' @keywords runModels multivariate interaction glm
+#' @keywords runModels univariate multivariate interaction glm
 #' @examples
 #' \donttest{
-#' x <- runModels(combination, geneVariable, miRNA_selectedVec, mode = "multi")
+#' x <- runModels(combination, geneVariable, miRNA_selectedVec, mode = NULL, family = "poisson")
 #' }
 #'
-runModels <- function(combination, geneVari, select_miRNA, mode = "multi") {
+runModels <- function(combination, geneVari, select_miRNA, mode = NULL, scale = 1, family = "gaussian", pseudo = 1) {
+  assertthat::assert_that(is.numeric(scale) && 1 == length(scale) && scale > 0)
+  assertthat::assert_that(is.character(family) && 1 == length(family) && family %in% c("poisson", "gaussian"))
   is_significant <- c()
   all_models <- c()
+  genes <- c()
+  pvalues <- c()
+  if (identical(family, "poisson")) {
+    # scale and round (poisson is discrete; requires integers)
+    combination[, geneVari] <- round(combination[, geneVari, drop = F] * scale)
+  } else {
+    # scale, add pseudo and log transform
+    combination[, geneVari] <- log(combination[, geneVari, drop = F] * scale + pseudo)
+  }
+  # remove zero-variance columns.
+  combination <- combination[, apply(combination, 2, var) != 0, drop = F]
+  geneVari <- intersect(geneVari, colnames(combination))
   for (x in geneVari) {
     # construct formula by combining x with makeFormulaRightSide()'s output
     model_formula <- formula(paste(sprintf("`%s`", x), makeFormulaRightSide(select_miRNA, mode), sep = " ~ "))
-    modelln <- lm(model_formula, data = combination)
-    a <- anova(modelln)$`Pr(>F)`
-    a <- a[!is.na(a)]
-    a <- any(a < 0.05)
-    is_significant <- c(is_significant, a)
-    all_models <- c(all_models, list(modelln))
+    if (identical(family, "gaussian")) {
+      modelln <- suppressWarnings(tryCatch(glm(model_formula, data = combination, family = gaussian), error = function(...) NULL))
+    } else {
+      modelln <- suppressWarnings(tryCatch(glm(model_formula, data = combination, family = poisson), error = function(...) NULL))
+    }
+    if (!is.null(modelln)) {
+      if (identical(family, "gaussian")) {
+        a <- suppressWarnings(summary(modelln)$coefficients[-1, "Pr(>|t|)"]) # '-1' to remove first row, which is "(Intercept)"
+      } else {
+        a <- suppressWarnings(summary(modelln)$coefficients[-1, "Pr(>|z|)"]) # '-1' to remove first row, which is "(Intercept)"
+      }
+      a <- any(a < 0.05)
+      is_significant <- c(is_significant, a)
+      all_models <- c(all_models, list(modelln))
+      genes <- c(genes, x)
+    } else {
+      warning(sprintf("no model generated for '%s'", x))
+    }
   }
-  aaa <- lapply(all_models, anova) # retrieve the anovas for each model
+  # pvalues <- sapply(all_models, function(x) {
+  #   k <- length(x$coefficients) - 1 # Number of mirnas in model!
+  #   n <- nrow(combination)
+  #   rs <- modelRsquared(x)
+  #   p <- pf((rs / k) / ((1 - rs) / (n - 1 - k)), k, n - 1 - k, lower.tail = F) # p value for R-squared
+  #   return(p)
+  # })
+  names(is_significant) <- genes
+  names(all_models) <- genes
+  # names(pvalues) <- genes
+  return(
+    list(
+      is_significant = is_significant,
+      all_models = all_models,
+      geneVari = geneVari
+      # pvalues = pvalues
+    )
+  )
+}
+
+
+#' runModelsNb run Negative bionomial model
+#'
+#' This function defines the boudnaries of mRNA vs miRNAs of interest to be analysed by the runModels function
+#' @param combination the combined file for mRNA and selected miRNAs output of combiner function
+#' @param geneVariable the output of
+#' @param select_miRNA The vector of miRNA/s to be investigated
+#' @param mode the mode of analysis if more than one miRNA is being investigated multivariate "multi"
+#' or covariate/interaction analysis "inter" is being used
+#' @param scale factor to scale input data (for genes) by, prior to rounding and model
+#'              fitting. (\code{scale} must be grewater than zero).
+#' @return A list of p values, annova, and significance for each gene and the miRNA/s of interest
+#' @export
+#' @keywords runModels Negative-bionomial univariate multivariate interaction
+#' @examples
+#' \donttest{
+#' x <- runModelsNb(combination, geneVariable, miRNA_selected, mode = NULL)
+#' }
+#'
+runModelsNb <- function(combination, geneVari, select_miRNA, mode = NULL, scale = 1) {
+  assertthat::assert_that(is.numeric(scale) && 1 == length(scale) && scale > 0)
+  is_significant <- c()
+  all_models <- c()
+  genes <- c()
+  combination[, geneVari] <- round(combination[, geneVari, drop = F] * scale)
+  # remove zero-variance columns.
+  combination <- combination[, apply(combination, 2, var) != 0, drop = F]
+  geneVari <- intersect(geneVari, colnames(combination))
+  for (x in geneVari) {
+    # construct formula by combining x with makeFormulaRightSide()'s output
+    model_formula <- formula(paste(sprintf("`%s`", x), makeFormulaRightSide(select_miRNA, mode), sep = " ~ "))
+    modelln <- suppressWarnings(tryCatch(glm.nb(model_formula, data = combination), error = function(...) NULL))
+    if (!is.null(modelln)) {
+      a <- suppressWarnings(summary(modelln)$coefficients[-1, "Pr(>|z|)"]) # '-1' to remove first row, which is "(Intercept)"
+      a <- any(a < 0.05)
+      is_significant <- c(is_significant, a)
+      all_models <- c(all_models, list(modelln))
+      genes <- c(genes, x)
+    } else {
+      warning(sprintf("no model generated for '%s'", x))
+    }
+  }
   pvalues <- sapply(all_models, function(x) {
     k <- length(x$coefficients) - 1 # Number of mirnas in model!
     n <- nrow(combination)
-    rs <- summary(x)$r.squared
+    rs <- modelRsquared(x)
     p <- pf((rs / k) / ((1 - rs) / (n - 1 - k)), k, n - 1 - k, lower.tail = F) # p value for R-squared
     return(p)
   })
-  names(is_significant) <- geneVari
-  names(all_models) <- geneVari
-  names(aaa) <- geneVari
-  names(pvalues) <- geneVari
+  names(is_significant) <- genes
+  names(all_models) <- genes
+  names(pvalues) <- genes
   return(
     list(
-      aaa = aaa,
       is_significant = is_significant,
       all_models = all_models,
       geneVari = geneVari,
       pvalues = pvalues
+    )
+  )
+}
+
+
+#' runModelsZInf runs miRNA mrna model model for various miRNA-mRNA data distributions for zero inflated models
+#'
+#' This function runs zero-inflated models specificly for poisson and Negative bionomial data which needs to be
+#' predefined by the user
+#' @param combination the combined file for mRNA and selected miRNAs output of combiner function
+#' @param geneVariable the output of
+#' @param select_miRNA The vector of miRNA/s to be investigated
+#' @param mode the mode of analysis if more than one miRNA is being investigated multivariate "multi"
+#' or covariate/interaction analysis "inter" is being used
+#' @param scale factor to scale input data (for genes) by, prior to rounding and model
+#'              fitting. (\code{scale} must be grewater than zero).
+#' @param dist  default is "poisson" if negative binomial "negbin"
+#' @return A list of p vlaues, annova, and significance for each gene and the miRNA/s of interest
+#' @export
+#' @keywords runModelsZInf Zero-Inflated univariate multivariate interaction
+#' @examples
+#' \donttest{
+#' x <- runModelsZInf(combination, geneVariable, miRNA_selected, mode = NULL, family = "poisson")
+#' }
+#'
+runModelsZInf <- function(combination, geneVari, select_miRNA, mode = NULL, scale = 1, dist = "poisson") {
+  assertthat::assert_that(all(geneVari %in% colnames(combination)), msg="invalid gene in geneVari")
+  assertthat::assert_that(is.numeric(scale) && 1 == length(scale) && scale > 0)
+  assertthat::assert_that(is.character(dist) && 1 == length(dist) && dist %in% c("poisson", "negbin"))
+  is_significant <- c()
+  all_models <- c()
+  genes <- c()
+  pvalues <- c()
+
+  # scale and round.
+  combination[, geneVari] <- round(combination[, geneVari, drop = F] * scale)
+
+  # remove zero-variance columns.
+  combination <- combination[, apply(combination, 2, var) != 0, drop = F]
+  geneVari <- intersect(geneVari, colnames(combination))
+
+  # function to get pvalue(s) for model features (excluding intercept and theta)
+  getp_ <- function(m) {
+    s <- summary(m)$coefficients$count
+    a <- suppressWarnings(s[-c(1, nrow(s)), "Pr(>|z|)"]) # '-c(-1, nrow(s)' to remove first and last row
+    return(a)
+  }
+
+  for (x in geneVari) {
+    # construct formula by combining x with makeFormulaRightSide()'s output
+    #mirTarRnaSeq:::makeFormulaRightSide() delete afterwards******
+    #browser()
+    model_formula <- formula(paste(sprintf("`%s`", x), makeFormulaRightSide(select_miRNA, mode, zeroin = TRUE), sep = " ~ "))
+    # run model, quietly, and return NULL on failure.
+    modelln <- suppressWarnings(tryCatch(zeroinfl(model_formula, data = combination, dist = dist), error = function(...) NULL))
+    if (!is.null(modelln)) {
+      # we got a model; get pvalues and set 'is_significance' flag
+      a <- any(getp_(modelln) < 0.05)
+      is_significant <- c(is_significant, a)
+      all_models <- c(all_models, list(modelln))
+      genes <- c(genes, x)
+    } else {
+      warning(sprintf("no model generated for '%s'", x))
+    }
+  }
+  names(is_significant) <- genes
+  names(all_models) <- genes
+
+  # remove things for which 'is_significant' is NA
+  genes <- genes[!is.na(is_significant)]
+  all_models <- all_models[!is.na(is_significant)]
+  is_significant <- is_significant[!is.na(is_significant)]
+
+  return(
+    list(
+      is_significant = is_significant,
+      all_models = all_models,
+      geneVari = genes,
+      pvalues = sapply(all_models, getp_)
     )
   )
 }
@@ -229,11 +406,8 @@ fdrSig <- function(RMObj, value = 0.05, method = "fdr") {
 #' x <- importMirandaFile("Mouse_miRanda.txt")
 #' }
 importMirandaFile <- function(fn) {
-  ret1 <- read.table(system.file("extdata", "miRandaPrepFiles", fn,
-    package = "mirTarRnaSeq", mustWork = T
-  ),
-  as.is = TRUE
-  )
+  fn <- system.file("extdata", "miRandaPrepFiles", fn, package = "mirTarRnaSeq", mustWork = T)
+  ret1 <- read.table(fn, as.is = TRUE, sep = "\t")
   return(ret1)
 }
 
@@ -285,7 +459,7 @@ getInputSpecies <- function(selection, threshold = 60, energy = NULL, targetIden
     ret <- dplyr::filter(ret, V6 >= mirnaIden)
   }
   ret <- ret %>% dplyr::select(V1, V2, V3, V4, V5, V6)
-  ret <- unique(ret)
+  # ret <- unique(ret)
   return(ret)
 }
 
@@ -468,7 +642,7 @@ corMirnaRnaMiranda <- function(mRNA, miRNA, CorVal, getInputSpeciesDF, method = 
 #' }
 mirRnaHeatmap <- function(finalF, ..., upper_bound = 0,
                           main = "Default mRNA miRNA heatmap",
-                          color = c(viridis::inferno(50),"grey90"), fontsize = 7) {
+                          color = c(viridis::inferno(50), "grey90"), fontsize = 7) {
   dfinalF <- dcast(finalF, V1 ~ V2, fun.aggregate = mean)
   dfinalF[is.na(dfinalF)] <- upper_bound
   rownames(dfinalF) <- dfinalF$V1
@@ -502,15 +676,15 @@ mirRnaHeatmap <- function(finalF, ..., upper_bound = 0,
 #' x <- mirRnaHeatmapDiff(finalF, upper_bound = -0.1, color = rainbow(50), fontsize = 10)
 #' }
 mirRnaHeatmapDiff <- function(finalF, ..., upper_bound = 0,
-                          main = "Default mRNA miRNA heatmap",
-                          color = c("grey90",viridis::inferno(50)), fontsize = 7) {
+                              main = "Default mRNA miRNA heatmap",
+                              color = c("grey90", viridis::inferno(50)), fontsize = 7) {
   dfinalF <- dcast(finalF, V1 ~ V2, fun.aggregate = mean)
   dfinalF[is.na(dfinalF)] <- upper_bound
   rownames(dfinalF) <- dfinalF$V1
   dfinalF <- dfinalF %>% dplyr::select(-V1)
   p <- pheatmap::pheatmap(dfinalF,
-                          color = color, fontsize = fontsize,
-                          main = main, ...
+    color = color, fontsize = fontsize,
+    main = main, ...
   )
   return(p)
 }
@@ -665,7 +839,7 @@ miRandaIntersect <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpeciesDF) {
   return(list(mirna = result_mirna, mrna = result_mrna, corrs = result_corrs))
 }
 
-#' miRandaIntersectInter Looks for Intersection of Significant output results with miRanda Results from getInputSpeciesDF
+#' mirandaIntersectInter Looks for Intersection of Significant output results with miRanda Results from getInputSpeciesDF
 #' function
 #'
 #' Compares and looks for intersection if significant output results with miRanda Results from getInputSpeciesDF and outputs a final
@@ -678,14 +852,14 @@ miRandaIntersect <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpeciesDF) {
 #' @return An object containing data.frames of significant mRNA, miRNA
 #'             and correlation matrix filtered by miranda input.
 #' @export
-#' @keywords Signficance, Threshold, intersect
+#' @keywords mirandaIntersectInter Threshold intersect miRanda
 #' @examples
 #' \donttest{
 #' x <- miRandaIntersect(sig_corrs, miranda)
 #' }
-miRandaIntersectInter <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpeciesDF) {
+mirandaIntersectInter <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpeciesDF) {
   result_corrs <- dplyr::inner_join(sig_corrs, getInputSpeciesDF, by = c("V1", "V2"))
-  if(nrow(result_corrs) == 0) {
+  if (nrow(result_corrs) == 0) {
     stop("no common mRNA/miRNAs found.")
   }
   result_mrna <- mRNA[result_corrs$V2, , drop = F]
@@ -747,7 +921,8 @@ plotFit <- function(model) {
 #' x <- modelRsquared(model)
 #' }
 modelRsquared <- function(model) {
-  return(summary(model)$r.squared)
+  # return(summary(model)$r.squared)
+  return(rsq(model))
 }
 
 #' Plot residuals
@@ -847,7 +1022,7 @@ twoTimePointSamp <- function(mRNA, miRNA, Shrounds = 100, Srounds = 1000) {
 }
 
 
-#' mirRnaDensityInter for miRTarRNASeq miRNA and mRNA Interrelation real data versus sampled data
+#' mirRnaDensityInter for mirTarRnaSeq miRNA and mRNA Interrelation real data versus sampled data
 #'
 #' This function draws density plots for miRNA and mRNA Interrelation while
 #' comparing real data vs sampled data. It mainly illustrates the where the lower %5 (sig)
@@ -883,7 +1058,7 @@ mirRnaDensityInter <- function(Inter0, OUTS, pvalue = 0.05) {
 #'
 #' This function uses the output of one2OneRnaMiRNA and retruns a sampled from orig file
 #' interrelation dataframe depending on user sampling selection.
-#' @param results Results from miRandaIntersectInter
+#' @param results Results from mirandaIntersectInter
 #' @return miRNA mRNA interelation dataframe
 #' @export
 #' @keywords Results dataframe
@@ -932,9 +1107,9 @@ drawInterPlots <- function(mrna, mirna, final_results) {
   with(final_results, plot(FC_mRNA, FC_miRNA))
 }
 
-#' runAllMirnaModels run_model for all miRNAs
+#' runAllMirnaModels runModel for all miRNAs
 #'
-#' This function runs the "run_model" function for all miRNAs and mRNA combinations of two and returns a
+#' This function runs the "runModel" function for all miRNAs and mRNA combinations of two and returns a
 #' list with significant genes and FDR models
 #' @param mirnas vector of unique miRNAs under investigation.
 #' @param DiffExpmRNA differentially/expressed mRNAs expression file.
@@ -946,21 +1121,23 @@ drawInterPlots <- function(mrna, mirna, final_results) {
 #' @param fdr_cutoff cutoff for FDR selection default is 0.1.
 #' @param all_coeff if true only models with negative coefficient will be selected if false at least one
 #' negative coefficient should be in the model; default is TRUE .
+#' @param family Default is "poisson", for negative binomial NB option.
 #' @param mode model mode, default is Null, can be changed to "multi" and "inter".
+#' @param norm  if normalized data (FPKM,RPKM,TPM,CPM), set to "norm" otherwise for count data use NULL
 #' @return List of run models
 #' @export
-#' @keywords runAllMirnaModels
+#' @keywords runAllMirnaModels all_miRNAs
 #' @examples
 #' \donttest{
 #' x <- runAllMirnaModels(mirnas, DiffExpmRNA, DiffExpmiRNA, miranda_data,
 #'   nPar = 4, prob = 0.90, fdr_cutoff = 0.1,
-#'   method = "fdr", all_coeff = TRUE, mode = "multi"
+#'   method = "fdr", all_coeff = TRUE, mode = "multi", family = NB, norm = NULL
 #' )
 #' }
 #'
 runAllMirnaModels <- function(mirnas, DiffExpmRNA, DiffExpmiRNA, miranda_data,
-                                 nPar = 4, prob = 0.75, fdr_cutoff = 0.1, method = "fdr",
-                                 all_coeff = FALSE, mode = NULL) {
+                              nPar = 4, prob = 0.75, fdr_cutoff = 0.1, method = "fdr",
+                              all_coeff = FALSE, mode = NULL, family = "poisson", norm = NULL) {
   # LoadLibrary(dopar)
   registerDoParallel(nPar)
 
@@ -989,7 +1166,13 @@ runAllMirnaModels <- function(mirnas, DiffExpmRNA, DiffExpmiRNA, miranda_data,
     geneVariant <- geneVari(Combine, mirna)
 
     # ActualModelRan
-    MRun <- runModels(Combine, geneVariant, mirna, mode = mode)
+    # For Negative bionomial model
+    if (family == "NB") {
+      MRun <- runModelsNb(Combine, geneVariant, mirna, mode = mode, norm = norm)
+      # For other models
+    } else {
+      MRun <- runModels(Combine, geneVariant, mirna, mode = mode, family = family, norm = norm)
+    }
     # #Bonferroni sig Genes
     FDRModel <- fdrSig(MRun, value = fdr_cutoff, method = method)
 
@@ -1056,7 +1239,7 @@ rsquRes <- function(FDRSigList) {
 }
 
 
-#' DrawCorPlot correlation plots for mRNA and miRNA regression results
+#' drawCorPlot correlation plots for mRNA and miRNA regression results
 #'
 #' This function plots correlations for mRNA and miRNAs regression results (negative correlation for multi and
 #'  individual interactions and positive and negative for interactions)
@@ -1067,10 +1250,10 @@ rsquRes <- function(FDRSigList) {
 #' @keywords R correlation plot
 #' @examples
 #' \donttest{
-#' x <- DrawCorPlot(corMatrix)
+#' x <- drawCorPlot(corMatrix)
 #' }
 #'
-DrawCorPlot <- function(corMatrix, ...) {
+drawCorPlot <- function(corMatrix, ...) {
   col2 <- colorRampPalette(
     c(
       colorRampPalette(c(
@@ -1097,4 +1280,117 @@ DrawCorPlot <- function(corMatrix, ...) {
     )
   )
   corrplot(corMatrix, ..., col = col2(211))
+}
+
+#' modelsFilter Filter a list of models based on logical expression
+#'
+#' This function can be used to filter a list of models (such as returned by \code{runModelsZInf()})
+#' based on a logical expression.
+#' @param models list of models and related elemenets, such as returned by \code{runModelsZInf()}
+#' @param expr expresion that yields a logical vector (evaluated in the environmnet of \code{model})
+#' @param quiet suppress warnings
+#' @return \code{models} but with all elements filtered by logical expression \code{expr}. Elements
+#'         for which filter could not be applied (e.g. length mismatch between element and condition)
+#'         are set to \code{NA}.
+#' @export
+#' @keywords R models filter
+#' @examples
+#' \donttest{
+#' x <- modelsFilter(models, pvalues < 0.05)
+#' x <- modelsFilter(models, is_significant)
+#' x <- modelsFilter(models, is_significant == FALSE)
+#' }
+modelsFilter <- function(models, expr, quiet=FALSE) {
+  assertthat::assert_that(is.list(models)) # `models` must be a list
+  cond <- eval(substitute(expr), envir=models, enclos=parent.frame(n=1))
+  if (!is.logical(cond)) {
+    stop(paste0("expression '", deparse(substitute(expr)), "' does not yield logical value"))
+  }
+  for (i in 1:length(models)) {
+    if (length(cond) != length(models[[i]])) {
+      if (identical(quiet, FALSE)) {
+        name <- names(models)[i]
+        if ("" != name) {
+          warning(sprintf("condition length mismatch ('%s')", name))
+        } else {
+          warning(sprintf("condition length mismatch (i=%d)", i))
+        }
+      }
+      models[[i]] <- NA
+    } else {
+      models[[i]] <- models[[i]][which(cond)]
+    }
+  }
+  return(models)
+}
+
+
+#' runModelsNbCombined Runs both zeroinflated negative bionomial or negative binomial model depending on the
+#' miRNA and mRNA model performance (BIC)
+#'
+#' @param combination the combined file for mRNA and selected miRNAs output of combiner function
+#' @param geneVariable the output of
+#' @param select_miRNA The vector of miRNA/s to be investigated
+#' @param mode the mode of analysis if more than one miRNA is being investigated multivariate "multi"
+#' @param scale factor to scale input data (for genes) by, prior to rounding and model
+#'              fitting. (\code{scale} must be grewater than zero).
+#' @return \code{models} but with all elements filtered by logical expression \code{expr}. Elements
+#'         for which filter could not be applied (e.g. length mismatch between element and condition)
+#'         are set to \code{NA}.
+#' @export
+#' @keywords runModelsNbCombined combined-models zeroinflated negative-binomial
+#' @examples
+#' \donttest{
+#' x <- runModelsNbCombined(Combine, geneVariant, miRNA_select,  scale = 10)
+#' }
+runModelsNbCombined <- function(combination, geneVari, select_miRNA, mode = NULL, scale = 1) {
+
+  # compare two models' BICs (return TRUE if m1 is better, else FALSE)
+  comp_ <- function(m1, m2) {
+    b1 <- BIC(m1)
+    b2 <- BIC(m2)
+    if (is.na(b1)) {
+      return(FALSE)
+    }
+    if (is.na(b2)) {
+      return(TRUE)
+    }
+    return(b1 < b2)
+  }
+
+  # merge two model lists
+  merge_ <- function(m1, m2) {
+    m <- m1
+    m$is_significant <- c(m1$is_significant, m2$is_significant)
+    m$all_models <- c(m1$all_models, m2$all_models)
+    m$geneVari <- c(m1$geneVari, m2$geneVari)
+    m$pvalues <- c(m1$pvalues, m2$pvalues)
+    return(m)
+  }
+
+  # run neg bin models
+  nb <- runModelsNb(combination=combination, geneVari=geneVari, select_miRNA=select_miRNA, scale=scale)
+
+  # run zeroinfl neg bin models
+  zfnb <- runModelsZInf(combination=combination, geneVari=geneVari, select_miRNA=select_miRNA, scale=scale, dist="negbin")
+
+  # names of genes present in both negbin and zeroinfl negbin results
+  nm <- intersect(names(nb$is_significant), names(zfnb$is_significant)) # shared
+
+  # only in nb, ir zfnb
+  nm_nb <- setdiff(names(nb$is_significant), names(zfnb$is_significant)) # only in nb
+  nm_zfnb <- setdiff(names(zfnb$is_significant), names(nb$is_significant)) # only in zfnb
+
+  # run comparisons
+  x <- nm[sapply(nm, function(x) comp_(nb$all_models[[x]], zfnb$all_models[[x]]))] # nb better
+  y <- nm[!sapply(nm, function(x) comp_(nb$all_models[[x]], zfnb$all_models[[x]]))] # zfnb better
+
+  # create new model list with
+  m <- merge_(modelsFilter(nb, names(is_significant) %in% nm_nb), # models only in nb
+              modelsFilter(zfnb, names(is_significant) %in% nm_zfnb)) # models only in zfnb
+  m <- merge_(m, modelsFilter(nb, names(is_significant) %in% x)) # models better in nb
+  m <- merge_(m, modelsFilter(zfnb, names(is_significant) %in% y)) # models better in znfb
+
+  # return merged
+  return(m)
 }

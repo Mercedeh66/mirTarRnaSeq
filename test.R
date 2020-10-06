@@ -8,30 +8,75 @@ library(mirTarRnaSeq)
 
 #Part1
 
-DiffExp<-read.table("test/EBV_high_L.txt", as.is=TRUE, header=T, row.names=1)
-miRNAExp<-read.table("test/m_Stom_data_auto_miRNA.txt", as.is=TRUE, header=T, row.names=1)
+DiffExp<-read.table("test/EBV_mRNA.txt", as.is=TRUE, header=T, row.names=1)
+miRNAExp<-read.table("test/EBV_miRNA.txt", as.is=TRUE, header=T, row.names=1)
 
 #tzTransFunction
-DiffExpmiRNA <- tzTrans(miRNAExp)
-DiffExpmRNA <- tzTrans(DiffExp)
+#DiffExpmiRNA <- tzTrans(miRNAExp)
+#DiffExpmRNA <- tzTrans(DiffExp)
+
 
 # get miranda data
 #Add thershold for other variables
 miranda <- getInputSpecies("Epstein_Barr", threshold = 140)
-DiffExpmRNASub <- miRanComp(DiffExpmRNA, miranda)
+DiffExpmRNASub <- miRanComp(DiffExp, miranda)
 
 
-miRNA_select<-c("ebv-mir-BART9")
-
+miRNA_select<-c("ebv-mir-bart9-5p")
+#PlotDensityAllmRNA
+MatDiffExp<-as.vector(as.matrix(DiffExp))*10
+plot(density(MatDiffExp))
+#HowManyZeros
+table(MatDiffExp==0)
 
 #combiner
-Combine<-combiner(DiffExpmRNA,DiffExpmiRNA,miRNA_select)
+Combine<-combiner(DiffExp,miRNAExp,miRNA_select)
 
 #GeneVari
 geneVariant<-geneVari(Combine,miRNA_select)
 
+#PlotDataDistribution
+library(purrr)
+library(tidyr)
+Combine[,1:9] %>%
+  keep(is.numeric) %>%
+  gather() %>%
+  ggplot(aes(value)) +
+  facet_wrap(~ key, scales = "free") +
+  geom_density()
+
+
+#ActualModelRunForNegativeBinomialModel
+MRun<- runModelsNb(Combine,geneVariant,miRNA_select,scale=10)
+
+##ActualModelRunForNegativeBinomialModelZreoInflated
+MRun<- runModelsZInf(Combine,geneVariant,miRNA_select, scale=10, dist="poisson")
+#Seems to work for EBV mRNA
+MRun<- runModelsZInf(Combine,geneVariant,miRNA_select, scale=10, dist="negbin")
+
+#RunCombinedModelForNB
+MRun<-runModelsNbCombined(Combine, geneVariant, miRNA_select,  scale = 10)
+
+
+###PValueDoesNotWork
 #ActualModelRan
-MRun<- runModels(Combine,geneVariant,miRNA_select,mode="multi")
+MRun<- runModels(Combine,geneVariant,miRNA_select,family="poisson")
+#Gaussian
+MRun<- runModels(Combine,geneVariant,miRNA_select,family = "gaussian")
+
+
+# NOTE: examples for models_filter()
+
+# filter model based on pvalue (i.e., in MRun$pvalues)
+MRun <- modelsFilter(MRun, pvalues < 0.05)
+# if there is more than one variable in the model (i.e., length(miRNA_select) > 1)
+# in that case there will be multiple pvalues for each model, so we need to use
+# sapply in that case.
+# at least one significant feature in the model
+MRun <- modelsFilter(MRun, sapply(pvalues, function(x) any(x < 0.05)))
+# all features in the model significant.
+MRun <- modelsFilter(MRun, sapply(pvalues, function(x) all(x < 0.05)))
+
 
 #FDR sig Genes
 FDRModel<-fdrSig(MRun, value=0.1,method="fdr")
@@ -40,7 +85,6 @@ SigFDRGenes<-as.data.frame(cbind(FDRModel$pvalues,FDRModel$FDR_Value))
 names(SigFDRGenes)<-c("P Value","FDR")
 
 ## make a plots
-View(FDRModel$all_models)
 mymodel <- FDRModel$all_models[[1]]  # pick the first
 plotFit(mymodel)
 plotResiduals(mymodel)
@@ -154,7 +198,7 @@ miranda <- getInputSpecies("Mouse", threshold = 180)
 # now intersect the "significant" correlations with miranda
 
 ###Sth Wrong
-results <- miRandaIntersectInter(sig_InterR, outs, mrna, mirna, miranda)
+results <- mirandaIntersectInter(sig_InterR, outs, mrna, mirna, miranda)
 #Make a data frame for results
 final_results <- finInterResult(results)
 #Draw Par Plots for final results dataframe
