@@ -1,7 +1,7 @@
 Package: mirTarRnaSeq
-Type:Package
+Type: Package
 Title: mirTarRnaSeq 
-Version: 0.0.1.9000
+Version: 0.0.2.2
 Authors@R: 
     person(given = "Mercedeh",
            family = "Movassagh",
@@ -13,36 +13,18 @@ License: MIT
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.6.0)
-Imports:
-         assertthat,
-         car,
-         formula.tools (>= 1.7.1),
-         dplyr (>= 0.8.3),
-         grDevices,
-         methods,
-         MASS,
-         mixtools,
-         pscl,
-         boot,
-         pheatmap (>= 1.0.12),
-         RColorBrewer,
-         reshape2 (>= 1.4.3),
-         rsq (>= 2.0),
-         stringr (>= 1.4.0),
-         tidyr (>= 1.0.2),
-         tibble (>= 2.1.3),
-         data.table (>= 1.12.8),
-         doParallel (>= 1.0.15),
-         foreach (>= 1.5.0),
-         corrplot (>= 0.84),
-         viridis,
-         utils,
-         stats,
-         knitr
 DeploySubPath: mirTarRnaSeq
 biocViews: miRNA, mRNA, Regression, Correlation, Software, Sequencing, RNA, SmallRNA, Interaction
 RoxygenNote: 7.1.1
+Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
-
-
-
+Imports: 
+    purrr,
+    MASS,
+    pscl,
+    assertthat,
+    caTools,
+    dplyr,
+    pheatmap,
+    reshape2,
+    corrplot

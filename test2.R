@@ -1,15 +1,9 @@
-## Written by Mercedeh Movassagh <mercedeh@ds.dfci.harvard.edu>, Nov 2020
-
-# devtools::document()
-# devtools::load_all()
 library(dplyr)
 library(ggplot2)
 library(mirTarRnaSeq)
 library(reshape2)
 library(tidyr)
 library(viridis)
-
-#part1
 
 DiffExp <- read.table("test/EBV_mRNA.txt", as.is = TRUE, header = T, row.names = 1)
 miRNAExp <- read.table("test/EBV_miRNA.txt", as.is = TRUE, header = T, row.names = 1)
@@ -23,7 +17,9 @@ j <- runModel(`LMP-1` ~ `ebv-mir-bart9-5p`, Combine, model = glm_poisson(), scal
 print(modelTermPvalues(j)) # Association between between mRNA and miRNA
 
 # Gaussian Model
-blaGaus <- runModels(Combine, geneVariant, miRNA_select, family = glm_gaussian(), scale = 100)
+blaGaus <- runModels(Combine, geneVariant, miRNA_select, family = glm_gaussian(), scale = 100) # all models, regardless of coeff sign.
+#blaGaus <- runModels(Combine, geneVariant, miRNA_select, family = glm_gaussian(), scale = 100, all_coeff = FALSE) # at least one neg. coeff
+#blaGaus <- runModels(Combine, geneVariant, miRNA_select, family = glm_gaussian(), scale = 100, all_coeff = TRUE)  # all coeffs neg.
 
 plot(blaGaus[["all_models"]][["BHLF1"]])
 plot(modelData(blaGaus[["all_models"]][["BHLF1"]]))
@@ -94,18 +90,16 @@ print(table(unlist(lapply(blaMulti$all_models, modelModelName))))
 
 # now just w/ four model types (in all the ways they can be specified... function, the result of function call, name of model as character string)
 
-blaMulti <- runModels(Combine, geneVariant, miRNA_select,
-                      family = glm_multi(models=list(glm_gaussian, glm_nb(), glm_zeroinfl("negbin"), "glm_poisson")), scale = 1)
-
+blaMulti <- runModels(Combine, geneVariant, miRNA_select, family = glm_multi(models = list(glm_gaussian, glm_nb(), glm_zeroinfl("negbin"), "glm_poisson")), scale = 1)
 print(table(unlist(lapply(blaMulti$all_models, modelModelName))))
 
-#Run all models runAllMirnaModels
-vMiRNA<-rownames(miRNAExp)
+# Run all models runAllMirnaModels
+vMiRNA <- rownames(miRNAExp)
 
-#For inter and multi mode this function only supports combinations of 2
-#registerDoParallel(4)
+# For inter and multi mode this function only supports combinations of 2
+# registerDoParallel(4)
 
-All_miRNAs_run<-runAllMirnaModels(mirnas =vMiRNA[1:10] , DiffExpmRNA = DiffExpmRNASub, DiffExpmiRNA = miRNAExp,
+All_miRNAs_run<-runAllMirnaModels(mirnas =vMiRNA[1:2] , DiffExpmRNA = DiffExpmRNASub, DiffExpmiRNA = miRNAExp,
                                   miranda_data = miranda,prob=0.75,cutoff=0.05,fdr_cutoff = 0.1, method = "fdr",
                                   family = glm_multi(), scale = 2, mode="multi")
 
@@ -123,85 +117,6 @@ print(table(unlist(lapply(All_miRNAs_run[["ebv-mir-bart1-5p and ebv-mir-bart11-3
 
 
 
-# Part2
-# complicated way of saying: load the files from test/ directory.
-files <- local({
-  filenames <- list.files(path = "test", pattern = "^.*\\.txt$", full.names = T)
-  files <- lapply(filenames, read.table, as.is = T, header = T, sep = "\t")
-  names(files) <- gsub("^.*/(.*)\\.txt$", "\\1", filenames)
-  return(files)
-})
-
-# get mRNAs
-mrna_files <- files[grep("^mRNA", names(files))]
-# U can also import individually and feed it in like list[(mRNA1,mRNA2,mRNA)]
-mrna <- one2OneRnaMiRNA(mrna_files, pthreshold = 0.05)$foldchanges
-
-# get miRNAs
-mirna_files <- files[grep("^miRNA", names(files))]
-mirna <- one2OneRnaMiRNA(mirna_files)$foldchanges
-
-# get correlations
-corr_0 <- corMirnaRna(mrna, mirna)
-
-# make background correlation distr.
-outs <- sampCorRnaMirna(mrna, mirna)
-
-# plot density plots for background and corrs in our data
-mirRnaDensityCor(corr_0, outs)
-
-# get correlations below threshold
-sig_corrs <- threshSig(corr_0, outs)
-
-# get miranda data
-miranda <- getInputSpecies("Mouse", threshold = 150)
-
-# make heatmap
-newcorr <- corMirnaRnaMiranda(mrna, mirna, -0.7, miranda)
-mirRnaHeatmap(newcorr, upper_bound = -0.69)
-
-# now intersect the "significant" correlations with miranda
-results <- miRandaIntersect(sig_corrs, outs, mrna, mirna, miranda)
-
-# or...
-p <- mirRnaHeatmap(results$corr, upper_bound = 0)
-
-#### Section3
-library(dplyr)
-files <- local({
-  filenames <- list.files(path = "test", pattern = "^.*\\.txt$", full.names = T)
-  files <- lapply(filenames, read.table, as.is = T, header = T, sep = "\t")
-  names(files) <- gsub("^.*/(.*)\\.txt$", "\\1", filenames)
-  return(files)
-})
-
-mirna_files <- files[grep("^miRNA0_2", names(files))] # Only 0-2  time point difference
-mrna_files <- files[grep("^mRNA0_2", names(files))] # Only 0-2 time point difference
 
 
 
-# get FoldChangesFile
-mrna <- one2OneRnaMiRNA(mrna_files, pthreshold = 0.05)$foldchanges
-mirna <- one2OneRnaMiRNA(mirna_files)$foldchanges
-
-# get interrelation
-inter0 <- twoTimePoint(mrna, mirna)
-
-# make background correlation distr.
-outs <- twoTimePointSamp(mrna, mirna, Shrounds = 10)
-# plot density polots for background and corrs in our data
-mirRnaDensityInter(inter0, outs)
-
-# get correlations below threshold
-sig_InterR <- threshSigInter(inter0, outs)
-
-# get miranda data
-miranda <- getInputSpecies("Mouse", threshold = 180)
-# now intersect the "significant" correlations with miranda
-
-### Sth Wrong
-results <- mirandaIntersectInter(sig_InterR, outs, mrna, mirna, miranda)
-# Make a data frame for results
-final_results <- finInterResult(results)
-# Draw Par Plots for final results dataframe
-drawInterPlots(mrna, mirna, final_results)
