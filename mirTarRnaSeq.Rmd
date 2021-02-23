@@ -4,9 +4,6 @@ output:
   pdf_document:
     highlight: null
     number_sections: yes
-  knitr:::html_vignette:
-    toc: true
-    fig_caption: yes
 vignette: >
   %\VignetteIndexEntry{mirTarRnaSeq}
   %\VignetteEncoding{UTF-8}

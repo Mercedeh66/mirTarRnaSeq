@@ -15,9 +15,10 @@ if (getRversion() >= "2.15.1") {
 #' a data.frame, thresholded by percent identity.
 #' Header options are Score (threshold), Energy-Kcal/Mol(energy),
 #' Subject-IdentityPercent(targetIden), Query-IdentityPercent (mirnaIden)
-#' @param selection Species (species selection are either "Human(1-10)",
-#'  "Mouse (1-7)","C.elegans (1-7)", "Epstein_Barr", "Epstein_Barr_Human",
-#'  "Drosophila (1-5)","Kaposi_Sarcoma", "KSHV_Human",
+#' @param selection Species (species selection are either for mature miRNA species "Human1"
+#'  for full length human miRNAs use "Human(1-10)", "Mouse",
+#'  "C.elegans", "Epstein_Barr", "Epstein_Barr_Human",
+#'  "Drosophila","Kaposi_Sarcoma", "KSHV_Human",
 #'  "Cytomegalovirus","CMV_Human") Note only EBV files are provided in the package for other files to be determined lol
 #' @return data.frame with Miranda data.
 #' @keywords miranda, species

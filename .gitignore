@@ -48,3 +48,5 @@ vignettes/*.pdf
 # ignore some mac-specific files
 .DS_Store
 Icon?
+doc
+Meta
