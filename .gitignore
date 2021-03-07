@@ -50,3 +50,5 @@ vignettes/*.pdf
 Icon?
 doc
 Meta
+
+/build/

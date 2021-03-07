@@ -18,7 +18,7 @@ Depends: R (>= 3.6.0)
 DeploySubPath: mirTarRnaSeq
 biocViews: miRNA, mRNA, Regression, Correlation, Software, Sequencing, RNA, SmallRNA, Interaction, time point
 RoxygenNote: 7.1.1
-Suggests: knitr, rmarkdown
+Suggests: BiocStyle, knitr, rmarkdown
 VignetteBuilder: knitr
 Imports: 
     purrr,

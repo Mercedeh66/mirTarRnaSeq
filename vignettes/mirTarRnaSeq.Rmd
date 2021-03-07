@@ -1,13 +1,19 @@
 ---
 title: "mirTarRnaSeq"
-output: pdf_document
+output:
+  BiocStyle::pdf_document
 vignette: >
   %\VignetteIndexEntry{mirTarRnaSeq}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
    \usepackage[utf8]{inputenc}
 ---
-
+```{r style, echo=FALSE, results='asis'}
+BiocStyle::markdown()
+```
+<!--
+%% \VignetteEngine{knitr::rmarkdown}
+-->
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   dpi=300,
