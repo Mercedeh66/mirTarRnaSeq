@@ -15,10 +15,8 @@ NULL
 #' @export
 #' @keywords Signficance, Threshold
 #' @examples
-#' \donttest{
-#' x <- mirRnaHeatmap(corrS, corr0)
-#' }
-#'
+#' x <- threshSigInter(corr_0, outs, pvalue = 0.05)
+
 threshSigInter <- function(corr0, corrS, pvalue = 0.05) {
   threshold <- quantile(corrS, 1 - pvalue) # 5% default
   sig_corrs <- corr0[corr0$value > threshold, ]

@@ -18,6 +18,8 @@ NULL
 #'         \code{aic}, \code{data}, \code{pterm}, \code{pmodel}, and a
 #'         character string "glm_zeroinfl" in \code{model}.
 #' @export
+#' @examples 
+#' x <- glm_zeroinfl("negbin")
 glm_zeroinfl <- function(dist = "poisson") { # poisson, negbin
   assert_that(dist %in% c("poisson", "negbin"))
   model_name <- sprintf("glm_zeroinfl_%s", dist)
@@ -90,8 +92,12 @@ glm_zeroinfl <- function(dist = "poisson") { # poisson, negbin
 
 #' alias for glm_zeroinfl("poisson")
 #' @export
+#' @examples
+#' x <- glm_zeroinfl_poisson()
 glm_zeroinfl_poisson <- function(...) glm_zeroinfl("poisson")
 
 #' alias for glm_zeroinfl("negbin")
 #' @export
+#' @examples
+#' x <- glm_zeroinfl_negbin()
 glm_zeroinfl_negbin <- function(...) glm_zeroinfl("negbin")

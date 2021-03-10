@@ -24,10 +24,8 @@ if (getRversion() >= "2.15.1") {
 #' @keywords miranda, species
 #' @export
 #' @examples
-#' \donttest{
-#' x <- getInputSpecies("Epstein_Barr", threshold = 60, energy = -170, targetIden = 19, mirnaIden = 19) # Default is threshold 60
-#' x <- getInputSpecies("Human1", threshold = 60, energy = -170, targetIden = 19, mirnaIden = 19) # Default is threshold 60 get the first out of 10 pieces of human miRanda file
-#' }
+#' x <- getInputSpecies("Epstein_Barr", threshold = 60) # Default is threshold 60
+
 getInputSpecies <- function(selection, threshold = 60, energy = NULL, targetIden = NULL, mirnaIden = NULL) {
   if (selection == "Human1") {
     ret <- importMirandaFile("Human_miRanda1.txt.gz")

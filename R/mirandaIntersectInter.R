@@ -8,16 +8,14 @@
 #' in miRanda file
 #' function
 #' @param sig_corrs correlation matrix, produced by threshSig
-#' @param corrS vector of correlations, from the sampCorRnaMirna function.
+#' @param corrS vector of Differences/Correlations, from the sampCorRnaMirna function.
 #' @param getInputSpeciesDF miranda data, produced by getInputSpecies
 #' @return An object containing data.frames of significant mRNA, miRNA
 #'             and correlation matrix filtered by miranda input.
 #' @export
 #' @keywords mirandaIntersectInter Threshold intersect miRanda
 #' @examples
-#' \donttest{
-#' x <- miRandaIntersect(sig_corrs, miranda)
-#' }
+#' x <- mirandaIntersectInter(sig_InterR, outs2, mRNA_fc2, miRNA_fc2, miRandaM)
 mirandaIntersectInter <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpeciesDF) {
   result_corrs <- dplyr::inner_join(sig_corrs, getInputSpeciesDF, by = c("V1", "V2"))
   if (nrow(result_corrs) == 0) {

@@ -11,9 +11,7 @@ vignette: >
 ```{r style, echo=FALSE, results='asis'}
 BiocStyle::markdown()
 ```
-<!--
-%% \VignetteEngine{knitr::rmarkdown}
--->
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   dpi=300,
@@ -61,15 +59,15 @@ DiffExp<-read.table("test/EBV_mRNA.txt", as.is=TRUE, header=T, row.names=1)
 miRNAExp<-read.table("test/EBV_miRNA.txt", as.is=TRUE, header=T, row.names=1)
 ```
 
-## Get miranda file
+## Get miRanda file
 
-We currently support miranda runs (potential miRNA target parsing by score,interaction energy, and interaction or miRNA length ) on seven species ("Human", "Mouse", "Drosophila", "C.elegans", "Epstein_Barr" (EBV), "Cytomegalovirus" (CMV) and "Kaposi_Sarcoma" (KSHV)). We also support the viral miRNAs targeting human genes for EBV "Epstein_Barr_Human", CMV "CMV_Human" and KSHV "KSHV_Human". 
-1) Here we first import the relevant miranda file .
-2) We only keep targets which are also targets of EBV miRNAs based on our EBV miranda file.
+We currently support miRanda runs (potential miRNA target parsing by score,interaction energy, and interaction or miRNA length ) on seven species ("Human", "Mouse", "Drosophila", "C.elegans", "Epstein_Barr" (EBV), "Cytomegalovirus" (CMV) and "Kaposi_Sarcoma" (KSHV)). We also support the viral miRNAs targeting human genes for EBV "Epstein_Barr_Human", CMV "CMV_Human" and KSHV "KSHV_Human". 
+1) Here we first import the relevant miRanda file .
+2) We only keep targets which are also targets of EBV miRNAs based on our EBV miRanda file.
 
 ```{r eval=TRUE, echo=TRUE}
-miranda <- getInputSpecies("Epstein_Barr", threshold = 140)
-DiffExpmRNASub <- miRanComp(DiffExp, miranda)
+miRanda <- getInputSpecies("Epstein_Barr", threshold = 140)
+DiffExpmRNASub <- miRanComp(DiffExp, miRanda)
 ```
 
 ## Select miRNA
@@ -89,8 +87,10 @@ geneVariant <- geneVari(Combine, miRNA_select)
 
 ```{r eval=TRUE, echo=TRUE}
 j <- runModel(`LMP-1` ~ `ebv-mir-bart9-5p`, 
-              Combine, model = glm_poisson(), scale = 100)
-print(modelTermPvalues(j)) # Association between between mRNA and miRNA
+              Combine, model = glm_poisson(), 
+              scale = 100)
+# Association between between mRNA and miRNA
+print(modelTermPvalues(j)) 
 ```
 
 ## Running Gausian model over all individual miRNA mRNA models
@@ -98,11 +98,13 @@ print(modelTermPvalues(j)) # Association between between mRNA and miRNA
 ```{r gauss, eval=TRUE, echo=TRUE,out.width="60%", fig.align="center"}
 blaGaus <- runModels(Combine,
                      geneVariant, miRNA_select,
-                     family = glm_gaussian(), scale = 100)
+                     family = glm_gaussian(), 
+                     scale = 100)
 par(mfrow=c(2,2))
 plot(blaGaus[["all_models"]][["BHLF1"]])
 plot(modelData(blaGaus[["all_models"]][["BHLF1"]]))
-G <- do.call(rbind.data.frame, blaGaus[["AICvalues"]]) #To test AIC model performance
+#To test AIC model performance
+G <- do.call(rbind.data.frame, blaGaus[["AICvalues"]]) 
 names(G) <- c("AIC_G")
 #Low values seems like a reasonable model
 plot(density(G$AIC_G)) 
@@ -114,7 +116,8 @@ GM <- melt(G)
 ```{r poisson, eval=TRUE, echo=TRUE, out.width="60%", fig.align="center"}
 blaPois <- runModels(Combine, 
                      geneVariant, miRNA_select, 
-                     family = glm_poisson(), scale = 100)
+                     family = glm_poisson(), 
+                     scale = 100)
 par(mfrow=c(2,3))
 plot(blaPois[["all_models"]][["LMP-2A"]])
 plot(modelData(blaPois[["all_models"]][["LMP-2A"]]))
@@ -139,7 +142,8 @@ BM <- melt(B)
 
 ```{r zeroinfnegbin, eval=TRUE, echo=TRUE, out.width="60%", fig.align="center"}
 blazeroinflNB <- runModels(Combine, geneVariant,
-                            miRNA_select,family = glm_zeroinfl(dist = "negbin"),
+                            miRNA_select,
+                            family = glm_zeroinfl(dist = "negbin"),
                             scale = 100)
 # To test AIC model performance
 ZNB <- do.call(rbind.data.frame, blazeroinflNB[["AICvalues"]])
@@ -152,7 +156,8 @@ ZNBM<-melt(ZNB)
 
 ```{r zeroinfpoisson, message=FALSE, echo=TRUE, cache=FALSE, results=TRUE, out.width="60%", fig.align="center"}
 blazeroinfl <- runModels(Combine, geneVariant,
-                         miRNA_select, family = glm_zeroinfl(), 
+                         miRNA_select, 
+                         family = glm_zeroinfl(), 
                          scale = 100)
 # To test AIC model performance
 Zp <- do.call(rbind.data.frame, blazeroinfl[["AICvalues"]])
@@ -165,7 +170,8 @@ ZpM <- melt(Zp)
 
 ```{r plots, eval=TRUE, echo=TRUE, fig.width = 5, fig.height=5, out.width="80%", dpi=300, fig.align="center"}
 bindM <- rbind(PM, BM, GM, ZpM, ZNBM)
-p2 <- ggplot(data = bindM, aes(x = value, group = variable, fill = variable)) +
+p2 <- ggplot(data = bindM, aes(x = value, group = variable, 
+                               fill = variable)) +
   geom_density(adjust = 1.5, alpha = .3) +
   xlim(-400, 2000)+
   ggtitle("Plot of of AIC for ebv-mir-bart9-5p regressed all mRNAs ")+
@@ -180,7 +186,9 @@ where all available models will be run, the AICs will be compared and the best m
 miRNA_select<-c("ebv-mir-bart9-5p","ebv-mir-bart6-3p")
 Combine <- combiner(DiffExp, miRNAExp, miRNA_select)
 geneVariant <- geneVari(Combine, miRNA_select)
-MultiModel <- runModels(Combine, geneVariant, miRNA_select, family = glm_multi(), mode="multi", scale = 10)
+MultiModel <- runModels(Combine, geneVariant,
+                        miRNA_select, family = glm_multi(), 
+                        mode="multi", scale = 10)
 print(table(unlist(lapply(MultiModel$all_models, modelModelName)))) #print the name of the models used for the analysis
 ```
 
@@ -205,7 +213,7 @@ vMiRNA<-rownames(miRNAExp)
 All_miRNAs_run<-runAllMirnaModels(mirnas =vMiRNA[1:5] ,
                                   DiffExpmRNA = DiffExpmRNASub, 
                                   DiffExpmiRNA = miRNAExp,
-                                  miranda_data = miranda,prob=0.75,cutoff=0.05,fdr_cutoff = 0.1, method = "fdr",
+                                  miranda_data = miRanda,prob=0.75,cutoff=0.05,fdr_cutoff = 0.1, method = "fdr",
                                   family = glm_multi(), scale = 2, mode="multi")
 
 hasgenes <- lapply(All_miRNAs_run, function(x) nrow(x$SigFDRGenes)) > 0
@@ -266,20 +274,22 @@ outs <- sampCorRnaMirna(mrna, mirna,method="pearson",
 ## Plot density plots 
 Density plot for background and corrs in our data. Note grey is the background distribution and red is the actual data
 ```{r eval=TRUE, echo=TRUE, fig.width = 3, fig.height=3, out.width="80%", dpi=300, fig.align="center"}
+#Draw density plot
 mirRnaDensityCor(corr_0, outs)
 ```
 
 ## Get correlations below threshold
 
 ```{r eval=TRUE, echo=TRUE}
+#Identify significant correlation
 sig_corrs <- threshSig(corr_0, outs,pvalue = 0.05)
 ```
 
-## Get mouse miranda data
+## Get mouse miRanda data
 
 ```{r eval=TRUE, echo=TRUE}
 #Import concordant miRanda file
-miranda <- getInputSpecies("Mouse", threshold = 150)
+miRanda <- getInputSpecies("Mouse", threshold = 150)
 ```
 
 ## mRNA miRNA correlation heatmap 
@@ -287,16 +297,17 @@ miranda <- getInputSpecies("Mouse", threshold = 150)
 Correlation heatmap for cor equal or less than -0.7.
 Note upperbound for heatmap should be always less than the correlation threshold.
 ```{r eval=TRUE, echo=TRUE, fig.width = 8, fig.height=5, out.width="90%", dpi=300, fig.align="center"}
-newcorr <- corMirnaRnaMiranda(mrna, mirna, -0.7, miranda)
+#Extract your target correlations based on miRanda and correlation threshold.
+newcorr <- corMirnaRnaMiranda(mrna, mirna, -0.7, miRanda)
 mirRnaHeatmap(newcorr,upper_bound = -0.6)
 ```
 
-## get intersection of miranda 
+## get intersection of miRanda 
 
-Get miranda intersection and significant miRNA and mRNA interactions and the plot it
+Get miRanda intersection and significant miRNA and mRNA interactions and the plot it
 ```{r eval=TRUE, echo=TRUE, fig.width = 5, fig.height=4, out.width="80%", dpi=300, fig.align="center"}
 #Make final results file for signficant correlations intersecting with miRanda file
-results <- miRandaIntersect(sig_corrs, outs, mrna, mirna, miranda)
+results <- miRandaIntersect(sig_corrs, outs, mrna, mirna, miRanda)
 #Draw correlation heatmap
 p<- mirRnaHeatmap(results$corr,upper_bound =-0.99)
 p
@@ -322,6 +333,7 @@ mrna_files <- files[grep("^mRNA0_5", names(files))]
 
 ## Get fold changes above thereshold
 ```{r eval=TRUE, echo=TRUE}
+# Parse Fold Change Files for P value and Fold Change.
 mrna <- one2OneRnaMiRNA(mrna_files, pthreshold = 0.05)$foldchanges
 mirna <- one2OneRnaMiRNA(mirna_files)$foldchanges
 ```
@@ -338,10 +350,10 @@ inter0 <- twoTimePoint(mrna, mirna)
 outs <- twoTimePointSamp(mrna, mirna,Shrounds = 10 )
 ```
 
-## Miranda data import
+## miRanda data import
 ```{r eval=TRUE, echo=TRUE}
 #Import concordant miRanda file
-miranda <- getInputSpecies("Mouse", threshold = 140)
+miRanda <- getInputSpecies("Mouse", threshold = 140)
 ```
 
 ## Identify relationships below threshold
@@ -353,7 +365,7 @@ sig_InterR <- threshSigInter(inter0, outs)
 ## miRanda intersection with results
 ```{r eval=TRUE, echo=TRUE}
 #Intersect the mirRanda file with your output results
-results <- mirandaIntersectInter(sig_InterR, outs, mrna, mirna, miranda)
+results <- mirandaIntersectInter(sig_InterR, outs, mrna, mirna, miRanda)
 ```
 
 ## Make dataframe and plots

@@ -18,9 +18,7 @@ if (getRversion() >= "2.15.1") {
 #' @export
 #' @keywords Correlation with miRanda, miRanda Threshold
 #' @examples
-#' \donttest{
-#' x <- corMirnaRna(mRNA, miRNA, method = "spearman")
-#' }
+#' x <- corMirnaRna(mRNA_fc, miRNA_fc, method = "spearman")
 corMirnaRna <- function(mRNA, miRNA, method = "pearson") {
   tmRNA <- t(mRNA)
   tmiRNA <- t(miRNA)

@@ -26,9 +26,8 @@ if (getRversion() >= "2.15.1") {
 #' @export
 #' @keywords heatmap, pheatmap, color, correlation plot,correlation_plot
 #' @examples
-#' \donttest{
-#' x <- mirRnaHeatmap(finalF, upper_bound = -0.1, color = rainbow(50), fontsize = 10)
-#' }
+#' x <- mirRnaHeatmap(corr_0)
+
 mirRnaHeatmap <- function(finalF, ..., upper_bound = 0,
                           main = "Default mRNA miRNA heatmap",
                           color = c(viridis::inferno(50), "grey90"), fontsize = 7) {

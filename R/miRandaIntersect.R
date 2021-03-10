@@ -7,17 +7,16 @@
 #' filterd ourput for only those pairs of miRNA and mRNA which have actually been predicted to be targets
 #' in miRanda file
 #' function
-#' @param sig_corrs correlation matrix, produced by threshSig
-#' @param corrS vector of correlations, from the sampCorRnaMirna function.
-#' @param getInputSpeciesDF miranda data, produced by getInputSpecies
+#' @param sig_corrs correlation matrix, produced by threshSig.
+#' @param corrS vector of correlations/differences, from the sampCorRnaMirna function.
+#' @param getInputSpeciesDF miranda data, produced by getInputSpecies.
 #' @return An object containing data.frames of significant mRNA, miRNA
-#'             and correlation matrix filtered by miranda input.
+#'             and correlation matrix filtered by miRanda input.
 #' @export
 #' @keywords Signficance, Threshold, intersect
 #' @examples
-#' \donttest{
-#' x <- miRandaIntersect(sig_corrs, miranda)
-#' }
+#' x <- miRandaIntersect(sig_InterR, outs2, mRNA_fc, miRNA_fc, miRandaM)
+
 miRandaIntersect <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpeciesDF) {
   result_corrs <- dplyr::inner_join(sig_corrs, getInputSpeciesDF, by = c("V1", "V2"))
   result_mrna <- mRNA[result_corrs$V2, , drop = F]

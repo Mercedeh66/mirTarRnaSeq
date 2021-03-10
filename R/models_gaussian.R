@@ -12,6 +12,8 @@ NULL
 #'         \code{aic}, \code{data}, \code{pterm}, \code{pmodel}, and a
 #'         character string "glm_gaussian" in \code{model}.
 #' @export
+#' @examples
+#' x <- glm_gaussian()
 glm_gaussian <- function() {
   model_name <- "glm_gaussian"
 

@@ -10,16 +10,14 @@ NULL
 #' comparing real data vs sampled data. It mainly illustrates the where the lower %5 (sig)
 #' relationships lie.
 #' @param corr0 data.frame results of corMirnaRna function.
-#' @param corrS data.frame results from the sampCorRnaMirna function.
+#' @param outs data.frame results from the sampCorRnaMirna function.
 #' @param pvalue The p value threshold to be used on the data density plot default is 0.05.
 #' @return Density plot
 #' @export
 #' @keywords Density plot
 #' @examples
-#' \donttest{
-#' x <- mirRnaDensityCor(corr0, corrS, pvalue = 0.05)
-#' }
-#'
+#' x <- mirRnaDensityCor(corr_0, outs, pvalue = 0.05)
+
 mirRnaDensityCor <- function(corr0, corrS, pvalue = 0.05) {
   dens_corr_0 <- density(corr0$value)
   dens_outs <- density(corrS) # this is the distribution for correlations for shuffled data

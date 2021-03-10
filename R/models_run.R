@@ -26,6 +26,8 @@ runModel <- function(x, data, ..., model = glm_gaussian()) {
 #'
 #' @param x fitted model
 #' @export
+#' @examples 
+#' modelCoefficients(some_model)
 modelCoefficients <- function(x) {
   assert_that(!is.vector(x), msg = "not a valid model object")
   assert_that(!is.null(x$model), msg = "not a valid model object")
@@ -42,6 +44,8 @@ modelCoefficients <- function(x) {
 #'
 #' @param x fitted model
 #' @export
+#' @examples
+#' modelAIC(some_model)
 modelAIC <- function(x) {
   assert_that(!is.vector(x), msg = "not a valid model object")
   assert_that(!is.null(x$model), msg = "not a valid model object")
@@ -54,6 +58,8 @@ modelAIC <- function(x) {
 #'
 #' @param x fitted model
 #' @export
+#' @examples 
+#' x <- modelData(some_model)
 modelData <- function(x) {
   assert_that(!is.vector(x), msg = "not a valid model object")
   assert_that(!is.null(x$model), msg = "not a valid model object")
@@ -66,10 +72,11 @@ modelData <- function(x) {
 #'
 #' @param x fitted model
 #' @export
+#' @examples 
+#' modelTermPvalues(some_model)
 modelTermPvalues <- function(x) {
   assert_that(!is.vector(x), msg = "not a valid model object")
   assert_that(!is.null(x$model), msg = "not a valid model object")
-  # obtain model and extract member functions
   model <- canonicalModel_(attr(x, "model"))
   return(model$pterm(x))
 }
@@ -78,10 +85,11 @@ modelTermPvalues <- function(x) {
 #'
 #' @param x fitted model
 #' @export
+#' @examples 
+#' modelModelPvalue(some_model)
 modelModelPvalue <- function(x) {
   assert_that(!is.vector(x), msg = "not a valid model object")
   assert_that(!is.null(x$model), msg = "not a valid model object")
-  # obtain model and extract member functions
   model <- canonicalModel_(attr(x, "model"))
   return(model$pmodel(x))
 }
@@ -90,10 +98,11 @@ modelModelPvalue <- function(x) {
 #'
 #' @param x fitted model
 #' @export
+#' @examples 
+#' modelModelName(some_model)
 modelModelName <- function(x) {
   assert_that(!is.vector(x), msg = "not a valid model object")
   assert_that(!is.null(x$model), msg = "not a valid model object")
-  # obtain model and extract member functions
   return(attr(x, "model"))
 }
 

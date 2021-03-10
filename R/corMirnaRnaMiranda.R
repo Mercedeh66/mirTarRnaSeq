@@ -10,20 +10,19 @@ if (getRversion() >= "2.15.1") {
 
 #' corMirnaRnaMiranda correlation for miRNA and mRNA
 #'
-#' This function uses the output of one2OneRnaMiRNA and retruns the correlation dataframe
-#' @param mRNA mRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA
-#' @param miRNA miRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA
+#' This function uses the output of one2OneRnaMiRNA and retruns the correlation dataframe.
+#' @param mRNA_fc mRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA.
+#' @param miRNA_fc miRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA
 #' @param CorVal Correlation cut off.Example: If correlation -0.2 it would only return correlations with
-#' smaller than this value correlation for miRNA and mRNA at various time points
-#' @param getInputSpeciesDF The dataframe generated from the getInputSpecies function
-#' @param method Default is "pearson" else use "kendall" or "spearman"
+#' smaller than this value correlation for miRNA and mRNA at various time points.
+#' @param getInputSpeciesDF The dataframe generated from the getInputSpecies function.
+#' @param method Default is "pearson" else use "kendall" or "spearman".
 #' @return Correlation dataframe
 #' @export
 #' @keywords Correlation with miRanda, miRanda Threshold
 #' @examples
-#' \donttest{
-#' x <- corMirnaRnaMiranda(mRNA, miRNA, Cor = -0.9, getInputSpeciesDF)
-#' }
+#' x <- corMirnaRnaMiranda(mRNA_fc, miRNA_fc, Cor = -0.9, miRandaM)
+
 corMirnaRnaMiranda <- function(mRNA, miRNA, CorVal, getInputSpeciesDF, method = "pearson") {
   tmRNA <- t(mRNA)
   tmiRNA <- t(miRNA)

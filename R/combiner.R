@@ -14,10 +14,8 @@
 #' @export
 #' @keywords miRNA_mRNA_Intersection
 #' @examples
-#' \donttest{
-#' miRNA_select <- c("let7")
-#' x <- miRanComp(mRNA, miRNA, miRNA_select)
-#' }
+#' miRNA_select <- c("ebv-mir-bart9-5p")
+#' x <- combiner(mRNA, miRNA, miRNA_select)
 combiner <- function(mRNA, miRNA, miRNA_select) {
   sub_miRNA <- miRNA[miRNA_select, ]
   common_samples <- intersect(names(mRNA), names(sub_miRNA))
@@ -25,3 +23,6 @@ combiner <- function(mRNA, miRNA, miRNA_select) {
   combination <- combination[, !apply(is.na(combination), 2, any)]
   return(combination)
 }
+
+
+

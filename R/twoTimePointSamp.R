@@ -13,7 +13,7 @@
 #' @keywords sampling, sampling, correlation, shuffling
 #' @examples
 #' \donttest{
-#' x <- twoTimePointSamp(mRNA, miRNA, Shrounds = 100, Srounds = 1000)
+#' x <- twoTimePointSamp(mirnaC, mrnaC, Shrounds = 10, Srounds = 10)
 #' }
 twoTimePointSamp <- function(mRNA, miRNA, Shrounds = 100, Srounds = 1000) {
   outs <- c()

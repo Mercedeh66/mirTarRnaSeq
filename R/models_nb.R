@@ -13,6 +13,8 @@ NULL
 #'         \code{aic}, \code{data}, \code{pterm}, \code{pmodel}, and a
 #'         character string "glm_nb" in \code{model}.
 #' @export
+#' @examples
+#' x <- glm_nb()
 glm_nb <- function() {
   model_name <- "glm_nb"
 

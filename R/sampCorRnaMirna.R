@@ -2,20 +2,19 @@
 
 #' sampCorRnaMirna sampling for correlation for miRNA and mRNA
 #'
-#' This function uses the output of one2OneRnaMiRNA and retruns a sampled from orig file
+#' This function uses the output of one2OneRnaMiRNA and returns a sampled from original file
 #' correlation dataframe depending on user sampling selection.
-#' @param mRNA mRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA.
-#' @param miRNA miRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA.
+#' @param mRNA mRNA file generated from fold changes (FC) obj of the one2OneRnaMiRNA.
+#' @param miRNA miRNA file generated from fold changes (FC) obj of the one2OneRnaMiRNA.
 #' @param method Default is "pearson" else use "kendall" or "spearman".
-#' @param Shrounds number of shufflings over the FC data, default is 100.
+#' @param Shrounds number of shuffling over the FC data, default is 100.
 #' @param Srounds number of sampling from the shuffled data, default is 1000.
-#' @return Correlation dataframe
+#' @return Correlation data frame
 #' @export
 #' @keywords sampling, sampling, correlation, shuffling
 #' @examples
-#' \donttest{
-#' x <- sampCorRnaMirna(mRNA, miRNA, method = "pearson", Shrounds = 100, Srounds = 1000)
-#' }
+#' x <- sampCorRnaMirna(mRNA_fc, miRNA_fc, method = "pearson", Shrounds = 10, Srounds = 10)
+
 sampCorRnaMirna <- function(mRNA, miRNA, method = "pearson", Shrounds = 100, Srounds = 1000) {
   outs <- c()
   for (i in 1:Shrounds) {

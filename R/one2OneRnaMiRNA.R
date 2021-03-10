@@ -18,7 +18,7 @@ if (getRversion() >= "2.15.1") {
 #' (with fold-changes) - P-value with rownames == genes and columns are P1, 2, 3, ... (with p-values)
 #' both data.frames have the same order dimensions.
 #' @param files a list of dataframes either miRNAs or mRNAs from various time points.
-#' @param miRNA miRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA.
+#' @param miRNA_fc miRNA or mRNA file generated from foldchanges (FC) obj.
 #' @param gene_colname Default is a vector character of length 1 "Gene" user can alter if they choose
 #' This coloumn contains the gene names.
 #' @param fc_colname Default "FC" is coloumn name for fold changes user can alter if they choose.
@@ -28,9 +28,8 @@ if (getRversion() >= "2.15.1") {
 #' @keywords correlation
 #' @examples
 #' \donttest{
-#' x <- corAnmiRNAmRNA(mRNA, miRNA, Cor = -0.9, getInputSpeciesDF)
+#' x <- one2OneRnaMiRNA(files)
 #' }
-#'
 one2OneRnaMiRNA <- function(files, gene_colname = "Gene", fc_colname = "FC",
                             pval_colname = "pvalue", pthreshold = NULL) {
 

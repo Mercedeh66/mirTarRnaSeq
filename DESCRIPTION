@@ -16,7 +16,7 @@ Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.6.0)
 DeploySubPath: mirTarRnaSeq
-biocViews: miRNA, mRNA, Regression, Correlation, Software, Sequencing, RNA, SmallRNA, Interaction, time point
+biocViews: miRNA, messenger RNA, Regression, Software, Sequencing, SmallRNA, Time Course
 RoxygenNote: 7.1.1
 Suggests: BiocStyle, knitr, rmarkdown
 VignetteBuilder: knitr

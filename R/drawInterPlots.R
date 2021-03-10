@@ -16,10 +16,8 @@ NULL
 #' @export
 #' @keywords plot
 #' @examples
-#' \donttest{
-#' x <- drawInterPlots(mrna, mirna, final_results)
-#' }
-#'
+#' x <- drawInterPlots(mRNA_fc2, miRNA_fc2, final_results)
+
 drawInterPlots <- function(mrna, mirna, final_results) {
   par(mfrow = c(2, 2))
 

@@ -11,7 +11,7 @@
 #' @keywords mRNA miRNA interelation
 #' @examples
 #' \donttest{
-#' x <- twoTimePoint(mRNA, miRNA)
+#' x <- twoTimePoint(mRNA_fc2, miRNA_fc2)
 #' }
 twoTimePoint <- function(mRNA, miRNA) {
   assertthat::assert_that(ncol(mRNA) == 1 && ncol(miRNA) == 1)

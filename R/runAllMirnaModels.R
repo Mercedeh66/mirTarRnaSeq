@@ -9,11 +9,11 @@ NULL
 #' This function runs the "runModel" function for all miRNAs and mRNA combinations of two and returns a
 #' list with significant genes and FDR models
 #' @param mirnas vector of unique miRNAs under investigation.
-#' @param DiffExpmRNA differentially/expressed mRNAs expression file.
-#' @param DiffExpmiRNA differentially/expressed miRNAs expression file.
+#' @param DiffExpmRNA deferentially/expressed mRNAs expression file.
+#' @param DiffExpmiRNA deferentially/expressed miRNAs expression file.
 #' @param miranda_data getInputSpecies output file ( use low filters).
 #' @param prob user defined ratio for miranda distibution for miranda score selection default is 0.75.
-#' @param method finInterResult miRNA and mRNA interrelation in two timepoints  results in a dataframe.
+#' @param method finInterResult miRNA and mRNA interrelation in two time points  results in a dataframe.
 #' @param fdr_cutoff cutoff for FDR selection default is 0.1.
 #' @param all_coeff if true only models with all negative coefficients will be selected if false at least one
 #' negative coefficient should be in the model; default is TRUE.
@@ -25,13 +25,13 @@ NULL
 #' @export
 #' @keywords runAllMirnaModels all_miRNAs
 #' @examples
-#' \donttest{
-#' x <- runAllMirnaModels(mirnas, DiffExpmRNA, DiffExpmiRNA, miranda_data,
-#'   prob = 0.90, fdr_cutoff = 0.1, method = "fdr", all_coeff = TRUE, mode = "multi",
+#' mirnas<-c("ebv-mir-bart9-5p","ebv-mir-bart6-3p")
+#' x <- runAllMirnaModels(mirnas, mRNA, miRNA, miRanda,
+#'   prob = 0.90, fdr_cutoff = 0.1, method = "fdr",
+#'   all_coeff = TRUE, mode = "multi",
 #'   family = glm_poisson(), scale = 100
 #' )
-#' }
-#'
+
 runAllMirnaModels <- function(mirnas, DiffExpmRNA, DiffExpmiRNA, miranda_data,
                               prob = 0.75, fdr_cutoff = 0.1, method = "fdr", cutoff = 0.05,
                               all_coeff = FALSE, mode = NULL, family = glm_poisson(), scale = 1) {

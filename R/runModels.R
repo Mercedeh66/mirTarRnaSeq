@@ -6,9 +6,9 @@ NULL
 #' runModels runs miRNA mrna model model for various miRNA-mRNA data distributions
 #'
 #' This function defines the boudnaries of mRNA vs miRNAs of interest to be analysed by the runModels function
-#' @param combination the combined file for mRNA and selected miRNAs output of combiner function
-#' @param select_mRNA the output of
-#' @param select_miRNA The vector of miRNA/s to be investigated
+#' @param Combine the combined file for mRNA and selected miRNAs output of combiner function
+#' @param select_mRNA the output ofgene_variant function.
+#' @param select_miRNA The vector of miRNA/s to be investigated.
 #' @param mode the mode of analysis if more than one miRNA is being investigated multivariate "multi"
 #' or covariate/interaction analysis "inter" is being used
 #' @param family gaussian or poisson
@@ -16,14 +16,12 @@ NULL
 #'              fitting. (\code{scale} must be greater than zero).
 #' @param cutoff p-value cut off to call significance
 #' @param all_coeff if true only models with all negative coefficients will be selected if false at least one
-#' @return A list of p vlaues, annova, and significance for each gene and the miRNA/s of interest
+#' @return A list of p-vlaues, annova, and significance for each gene and the miRNA/s of interest
 #' @export
 #' @keywords runModels univariate multivariate interaction glm
 #' @examples
-#' \donttest{
-#' x <- runModels(combination, geneVariable, miRNA_selectedVec, mode = NULL, family = "poisson")
-#' }
-#'
+#' x <- runModels(Combine, geneVariant, "ebv-mir-bart9-5p")
+
 runModels <- function(combination, select_mRNA, select_miRNA, mode = NULL,
                       family = glm_poisson(), scale = 1, cutoff = 0.05,
                       all_coeff=NULL) {
