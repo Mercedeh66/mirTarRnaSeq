@@ -1,7 +1,7 @@
 ## Written by Mercedeh Movassagh <mercedeh@ds.dfci.harvard.edu>, Aug 2020
 
 #' @importFrom MASS glm.nb
-#' @importFrom stats terms formula
+#' @importFrom stats terms formula glm.control
 NULL
 
 #' Model functions for GLM with negative binomial family.
