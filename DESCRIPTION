@@ -9,6 +9,8 @@ Authors@R:
            email = "mercedeh@ds.dfci.harvard.edu",
            comment = c(ORCID = "https://orcid.org/0000-0001-7690-0230")),
            person("Sarah","Morton", role="aut"),
+           person("Rafael","Irizarry", role="aut"),
+           person("Jeffrey", "Bailey", role= "aut"),
            person("Joseph N", "Paulson", email="paulson.joseph@gene.com", role="aut"))
 Description: mirTarRnaSeq R package can be used for interactive mRNA miRNA sequencing statistical analysis. This package utilizes expression or differential expression mRNA and miRNA sequencing results and performs interactive correlation and various GLMs (Regular GLM, Multivariate GLM, and Interaction GLMs ) analysis between mRNA and miRNA expriments. These experiments can be time point experiments, and or condition expriments.
 License: MIT
@@ -16,7 +18,7 @@ Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.6.0)
 DeploySubPath: mirTarRnaSeq
-biocViews: miRNA, messenger RNA, Regression, Software, Sequencing, SmallRNA, TimeCourse
+biocViews: miRNA, Regression, Software, Sequencing, SmallRNA, TimeCourse
 RoxygenNote: 7.1.1
 Suggests: BiocStyle, knitr, rmarkdown
 VignetteBuilder: knitr
@@ -29,4 +31,5 @@ Imports:
     dplyr,
     pheatmap,
     reshape2,
-    corrplot
+    corrplot,
+    BiocStyle
