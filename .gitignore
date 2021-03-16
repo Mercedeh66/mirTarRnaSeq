@@ -39,8 +39,6 @@ vignettes/*.pdf
 .Renviron
 .Rproj.user
 
-# ignore generated documentation
-/man
 
 # ignore testing files
 /test
@@ -48,7 +46,6 @@ vignettes/*.pdf
 # ignore some mac-specific files
 .DS_Store
 Icon?
-doc
 Meta
 
 /build/
