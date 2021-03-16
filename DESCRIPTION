@@ -32,7 +32,7 @@ Imports:
     pheatmap,
     reshape2,
     corrplot,
-    BiocStyle,
     grDevices,
     graphics,
-    stats
+    stats,
+    utils
