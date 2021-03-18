@@ -9,6 +9,9 @@ modelTermPvalues(x)
 \arguments{
 \item{x}{fitted model}
 }
+\value{
+Pvalue for the terms in the fitted model
+}
 \description{
 Obtain p-values for terms in model formula
 }

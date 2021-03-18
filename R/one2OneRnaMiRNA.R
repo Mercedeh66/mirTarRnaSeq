@@ -13,14 +13,14 @@ if (getRversion() >= "2.15.1") {
 #' one2OneRnaMiRNA correlation for miRNA and mRNA  using differntial expression
 #' fold change and if/when available p-value
 #'
-#' This function inputs accept a list of data.frames and returns an obj with
-#' two dataframes calledd FC and p-value. FC with rownames == genes and columns are FC1, 2, 3, ...
+#' This function inputs accept a list of dataframes and returns an obj with
+#' two dataframes called FC and p-value. FC with rownames == genes and columns are FC1, 2, 3, ...
 #' (with fold-changes) - P-value with rownames == genes and columns are P1, 2, 3, ... (with p-values)
 #' both data.frames have the same order dimensions.
 #' @param files a list of dataframes either miRNAs or mRNAs from various time points.
 #' @param miRNA_fc miRNA or mRNA file generated from foldchanges (FC) obj.
 #' @param gene_colname Default is a vector character of length 1 "Gene" user can alter if they choose
-#' This coloumn contains the gene names.
+#' This column contains the gene names.
 #' @param fc_colname Default "FC" is coloumn name for fold changes user can alter if they choose.
 #' @param pval_colname Default is "pvalue" column name for p-values (in input).
 #' @return Correlation dataframe
@@ -50,7 +50,7 @@ one2OneRnaMiRNA <- function(files, gene_colname = "Gene", fc_colname = "FC",
   # grab fold changes and gene names from each data.frame supplied
   foldchanges <- lapply(files, function(x) {
     ret <- x[, c(gene_colname, fc_colname)]
-    rownames(ret) <- ret[, gene_colname, drop = T]
+    rownames(ret) <- ret[, gene_colname, drop = TRUE]
     return(ret)
   })
 
@@ -58,32 +58,32 @@ one2OneRnaMiRNA <- function(files, gene_colname = "Gene", fc_colname = "FC",
     # grab p-values and gene names from each data.frame supplied
     pvalues <- lapply(files, function(x) {
       ret <- x[, c(gene_colname, pval_colname)]
-      rownames(ret) <- ret[, gene_colname, drop = T]
+      rownames(ret) <- ret[, gene_colname, drop = TRUE]
       return(ret)
     })
 
     # produce set of genes significant in any of the gene lists
     # all genes concatenated in one long unique list
     siggenes <- unique(unlist(sapply(pvalues, function(x) {
-      ret <- filter(x, pvalue < pthreshold)[, gene_colname, drop = T]
+      ret <- filter(x, pvalue < pthreshold)[, gene_colname, drop = TRUE]
       return(ret)
     }))) # for some reason sapply doesn't simplify here... hence the 'unlist'
   } else {
     # get set of genes regardless of p-value
     pvalues <- NULL
     siggenes <- unique(unlist(sapply(foldchanges, function(x) {
-      x[, gene_colname, drop = T] # we're producing a long vector here...
+      x[, gene_colname, drop = TRUE] # we're producing a long vector here...
     })))
   }
 
   # filter siggenes for gene names present in all input lists!
   for (x in foldchanges) {
-    siggenes <- intersect(siggenes, x[, gene_colname, drop = T]) # we're intersecting _vectors_ here
+    siggenes <- intersect(siggenes, x[, gene_colname, drop = TRUE]) # we're intersecting _vectors_ here
   }
 
   # filter and reorder FCs by sig genes
   foldchanges <- lapply(foldchanges, function(x) {
-    return(x[siggenes, fc_colname, drop = F])
+    return(x[siggenes, fc_colname, drop = FALSE])
   })
 
   # make one data frame with _just_ the FC columns.
@@ -93,7 +93,7 @@ one2OneRnaMiRNA <- function(files, gene_colname = "Gene", fc_colname = "FC",
   if (!is.null(pthreshold)) {
     # filter and reorder pvalues by sig genes
     pvalues <- lapply(pvalues, function(x) {
-      return(x[siggenes, pval_colname, drop = F])
+      return(x[siggenes, pval_colname, drop = FALSE])
     })
 
     # make one data frame with _just_ the pvalue columns.

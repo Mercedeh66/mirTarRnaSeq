@@ -5,7 +5,7 @@ NULL
 
 #' threshSig Using shuffling threshold finds appropriate significant miRNA-mRNA correlation
 #'
-#' This function uses the sampCorRnaMirna shuffled output to determine an appropriate thershold
+#' This function uses the sampCorRnaMirna shuffled output to determine an appropriate threshold
 #' for significant mRNA and miRNA relationship of the dataset and shows all those with significant
 #' relationships.
 #' @param corr_0 data.frame results of corMirnaRna function.
@@ -13,7 +13,7 @@ NULL
 #' @param pvalue The p value threshold to be used on the sampled data.
 #' @return A dataframe of Significant mRNA and miRNA
 #' @export
-#' @keywords Signficance, Threshold
+#' @keywords Significance, Threshold
 #' @examples
 #' \donttest{
 #' x <- mirRnaHeatmap(outs, corr_0)

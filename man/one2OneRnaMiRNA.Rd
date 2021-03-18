@@ -17,7 +17,7 @@ one2OneRnaMiRNA(
 \item{files}{a list of dataframes either miRNAs or mRNAs from various time points.}
 
 \item{gene_colname}{Default is a vector character of length 1 "Gene" user can alter if they choose
-This coloumn contains the gene names.}
+This column contains the gene names.}
 
 \item{fc_colname}{Default "FC" is coloumn name for fold changes user can alter if they choose.}
 
@@ -29,8 +29,8 @@ This coloumn contains the gene names.}
 Correlation dataframe
 }
 \description{
-This function inputs accept a list of data.frames and returns an obj with
-two dataframes calledd FC and p-value. FC with rownames == genes and columns are FC1, 2, 3, ...
+This function inputs accept a list of dataframes and returns an obj with
+two dataframes called FC and p-value. FC with rownames == genes and columns are FC1, 2, 3, ...
 (with fold-changes) - P-value with rownames == genes and columns are P1, 2, 3, ... (with p-values)
 both data.frames have the same order dimensions.
 }

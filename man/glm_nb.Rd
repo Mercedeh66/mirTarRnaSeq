@@ -12,7 +12,7 @@ structure containing functions \code{fit}, \code{coefficients},
         character string "glm_nb" in \code{model}.
 }
 \description{
-Implements standardaized functions to fit the negative
+Implements standardized functions to fit the negative
 binomial GLM and to obtain coefficients, pvalues, etc.
 }
 \examples{

@@ -12,7 +12,7 @@ NULL
 #' @param DiffExpmRNA deferentially/expressed mRNAs expression file.
 #' @param DiffExpmiRNA deferentially/expressed miRNAs expression file.
 #' @param miranda_data getInputSpecies output file ( use low filters).
-#' @param prob user defined ratio for miranda distibution for miranda score selection default is 0.75.
+#' @param prob user defined ratio for miRanda distribution for miRanda score selection default is 0.75.
 #' @param method finInterResult miRNA and mRNA interrelation in two time points  results in a dataframe.
 #' @param fdr_cutoff cutoff for FDR selection default is 0.1.
 #' @param all_coeff if true only models with all negative coefficients will be selected if false at least one

@@ -20,13 +20,13 @@ An object containing data.frames of significant mRNA, miRNA
 }
 \description{
 Compares and looks for intersection if significant output results with miRanda Results from getInputSpeciesDF and outputs a final
-filterd ourput for only those pairs of miRNA and mRNA which have actually been predicted to be targets
+filtered output for only those pairs of miRNA and mRNA which have actually been predicted to be targets
 in miRanda file
 function
 }
 \examples{
 x <- miRandaIntersect(sig_InterR, outs2, mRNA_fc, miRNA_fc, miRandaM)
 }
-\keyword{Signficance,}
+\keyword{Significance,}
 \keyword{Threshold,}
 \keyword{intersect}

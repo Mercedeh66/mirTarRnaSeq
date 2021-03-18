@@ -6,6 +6,11 @@
 \usage{
 glm_zeroinfl_negbin(...)
 }
+\value{
+structure containing functions \code{fit}, \code{coefficients},
+        \code{aic}, \code{data}, \code{pterm}, \code{pmodel}, and a
+        character string "glm_zeroinfl" in \code{model}.
+}
 \description{
 alias for glm_zeroinfl("negbin")
 }

@@ -21,9 +21,8 @@ mirandaIntersectInter <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpecies
   if (nrow(result_corrs) == 0) {
     stop("no common mRNA/miRNAs found.")
   }
-  result_mrna <- mRNA[result_corrs$V2, , drop = F]
-  result_mirna <- miRNA[result_corrs$V1, , drop = F]
-  # calculate "p-values" for correlations. (TODO check this.)
+  result_mrna <- mRNA[result_corrs$V2, , drop = FALSE]
+  result_mirna <- miRNA[result_corrs$V1, , drop = FALSE]
   # count how many values in corrS are > each correlation and calculate 1 - "percentage".
   pvalueiods <- 1 - sapply(result_corrs$value, function(x) {
     length(which(corrS < x))

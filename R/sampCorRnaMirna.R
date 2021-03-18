@@ -26,7 +26,7 @@ sampCorRnaMirna <- function(mRNA, miRNA, method = "pearson", Shrounds = 100, Sro
       shuffled_mirna[, col] <- sample(shuffled_mirna[, col]) # this shuffles all values in column _col_
     }
     cc <- corMirnaRna(shuffled_mrna, shuffled_mirna, method = method) # run correlation on shuffled data
-    outs <- c(outs, sample(cc$value, Srounds, replace = T)) # take a sample of the corralations and add to _outs_
+    outs <- c(outs, sample(cc$value, Srounds, replace = TRUE)) # take a sample of the correlations and add to _outs_
   }
   return(outs)
 }

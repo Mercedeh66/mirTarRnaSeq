@@ -13,8 +13,7 @@ getInputSpecies(
 )
 }
 \arguments{
-\item{selection}{Species (species selection are either for mature miRNA species "Human1"
-for full length human miRNAs use "Human(1-10)", "Mouse",
+\item{selection}{Species (species selection are either for mature miRNA species "Human1","Mouse",
 "C.elegans", "Epstein_Barr", "Epstein_Barr_Human",
 "Drosophila","Kaposi_Sarcoma", "KSHV_Human",
 "Cytomegalovirus","CMV_Human") Note only EBV files are provided in the package for other files to be determined lol}

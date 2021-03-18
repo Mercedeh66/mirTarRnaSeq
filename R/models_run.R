@@ -11,6 +11,7 @@ NULL
 #' @param data data.frame to run the model on
 #' @param ... passed on to \code{fit()}
 #' @param model model type
+#' @return fitted model
 #' @export
 runModel <- function(x, data, ..., model = glm_gaussian()) {
   assert_that(is.character(x) || is_formula(x))
@@ -25,6 +26,7 @@ runModel <- function(x, data, ..., model = glm_gaussian()) {
 #' Obtain coefficients
 #'
 #' @param x fitted model
+#' @return fitted model coefficients
 #' @export
 #' @examples 
 #' modelCoefficients(some_model)
@@ -43,6 +45,7 @@ modelCoefficients <- function(x) {
 #' Obtain model AIC
 #'
 #' @param x fitted model
+#' @return AIC for model
 #' @export
 #' @examples
 #' modelAIC(some_model)
@@ -57,6 +60,7 @@ modelAIC <- function(x) {
 #' Obtain model input data
 #'
 #' @param x fitted model
+#' @return  Input data for the fitted model
 #' @export
 #' @examples 
 #' x <- modelData(some_model)
@@ -71,6 +75,7 @@ modelData <- function(x) {
 #' Obtain p-values for terms in model formula
 #'
 #' @param x fitted model
+#' @return  Pvalue for the terms in the fitted model
 #' @export
 #' @examples 
 #' modelTermPvalues(some_model)
@@ -84,6 +89,7 @@ modelTermPvalues <- function(x) {
 #' Obtain model p-value
 #'
 #' @param x fitted model
+#' @return Pvalue for the model
 #' @export
 #' @examples 
 #' modelModelPvalue(some_model)
@@ -97,6 +103,7 @@ modelModelPvalue <- function(x) {
 #' Obtain model name
 #'
 #' @param x fitted model
+#' @return model name
 #' @export
 #' @examples 
 #' modelModelName(some_model)

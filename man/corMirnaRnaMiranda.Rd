@@ -22,7 +22,7 @@ smaller than this value correlation for miRNA and mRNA at various time points.}
 Correlation dataframe
 }
 \description{
-This function uses the output of one2OneRnaMiRNA and retruns the correlation dataframe.
+This function uses the output of one2OneRnaMiRNA and returns the correlation dataframe.
 }
 \examples{
 x <- corMirnaRnaMiranda(mRNA_fc, miRNA_fc, Cor = -0.9, miRandaM)

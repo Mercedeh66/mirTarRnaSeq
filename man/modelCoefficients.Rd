@@ -9,6 +9,9 @@ modelCoefficients(x)
 \arguments{
 \item{x}{fitted model}
 }
+\value{
+fitted model coefficients
+}
 \description{
 Obtain coefficients
 }

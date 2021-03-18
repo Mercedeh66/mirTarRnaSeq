@@ -7,7 +7,7 @@
 tzTrans(x)
 }
 \arguments{
-\item{x}{matrix of miRNA or mRNA or the data.frame to be transformed}
+\item{x}{matrix of miRNA or mRNA or the data frame to be transformed}
 }
 \value{
 transposed and transformed version of x as a matrix.

@@ -9,6 +9,9 @@ modelModelName(x)
 \arguments{
 \item{x}{fitted model}
 }
+\value{
+model name
+}
 \description{
 Obtain model name
 }

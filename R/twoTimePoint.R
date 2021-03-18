@@ -2,13 +2,13 @@
 
 #' twoTimePoint miRNA and mRNA interrelation in two timepoints
 #'
-#' This function uses the output of one2OneRnaMiRNA and retruns a sampled from orig file
+#' This function uses the output of one2OneRnaMiRNA and returns a sampled from original file
 #' interrelation dataframe depending on user sampling selection.
-#' @param mRNA mRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA.
-#' @param miRNA miRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA.
-#' @return miRNA mRNA interelation dataframe
+#' @param mRNA mRNA file generated from fold changes (FC) obj of the one2OneRnaMiRNA.
+#' @param miRNA miRNA file generated from fold changes (FC) obj of the one2OneRnaMiRNA.
+#' @return miRNA mRNA interrelation dataframe
 #' @export
-#' @keywords mRNA miRNA interelation
+#' @keywords mRNA miRNA interrelation
 #' @examples
 #' \donttest{
 #' x <- twoTimePoint(mRNA_fc2, miRNA_fc2)

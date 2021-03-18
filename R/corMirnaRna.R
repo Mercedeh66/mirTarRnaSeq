@@ -10,7 +10,7 @@ if (getRversion() >= "2.15.1") {
 
 #' corMirnaRna correlation for miRNA and mRNA
 #'
-#' This function uses the output of one2OneRnaMiRNA and retruns the correlation dataframe
+#' This function uses the output of one2OneRnaMiRNA and returns the correlation dataframe
 #' @param mRNA mRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA
 #' @param miRNA miRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA
 #' @param method Default is "pearson" else use "kendall" or "spearman"

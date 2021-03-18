@@ -7,24 +7,24 @@
 twoTimePointSamp(mRNA, miRNA, Shrounds = 100, Srounds = 1000)
 }
 \arguments{
-\item{mRNA}{mRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA.}
+\item{mRNA}{mRNA file generated from fold changes (FC) obj of the one2OneRnaMiRNA.}
 
-\item{miRNA}{miRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA.}
+\item{miRNA}{miRNA file generated from fold changes (FC) obj of the one2OneRnaMiRNA.}
 
-\item{Shrounds}{number of shufflings over the FC data, default is 100.}
+\item{Shrounds}{number of shuffling over the FC data, default is 100.}
 
 \item{Srounds}{number of sampling from the shuffled data, default is 1000.}
 }
 \value{
-miRNA mRNA interelation dataframe
+miRNA mRNA interrelation dataframe
 }
 \description{
-This function uses the output of one2OneRnaMiRNA and retruns a sampled from orig file
+This function uses the output of one2OneRnaMiRNA and returns a sampled from orig file
 interrelation dataframe depending on user sampling selection.
 }
 \examples{
 \donttest{
-x <- twoTimePointSamp(mirnaC, mrnaC, Shrounds = 10, Srounds = 10)
+x <- twoTimePointSamp(mRNA, miRNA, Shrounds = 10, Srounds = 10)
 }
 }
 \keyword{correlation,}

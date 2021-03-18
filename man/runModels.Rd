@@ -16,12 +16,12 @@ runModels(
 )
 }
 \arguments{
-\item{select_mRNA}{the output ofgene_variant function.}
+\item{select_mRNA}{the output of gene_variant function.}
 
 \item{select_miRNA}{The vector of miRNA/s to be investigated.}
 
 \item{mode}{the mode of analysis if more than one miRNA is being investigated multivariate "multi"
-or covariate/interaction analysis "inter" is being used}
+or co-variate/interaction analysis "inter" is being used}
 
 \item{family}{gaussian or poisson}
 
@@ -38,7 +38,7 @@ fitting. (\code{scale} must be greater than zero).}
 A list of p-vlaues, annova, and significance for each gene and the miRNA/s of interest
 }
 \description{
-This function defines the boudnaries of mRNA vs miRNAs of interest to be analysed by the runModels function
+This function defines the boundaries of mRNA vs miRNAs of interest to be analysed by the runModels function
 }
 \examples{
 x <- runModels(Combine, geneVariant, "ebv-mir-bart9-5p")

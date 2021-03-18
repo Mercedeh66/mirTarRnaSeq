@@ -9,6 +9,9 @@ modelAIC(x)
 \arguments{
 \item{x}{fitted model}
 }
+\value{
+AIC for model
+}
 \description{
 Obtain model AIC
 }

@@ -12,7 +12,7 @@ structure containing functions \code{fit}, \code{coefficients},
         character string "glm_gaussian" in \code{model}.
 }
 \description{
-Implements standardaized functions to fit the glm with
+Implements standardized functions to fit the glm with
 Gaussian family and to obtain coefficients, pvalues, etc.
 }
 \examples{

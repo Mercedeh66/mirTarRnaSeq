@@ -10,8 +10,8 @@ coefficients_ <- function(model) {
 }
 
 pmodel_ <- function(model) {
-  ret <- pchisq(model$null.deviance - deviance(model), model$df.null - df.residual(model), lower.tail = F)
-  # ret <- pchisq(model$deviance, model$df.residual, lower.tail = F)
+  ret <- pchisq(model$null.deviance - deviance(model), model$df.null - df.residual(model), lower.tail = FALSE)
+  # ret <- pchisq(model$deviance, model$df.residual, lower.tail = FALSE)
   return(ret)
 }
 

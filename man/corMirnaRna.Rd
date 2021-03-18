@@ -17,7 +17,7 @@ corMirnaRna(mRNA, miRNA, method = "pearson")
 Correlation data.frame
 }
 \description{
-This function uses the output of one2OneRnaMiRNA and retruns the correlation dataframe
+This function uses the output of one2OneRnaMiRNA and returns the correlation dataframe
 }
 \examples{
 x <- corMirnaRna(mRNA_fc, miRNA_fc, method = "spearman")

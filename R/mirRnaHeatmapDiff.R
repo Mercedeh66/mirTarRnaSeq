@@ -12,10 +12,10 @@ if (getRversion() >= "2.15.1") {
 
 
 
-#' mirRnaHeatmapDiff pheatmap for miRTarRNASeq miRNA and mRNA correlation
+#' mirRnaHeatmapDiff heatmap for miRTarRNASeq miRNA and mRNA correlation
 #'
-#' This function draws pheatmaps for miRNA and mRNA correlation while
-#' using default and pheatmap for all other parameters
+#' This function draws heatmaps (pheatmaps) for miRNA and mRNA correlation while
+#' using default and heatmap for all other parameters
 #' @param finalF data.frame results of corMirnaRnaMiranda or corMirnaRna function
 #' @param ... arguments passed onto pheatmap
 #' @param upper_bound is the upper_bound of the correlation pheatmap scale

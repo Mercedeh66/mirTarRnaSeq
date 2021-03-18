@@ -15,8 +15,7 @@ if (getRversion() >= "2.15.1") {
 #' a data.frame, thresholded by percent identity.
 #' Header options are Score (threshold), Energy-Kcal/Mol(energy),
 #' Subject-IdentityPercent(targetIden), Query-IdentityPercent (mirnaIden)
-#' @param selection Species (species selection are either for mature miRNA species "Human1"
-#'  for full length human miRNAs use "Human(1-10)", "Mouse",
+#' @param selection Species (species selection are either for mature miRNA species "Human1","Mouse",
 #'  "C.elegans", "Epstein_Barr", "Epstein_Barr_Human",
 #'  "Drosophila","Kaposi_Sarcoma", "KSHV_Human",
 #'  "Cytomegalovirus","CMV_Human") Note only EBV files are provided in the package for other files to be determined lol
@@ -28,33 +27,15 @@ if (getRversion() >= "2.15.1") {
 
 getInputSpecies <- function(selection, threshold = 60, energy = NULL, targetIden = NULL, mirnaIden = NULL) {
   if (selection == "Human1") {
-    ret <- importMirandaFile("Human_miRanda1.txt.gz")
-  } else if (selection == "Human2") {
-    ret <- importMirandaFile("Human_miRanda2.txt.gz")
-  } else if (selection == "Human3") {
-    ret <- importMirandaFile("Human_miRanda3.txt.gz")
-  } else if (selection == "Human4") {
-    ret <- importMirandaFile("Human_miRanda4.txt.gz")
-  } else if (selection == "Human5") {
-    ret <- importMirandaFile("Human_miRanda5.txt.gz")
-  } else if (selection == "Human6") {
-    ret <- importMirandaFile("Human_miRanda6.txt.gz")
-  }  else if (selection == "Human7") {
-    ret <- importMirandaFile("Human_miRanda7.txt.gz")
-  }  else if (selection == "Human8") {
-    ret <- importMirandaFile("Human_miRanda8.txt.gz")
-  }  else if (selection == "Human9") {
-    ret <- importMirandaFile("Human_miRanda9.txt.gz")
-  }  else if (selection == "Human10") {
-    ret <- importMirandaFile("Human_miRanda10.txt.gz")
+    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Human_miRanda.txt.gz?download=1")
   } else if (selection == "Mouse") {
-    ret <- importMirandaFile("Mouse_miRanda.txt.gz")
+    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Mouse_miRanda.txt.gz?download=1")
   } else if (selection == "Epstein_Barr") {
     ret <- importMirandaFile("Epstein_Barr_miRanda.txt.gz")
   } else if (selection == "C.elegans") {
-    ret <- importMirandaFile("C.elegans_miRanda.txt.gz")
+    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/C_elegans_miRanda.txt.gz?download=1")
   } else if (selection == "Drosophila") {
-    ret <- importMirandaFile("Drosophila_miRanda.txt.gz")
+    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Drosophila_miRanda.txt.gz?download=1")
   } else if (selection == "Cytomegalovirus") {
     ret <- importMirandaFile("CMV_miRanda.txt.gz")
   } else if (selection == "Kaposi_Sarcoma") {

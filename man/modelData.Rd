@@ -9,6 +9,9 @@ modelData(x)
 \arguments{
 \item{x}{fitted model}
 }
+\value{
+Input data for the fitted model
+}
 \description{
 Obtain model input data
 }

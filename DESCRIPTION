@@ -7,7 +7,7 @@ Authors@R:
            family = "Movassagh",
            role = c("aut", "cre"),
            email = "mercedeh@ds.dfci.harvard.edu",
-           comment = c(ORCID = "https://orcid.org/0000-0001-7690-0230")),
+           comment = c(ORCID = "0000-0001-7690-0230")),
            person("Sarah","Morton", role="aut"),
            person("Rafael","Irizarry", role="aut"),
            person("Jeffrey", "Bailey", role= "aut"),
@@ -20,7 +20,7 @@ Depends: R (>= 4.0.0)
 DeploySubPath: mirTarRnaSeq
 biocViews: miRNA, Regression, Software, Sequencing, SmallRNA, TimeCourse, DifferentialExpression
 RoxygenNote: 7.1.1
-Suggests: BiocStyle, knitr, rmarkdown
+Suggests: BiocStyle, knitr, rmarkdown, R.cache
 VignetteBuilder: knitr
 Imports: 
     purrr,
@@ -35,4 +35,6 @@ Imports:
     grDevices,
     graphics,
     stats,
-    utils
+    utils,
+    data.table,
+    R.utils

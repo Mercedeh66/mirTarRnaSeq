@@ -2,7 +2,7 @@
 % Please edit documentation in R/mirRnaHeatmapDiff.R
 \name{mirRnaHeatmapDiff}
 \alias{mirRnaHeatmapDiff}
-\title{mirRnaHeatmapDiff pheatmap for miRTarRNASeq miRNA and mRNA correlation}
+\title{mirRnaHeatmapDiff heatmap for miRTarRNASeq miRNA and mRNA correlation}
 \usage{
 mirRnaHeatmapDiff(
   finalF,
@@ -32,8 +32,8 @@ R colorbrewer and viridis compatible}
 pheatmap Obj
 }
 \description{
-This function draws pheatmaps for miRNA and mRNA correlation while
-using default and pheatmap for all other parameters
+This function draws heatmaps (pheatmaps) for miRNA and mRNA correlation while
+using default and heatmap for all other parameters
 }
 \examples{
 x <- mirRnaHeatmapDiff(results$corrs, upper_bound = -0.1, color = rainbow(50), fontsize = 10)

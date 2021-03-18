@@ -6,7 +6,7 @@ NULL
 
 #' Model functions for GLM with negative binomial family.
 #'
-#' Implements standardaized functions to fit the negative
+#' Implements standardized functions to fit the negative
 #' binomial GLM and to obtain coefficients, pvalues, etc.
 #'
 #' @return structure containing functions \code{fit}, \code{coefficients},

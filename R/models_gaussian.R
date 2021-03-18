@@ -5,7 +5,7 @@ NULL
 
 #' Model functions for GLM with Gaussian model.
 #'
-#' Implements standardaized functions to fit the glm with
+#' Implements standardized functions to fit the glm with
 #' Gaussian family and to obtain coefficients, pvalues, etc.
 #'
 #' @return structure containing functions \code{fit}, \code{coefficients},

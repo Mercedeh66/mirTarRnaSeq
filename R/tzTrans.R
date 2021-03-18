@@ -3,7 +3,7 @@
 #'  tzTransTranspose and z-score transformation
 #'
 #' Transposes and z-score transforms a matrix or data.frame.
-#' @param x matrix of miRNA or mRNA or the data.frame to be transformed
+#' @param x matrix of miRNA or mRNA or the data frame to be transformed
 #' @return transposed and transformed version of x as a matrix.
 #' @export
 #' @keywords zscore, scale, transform, transpose

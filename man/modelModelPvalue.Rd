@@ -9,6 +9,9 @@ modelModelPvalue(x)
 \arguments{
 \item{x}{fitted model}
 }
+\value{
+Pvalue for the model
+}
 \description{
 Obtain model p-value
 }

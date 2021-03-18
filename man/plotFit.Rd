@@ -9,6 +9,9 @@ plotFit(model)
 \arguments{
 \item{model}{linear model}
 }
+\value{
+does not return value
+}
 \description{
 Plot 2D description
 }

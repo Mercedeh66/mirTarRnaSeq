@@ -15,6 +15,9 @@ runModel(x, data, ..., model = glm_gaussian())
 
 \item{model}{model type}
 }
+\value{
+fitted model
+}
 \description{
 Run a model of a specific kind
 }

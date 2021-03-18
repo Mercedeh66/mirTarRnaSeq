@@ -7,15 +7,15 @@
 twoTimePoint(mRNA, miRNA)
 }
 \arguments{
-\item{mRNA}{mRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA.}
+\item{mRNA}{mRNA file generated from fold changes (FC) obj of the one2OneRnaMiRNA.}
 
-\item{miRNA}{miRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA.}
+\item{miRNA}{miRNA file generated from fold changes (FC) obj of the one2OneRnaMiRNA.}
 }
 \value{
-miRNA mRNA interelation dataframe
+miRNA mRNA interrelation dataframe
 }
 \description{
-This function uses the output of one2OneRnaMiRNA and retruns a sampled from orig file
+This function uses the output of one2OneRnaMiRNA and returns a sampled from original file
 interrelation dataframe depending on user sampling selection.
 }
 \examples{
@@ -23,6 +23,6 @@ interrelation dataframe depending on user sampling selection.
 x <- twoTimePoint(mRNA_fc2, miRNA_fc2)
 }
 }
-\keyword{interelation}
+\keyword{interrelation}
 \keyword{mRNA}
 \keyword{miRNA}

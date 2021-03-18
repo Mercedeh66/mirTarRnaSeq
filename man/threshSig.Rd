@@ -17,7 +17,7 @@ threshSig(corr0, corrS, pvalue = 0.05)
 A dataframe of Significant mRNA and miRNA
 }
 \description{
-This function uses the sampCorRnaMirna shuffled output to determine an appropriate thershold
+This function uses the sampCorRnaMirna shuffled output to determine an appropriate threshold
 for significant mRNA and miRNA relationship of the dataset and shows all those with significant
 relationships.
 }
@@ -27,5 +27,5 @@ x <- mirRnaHeatmap(outs, corr_0)
 }
 
 }
-\keyword{Signficance,}
+\keyword{Significance,}
 \keyword{Threshold}

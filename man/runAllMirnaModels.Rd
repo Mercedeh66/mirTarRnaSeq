@@ -28,7 +28,7 @@ runAllMirnaModels(
 
 \item{miranda_data}{getInputSpecies output file ( use low filters).}
 
-\item{prob}{user defined ratio for miranda distibution for miranda score selection default is 0.75.}
+\item{prob}{user defined ratio for miRanda distribution for miRanda score selection default is 0.75.}
 
 \item{fdr_cutoff}{cutoff for FDR selection default is 0.1.}
 

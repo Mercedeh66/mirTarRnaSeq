@@ -55,8 +55,8 @@ The second example set set is the simulated mouse fibroblast differntiated to mu
 ## Uploading data into the application. The example data can be found in the test folder under package.
 
 ```{r eval=TRUE, echo=TRUE}
-DiffExp<-read.table("test/EBV_mRNA.txt", as.is=TRUE, header=T, row.names=1)
-miRNAExp<-read.table("test/EBV_miRNA.txt", as.is=TRUE, header=T, row.names=1)
+DiffExp<-read.table("test/EBV_mRNA.txt", as.is=TRUE, header=TRUE, row.names=1)
+miRNAExp<-read.table("test/EBV_miRNA.txt", as.is=TRUE, header=TRUE, row.names=1)
 ```
 
 ## Get miRanda file
@@ -231,8 +231,8 @@ print(table(unlist(lapply
 Load files from test directory or you can laod individually and feed them in seperately in a list: list[(mRNA1,mRNA2,mRNA)]
 ```{r eval=TRUE, echo=TRUE}
 files <- local({
-  filenames <- list.files(path="test", pattern="^.*\\.txt$", full.names=T)
-  files <- lapply(filenames, read.table, as.is=T, header=T, sep="\t")
+  filenames <- list.files(path="test", pattern="^.*\\.txt$", full.names=TRUE)
+  files <- lapply(filenames, read.table, as.is=TRUE, header=TRUE, sep="\t")
   names(files) <- gsub("^.*/(.*)\\.txt$", "\\1", filenames)
   return(files)
 })
@@ -318,8 +318,8 @@ p
 ## Import data
 ```{r eval=TRUE, echo=TRUE}
 files <- local({
-  filenames <- list.files(path="test", pattern="^.*\\.txt$", full.names=T)
-  files <- lapply(filenames, read.table, as.is=T, header=T, sep="\t")
+  filenames <- list.files(path="test", pattern="^.*\\.txt$", full.names=TRUE)
+  files <- lapply(filenames, read.table, as.is=TRUE, header=TRUE, sep="\t")
   names(files) <- gsub("^.*/(.*)\\.txt$", "\\1", filenames)
   return(files)
 })
