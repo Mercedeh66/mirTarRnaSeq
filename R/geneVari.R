@@ -9,7 +9,7 @@
 #' @export
 #' @keywords dimensions
 #' @examples
-#' x <- geneVari(Combine, miRNA_select)
+#' x <- geneVari(Combine, "ebv-mir-bart9-5p")
 
 geneVari <- function(Combined, miRNA_select) {
   # geneVari1 <- colnames(Combined[, 1:(ncol(Combined) - length(miRNA_select))])

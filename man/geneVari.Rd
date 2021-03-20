@@ -18,6 +18,6 @@ A vector of characters with defined mRNA dimensions
 This function defines the boudnaries of mRNA vs miRNAs of interest to be analysed by the runModels function
 }
 \examples{
-x <- geneVari(Combine, miRNA_select)
+x <- geneVari(Combine, "ebv-mir-bart9-5p")
 }
 \keyword{dimensions}
