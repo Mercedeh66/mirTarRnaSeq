@@ -91,6 +91,7 @@ glm_zeroinfl <- function(dist = "poisson") { # poisson, negbin
 }
 
 #' alias for glm_zeroinfl("poisson")
+#' @param ... passed to \code{glm_zeroinfl}
 #' @return structure containing functions \code{fit}, \code{coefficients},
 #'         \code{aic}, \code{data}, \code{pterm}, \code{pmodel}, and a
 #'         character string "glm_zeroinfl" in \code{model}.
@@ -100,6 +101,7 @@ glm_zeroinfl <- function(dist = "poisson") { # poisson, negbin
 glm_zeroinfl_poisson <- function(...) glm_zeroinfl("poisson")
 
 #' alias for glm_zeroinfl("negbin")
+#' @param ... passed to \code{glm_zeroinfl}
 #' @return structure containing functions \code{fit}, \code{coefficients},
 #'         \code{aic}, \code{data}, \code{pterm}, \code{pmodel}, and a
 #'         character string "glm_zeroinfl" in \code{model}.

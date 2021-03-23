@@ -6,7 +6,7 @@ NULL
 #' runModels runs miRNA mrna model model for various miRNA-mRNA data distributions
 #'
 #' This function defines the boundaries of mRNA vs miRNAs of interest to be analysed by the runModels function
-#' @param Combine the combined file for mRNA and selected miRNAs output of combiner function
+#' @param combination the combined file for mRNA and selected miRNAs output of combiner function
 #' @param select_mRNA the output of gene_variant function.
 #' @param select_miRNA The vector of miRNA/s to be investigated.
 #' @param mode the mode of analysis if more than one miRNA is being investigated multivariate "multi"

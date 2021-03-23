@@ -11,8 +11,8 @@ if (getRversion() >= "2.15.1") {
 #' corMirnaRnaMiranda correlation for miRNA and mRNA
 #'
 #' This function uses the output of one2OneRnaMiRNA and returns the correlation dataframe.
-#' @param mRNA_fc mRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA.
-#' @param miRNA_fc miRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA
+#' @param mRNA mRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA.
+#' @param miRNA miRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA
 #' @param CorVal Correlation cut off.Example: If correlation -0.2 it would only return correlations with
 #' smaller than this value correlation for miRNA and mRNA at various time points.
 #' @param getInputSpeciesDF The dataframe generated from the getInputSpecies function.

@@ -13,8 +13,6 @@ fdrSig(RMObj, value = 0.05, method = "fdr")
 
 \item{method}{The p-value adjustment method default is fdr. It could be either of the following "holm", "hochberg",
 "hommel","bonferroni", "BH", "BY", or "fdr".}
-
-\item{select_miRNA}{The vector of miRNA/s to be investigated.}
 }
 \value{
 A list of FDR corrected p vlaues, annova, and significance for each gene and the miRNA/s of interest

@@ -23,7 +23,7 @@ This column contains the gene names.}
 
 \item{pval_colname}{Default is "pvalue" column name for p-values (in input).}
 
-\item{miRNA_fc}{miRNA or mRNA file generated from foldchanges (FC) obj.}
+\item{pthreshold}{P-value threshold.}
 }
 \value{
 Correlation dataframe

@@ -7,16 +7,16 @@
 corMirnaRnaMiranda(mRNA, miRNA, CorVal, getInputSpeciesDF, method = "pearson")
 }
 \arguments{
+\item{mRNA}{mRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA.}
+
+\item{miRNA}{miRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA}
+
 \item{CorVal}{Correlation cut off.Example: If correlation -0.2 it would only return correlations with
 smaller than this value correlation for miRNA and mRNA at various time points.}
 
 \item{getInputSpeciesDF}{The dataframe generated from the getInputSpecies function.}
 
 \item{method}{Default is "pearson" else use "kendall" or "spearman".}
-
-\item{mRNA_fc}{mRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA.}
-
-\item{miRNA_fc}{miRNA file generated from foldchanges (FC) obj of the one2OneRnaMiRNA}
 }
 \value{
 Correlation dataframe

@@ -16,6 +16,8 @@ runModels(
 )
 }
 \arguments{
+\item{combination}{the combined file for mRNA and selected miRNAs output of combiner function}
+
 \item{select_mRNA}{the output of gene_variant function.}
 
 \item{select_miRNA}{The vector of miRNA/s to be investigated.}
@@ -31,8 +33,6 @@ fitting. (\code{scale} must be greater than zero).}
 \item{cutoff}{p-value cut off to call significance}
 
 \item{all_coeff}{if true only models with all negative coefficients will be selected if false at least one}
-
-\item{Combine}{the combined file for mRNA and selected miRNAs output of combiner function}
 }
 \value{
 A list of p-vlaues, annova, and significance for each gene and the miRNA/s of interest

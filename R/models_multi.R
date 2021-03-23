@@ -5,7 +5,7 @@
 #' Runs models 'glm_gaussian', 'glm_nb', 'glm_poisson',
 #' 'glm_zeroinfl(poisson)', 'glm_zeroinfl(negbin)' and returns
 #' mode with lowest AIC.
-#'
+#' @param models Model type, one or more of glm_gaussian, glm_nb, glm_poisson, glm_zeroinfl_poisson or glm_zeroinfl_negbin
 #' @return structure containing functions \code{fit}, \code{coefficients},
 #'         \code{aic}, \code{data}, \code{pterm}, \code{pmodel}, and a
 #'         character string "glm_multi" in \code{model}.

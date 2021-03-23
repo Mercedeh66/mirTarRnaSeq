@@ -9,7 +9,9 @@
 #' function
 #' @param sig_corrs correlation matrix, produced by threshSig
 #' @param corrS vector of Differences/Correlations, from the sampCorRnaMirna function.
-#' @param getInputSpeciesDF miranda data, produced by getInputSpecies
+#' @param mRNA mRNA FC matrix.
+#' @param miRNA miRNA FC matrix.
+#' @param getInputSpeciesDF miranda data, produced by getInputSpecies.
 #' @return An object containing data.frames of significant mRNA, miRNA
 #'             and correlation matrix filtered by miranda input.
 #' @export

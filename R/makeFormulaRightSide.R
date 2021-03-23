@@ -5,8 +5,7 @@
 #' This function make right hand side of formula for model variables: vector of indep. variables (i.e. miRNAs)
 #' mode: 'multi' for simple, 'inter' for model with interactions returns a string in the form "~ a + b", or "~ a + b + a * b"
 #' @param variables The vector created by miRNA_select
-#' @param mode Null versus "multi: versus "inter"
-#' @param zeroin if zero inflated user TRUE default FALSE
+#' @param mode One of "multi", "inter" or NULL
 #' @return data.frame containing Miranda data
 #' @examples
 #' \donttest{

@@ -34,6 +34,8 @@ runAllMirnaModels(
 
 \item{method}{finInterResult miRNA and mRNA interrelation in two time points  results in a dataframe.}
 
+\item{cutoff}{P-value cutoff of the model.}
+
 \item{all_coeff}{if true only models with all negative coefficients will be selected if false at least one
 negative coefficient should be in the model; default is TRUE.}
 

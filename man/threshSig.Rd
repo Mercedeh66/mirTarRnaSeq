@@ -7,11 +7,11 @@
 threshSig(corr0, corrS, pvalue = 0.05)
 }
 \arguments{
+\item{corr0}{data.frame results of corMirnaRna function.}
+
 \item{corrS}{vector of correlations, from the sampCorRnaMirna function.}
 
 \item{pvalue}{The p value threshold to be used on the sampled data.}
-
-\item{corr_0}{data.frame results of corMirnaRna function.}
 }
 \value{
 A dataframe of Significant mRNA and miRNA

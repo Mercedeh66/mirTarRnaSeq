@@ -10,7 +10,7 @@ NULL
 #' comparing real data vs sampled data. It mainly illustrates the where the lower %5 (sig)
 #' relationships lie.
 #' @param corr0 data.frame results of corMirnaRna function.
-#' @param outs data.frame results from the sampCorRnaMirna function.
+#' @param corrS data.frame results from the sampCorRnaMirna function.
 #' @param pvalue The p value threshold to be used on the data density plot default is 0.05.
 #' @return Density plot
 #' @export

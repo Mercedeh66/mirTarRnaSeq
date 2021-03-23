@@ -6,6 +6,9 @@
 \usage{
 glm_zeroinfl_poisson(...)
 }
+\arguments{
+\item{...}{passed to \code{glm_zeroinfl}}
+}
 \value{
 structure containing functions \code{fit}, \code{coefficients},
         \code{aic}, \code{data}, \code{pterm}, \code{pmodel}, and a

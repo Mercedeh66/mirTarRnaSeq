@@ -7,9 +7,9 @@
 drawCorPlot(corMatrix, ...)
 }
 \arguments{
-\item{...}{parameters form the corrplot package}
+\item{corMatrix}{Significant correlation matrix}
 
-\item{sig_corrs}{Significant correlation matrix}
+\item{...}{parameters form the corrplot package}
 }
 \value{
 miRNA mRNA target correlation plot

@@ -12,7 +12,11 @@ mirandaIntersectInter(sig_corrs, corrS, mRNA, miRNA, getInputSpeciesDF)
 
 \item{corrS}{vector of Differences/Correlations, from the sampCorRnaMirna function.}
 
-\item{getInputSpeciesDF}{miranda data, produced by getInputSpecies}
+\item{mRNA}{mRNA FC matrix.}
+
+\item{miRNA}{miRNA FC matrix.}
+
+\item{getInputSpeciesDF}{miranda data, produced by getInputSpecies.}
 }
 \value{
 An object containing data.frames of significant mRNA, miRNA

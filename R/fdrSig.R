@@ -10,7 +10,6 @@ NULL
 #' @param value The FDR value default is 0.1
 #' @param method The p-value adjustment method default is fdr. It could be either of the following "holm", "hochberg",
 #' "hommel","bonferroni", "BH", "BY", or "fdr".
-#' @param select_miRNA The vector of miRNA/s to be investigated.
 #' @return A list of FDR corrected p vlaues, annova, and significance for each gene and the miRNA/s of interest
 #' @export
 #' @keywords p_adjust, correction

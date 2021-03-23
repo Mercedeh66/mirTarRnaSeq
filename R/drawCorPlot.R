@@ -8,7 +8,7 @@ NULL
 #'
 #' This function plots correlations for mRNA and miRNAs regression results (negative correlation for multi and
 #'  individual interactions and positive and negative for interactions)
-#' @param sig_corrs Significant correlation matrix 
+#' @param corMatrix Significant correlation matrix 
 #' @param ...  parameters form the corrplot package
 #' @return miRNA mRNA target correlation plot
 #' @export

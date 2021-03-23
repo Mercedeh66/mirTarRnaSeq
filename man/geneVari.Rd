@@ -7,9 +7,9 @@
 geneVari(Combined, miRNA_select)
 }
 \arguments{
-\item{miRNA_select}{The vector of selected miRNA/s}
+\item{Combined}{the combined file for mRNA and selected miRNAs output of combiner function}
 
-\item{Combine}{the combined file for mRNA and selected miRNAs output of combiner function}
+\item{miRNA_select}{The vector of selected miRNA/s}
 }
 \value{
 A vector of characters with defined mRNA dimensions

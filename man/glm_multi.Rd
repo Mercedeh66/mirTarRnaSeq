@@ -9,6 +9,9 @@ glm_multi(
     glm_zeroinfl_negbin)
 )
 }
+\arguments{
+\item{models}{Model type, one or more of glm_gaussian, glm_nb, glm_poisson, glm_zeroinfl_poisson or glm_zeroinfl_negbin}
+}
 \value{
 structure containing functions \code{fit}, \code{coefficients},
         \code{aic}, \code{data}, \code{pterm}, \code{pmodel}, and a

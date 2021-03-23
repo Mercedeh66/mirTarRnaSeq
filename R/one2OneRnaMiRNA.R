@@ -18,11 +18,11 @@ if (getRversion() >= "2.15.1") {
 #' (with fold-changes) - P-value with rownames == genes and columns are P1, 2, 3, ... (with p-values)
 #' both data.frames have the same order dimensions.
 #' @param files a list of dataframes either miRNAs or mRNAs from various time points.
-#' @param miRNA_fc miRNA or mRNA file generated from foldchanges (FC) obj.
 #' @param gene_colname Default is a vector character of length 1 "Gene" user can alter if they choose
 #' This column contains the gene names.
 #' @param fc_colname Default "FC" is coloumn name for fold changes user can alter if they choose.
 #' @param pval_colname Default is "pvalue" column name for p-values (in input).
+#' @param pthreshold P-value threshold.
 #' @return Correlation dataframe
 #' @export
 #' @keywords correlation

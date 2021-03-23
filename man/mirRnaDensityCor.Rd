@@ -9,9 +9,9 @@ mirRnaDensityCor(corr0, corrS, pvalue = 0.05)
 \arguments{
 \item{corr0}{data.frame results of corMirnaRna function.}
 
-\item{pvalue}{The p value threshold to be used on the data density plot default is 0.05.}
+\item{corrS}{data.frame results from the sampCorRnaMirna function.}
 
-\item{outs}{data.frame results from the sampCorRnaMirna function.}
+\item{pvalue}{The p value threshold to be used on the data density plot default is 0.05.}
 }
 \value{
 Density plot

@@ -18,7 +18,11 @@ if (getRversion() >= "2.15.1") {
 #' @param selection Species (species selection are either for mature miRNA species "Human1","Mouse",
 #'  "C.elegans", "Epstein_Barr", "Epstein_Barr_Human",
 #'  "Drosophila","Kaposi_Sarcoma", "KSHV_Human",
-#'  "Cytomegalovirus","CMV_Human") Note only EBV files are provided in the package for other files to be determined lol
+#'  "Cytomegalovirus","CMV_Human")
+#' @param threshold miRanda score threshold default 60
+#' @param energy miRanda folding energy threshold default NULL
+#' @param targetIden miRanda target identity score default NULL
+#' @param mirnaIden miRanda mirna identity score default NULL
 #' @return data.frame with Miranda data.
 #' @keywords miranda, species
 #' @export

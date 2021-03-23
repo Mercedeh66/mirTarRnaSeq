@@ -9,9 +9,7 @@ makeFormulaRightSide(variables, mode = "multi")
 \arguments{
 \item{variables}{The vector created by miRNA_select}
 
-\item{mode}{Null versus "multi: versus "inter"}
-
-\item{zeroin}{if zero inflated user TRUE default FALSE}
+\item{mode}{One of "multi", "inter" or NULL}
 }
 \value{
 data.frame containing Miranda data
