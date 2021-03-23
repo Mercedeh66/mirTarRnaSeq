@@ -21,10 +21,9 @@ NULL
 #' @keywords runModels univariate multivariate interaction glm
 #' @examples
 #' x <- runModels(Combine, geneVariant, "ebv-mir-bart9-5p")
-
 runModels <- function(combination, select_mRNA, select_miRNA, mode = NULL,
                       family = glm_poisson(), scale = 1, cutoff = 0.05,
-                      all_coeff=NULL) {
+                      all_coeff = NULL) {
   assertthat::assert_that(is.numeric(scale) && 1 == length(scale) && scale > 0)
   assertthat::assert_that(is.numeric(cutoff) && 1 == length(cutoff) && cutoff > 0)
   assertthat::assert_that(is.null(all_coeff) || (is.logical(all_coeff) && 1 == length(all_coeff)))
@@ -78,7 +77,7 @@ runModels <- function(combination, select_mRNA, select_miRNA, mode = NULL,
 
   # turn p-values into data.frame (with columns for every mirna)
   pvalues <- t(as.data.frame(pvalues))
-  colnames(pvalues) <- gsub("^`?(.*)[^`]`?$", "\\1", colnames(pvalues))  # remove ` ` from colnames...
+  colnames(pvalues) <- gsub("^`?(.*)[^`]`?$", "\\1", colnames(pvalues)) # remove ` ` from colnames...
   rownames(pvalues) <- genes
   return(
     list(

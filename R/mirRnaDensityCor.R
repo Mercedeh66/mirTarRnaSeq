@@ -17,7 +17,6 @@ NULL
 #' @keywords Density plot
 #' @examples
 #' x <- mirRnaDensityCor(corr_0, outs, pvalue = 0.05)
-
 mirRnaDensityCor <- function(corr0, corrS, pvalue = 0.05) {
   dens_corr_0 <- density(corr0$value)
   dens_outs <- density(corrS) # this is the distribution for correlations for shuffled data

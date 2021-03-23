@@ -36,11 +36,11 @@ glm_gaussian <- function() {
         return(g)
       },
       warning = function(e, ...) {
-#        warning(e)
+        #        warning(e)
         return(NULL)
       },
       error = function(e, ...) {
-#        warning(e)
+        #        warning(e)
         return(NULL)
       }
     )

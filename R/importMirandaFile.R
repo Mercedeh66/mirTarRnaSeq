@@ -31,21 +31,20 @@ importMirandaFile <- function(fn) {
 #' x <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Mouse_miRanda.txt.gz?download=1")
 #' }
 downloadMirandaFile <- function(urlf) {
-    return(downloadMirandaFile_(urlf))
+  return(downloadMirandaFile_(urlf))
 }
 
 # use internal function here so we can R.cache it without changing how it looks like for the user.
 downloadMirandaFile_ <- function(urlf) {
-  #make effective statement error if it returns true or false for http with or without s
+  # make effective statement error if it returns true or false for http with or without s
   assert_that(grepl("^https?://.*$", urlf))
-  tmp <- tempfile(fileext=".gz")
-  op <- options(timeout=99999)
+  tmp <- tempfile(fileext = ".gz")
+  op <- options(timeout = 99999)
   on.exit({
-      unlink(tmp)
-      options(op)
+    unlink(tmp)
+    options(op)
   })
-  download.file(urlf, tmp) 
-  ret1 <- fread(tmp, sep="\t", header=FALSE) 
+  download.file(urlf, tmp)
+  ret1 <- fread(tmp, sep = "\t", header = FALSE)
   return(as.data.frame(ret1))
 }
-

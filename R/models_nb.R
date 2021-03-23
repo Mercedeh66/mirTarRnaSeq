@@ -33,18 +33,18 @@ glm_nb <- function() {
   fit_ <- function(x, data) {
     tryCatch(
       {
-        g <- glm.nb(x, data = data, control=glm.control(maxit=1000))
+        g <- glm.nb(x, data = data, control = glm.control(maxit = 1000))
         if (!is.null(g)) {
           attr(g, "model") <- model_name
         }
         return(g)
       },
       warning = function(e, ...) {
-#        warning(e)
+        #        warning(e)
         return(NULL)
       },
       error = function(e, ...) {
-#        warning(e)
+        #        warning(e)
         return(NULL)
       }
     )

@@ -26,13 +26,12 @@ NULL
 #' @export
 #' @keywords runAllMirnaModels all_miRNAs
 #' @examples
-#' mirnas<-c("ebv-mir-bart9-5p","ebv-mir-bart6-3p")
+#' mirnas <- c("ebv-mir-bart9-5p", "ebv-mir-bart6-3p")
 #' x <- runAllMirnaModels(mirnas, mRNA, miRNA, miRanda,
 #'   prob = 0.90, fdr_cutoff = 0.1, method = "fdr",
 #'   all_coeff = TRUE, mode = "multi",
 #'   family = glm_poisson(), scale = 100
 #' )
-
 runAllMirnaModels <- function(mirnas, DiffExpmRNA, DiffExpmiRNA, miranda_data,
                               prob = 0.75, fdr_cutoff = 0.1, method = "fdr", cutoff = 0.05,
                               all_coeff = FALSE, mode = NULL, family = glm_poisson(), scale = 1) {
@@ -63,7 +62,7 @@ runAllMirnaModels <- function(mirnas, DiffExpmRNA, DiffExpmiRNA, miranda_data,
   count <- 0
   ret <- lapply(unique_mirnas, function(mirna) {
     count <<- count + 1
-    cat(sprintf("%d: %s\n", count, paste(mirna, collapse=", ")))
+    cat(sprintf("%d: %s\n", count, paste(mirna, collapse = ", ")))
 
     # For Determining Prob it needs to percent
     valmMedia <- quantile(miranda_data$V3, probs = prob)[1]

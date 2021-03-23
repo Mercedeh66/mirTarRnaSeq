@@ -28,7 +28,7 @@ runModel <- function(x, data, ..., model = glm_gaussian()) {
 #' @param x fitted model
 #' @return fitted model coefficients
 #' @export
-#' @examples 
+#' @examples
 #' modelCoefficients(some_model)
 modelCoefficients <- function(x) {
   assert_that(!is.vector(x), msg = "not a valid model object")
@@ -62,7 +62,7 @@ modelAIC <- function(x) {
 #' @param x fitted model
 #' @return  Input data for the fitted model
 #' @export
-#' @examples 
+#' @examples
 #' x <- modelData(some_model)
 modelData <- function(x) {
   assert_that(!is.vector(x), msg = "not a valid model object")
@@ -77,7 +77,7 @@ modelData <- function(x) {
 #' @param x fitted model
 #' @return  Pvalue for the terms in the fitted model
 #' @export
-#' @examples 
+#' @examples
 #' modelTermPvalues(some_model)
 modelTermPvalues <- function(x) {
   assert_that(!is.vector(x), msg = "not a valid model object")
@@ -91,7 +91,7 @@ modelTermPvalues <- function(x) {
 #' @param x fitted model
 #' @return Pvalue for the model
 #' @export
-#' @examples 
+#' @examples
 #' modelModelPvalue(some_model)
 modelModelPvalue <- function(x) {
   assert_that(!is.vector(x), msg = "not a valid model object")
@@ -105,7 +105,7 @@ modelModelPvalue <- function(x) {
 #' @param x fitted model
 #' @return model name
 #' @export
-#' @examples 
+#' @examples
 #' modelModelName(some_model)
 modelModelName <- function(x) {
   assert_that(!is.vector(x), msg = "not a valid model object")

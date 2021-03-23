@@ -9,7 +9,6 @@
 #' @keywords zscore, scale, transform, transpose
 #' @examples
 #' x <- tzTrans(miRNA)
-
 tzTrans <- function(x) {
   tx <- t(x)
   tnorm1 <- apply(tx, 1, scale)

@@ -29,9 +29,11 @@ if (getRversion() >= "2.15.1") {
 #' @examples
 #' x <- getInputSpecies("Epstein_Barr", threshold = 60) # Default is threshold 60
 getInputSpecies <- function(selection, threshold = 60, energy = NULL, targetIden = NULL, mirnaIden = NULL) {
-    return(getInputSpecies_(selection=selection, threshold=threshold,
-                            energy=energy, targetIden=targetIden,
-                            mirnaIden=mirnaIden))
+  return(getInputSpecies_(
+    selection = selection, threshold = threshold,
+    energy = energy, targetIden = targetIden,
+    mirnaIden = mirnaIden
+  ))
 }
 
 # use internal function here so we can R.cache it without changing how it looks like for the user.

@@ -10,7 +10,6 @@
 #' @keywords Results dataframe
 #' @examples
 #' x <- finInterResult(results)
-
 finInterResult <- function(results) {
   final_results <- data.frame(
     mRNA = rownames(results$mrna),

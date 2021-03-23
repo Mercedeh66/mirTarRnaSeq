@@ -54,7 +54,7 @@ This function runs the "runModel" function for all miRNAs and mRNA combinations 
 list with significant genes and FDR models
 }
 \examples{
-mirnas<-c("ebv-mir-bart9-5p","ebv-mir-bart6-3p")
+mirnas <- c("ebv-mir-bart9-5p", "ebv-mir-bart6-3p")
 x <- runAllMirnaModels(mirnas, mRNA, miRNA, miRanda,
   prob = 0.90, fdr_cutoff = 0.1, method = "fdr",
   all_coeff = TRUE, mode = "multi",

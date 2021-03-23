@@ -10,7 +10,7 @@
 #'         \code{aic}, \code{data}, \code{pterm}, \code{pmodel}, and a
 #'         character string "glm_multi" in \code{model}.
 #' @export
-#' @examples 
+#' @examples
 #' x <- glm_multi()
 glm_multi <- function(models = c(
                         glm_gaussian, glm_nb, glm_poisson,

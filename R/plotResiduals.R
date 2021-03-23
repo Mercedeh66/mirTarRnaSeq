@@ -8,7 +8,7 @@
 #' @export
 #' @keywords plot, residuals, model
 #' @examples
-#' plotResiduals(lm(x ~ y, data=data.frame(x=runif(10), y=runif(10))))
+#' plotResiduals(lm(x ~ y, data = data.frame(x = runif(10), y = runif(10))))
 plotResiduals <- function(model) {
   plot(model, 1)
   return(invisible(NULL))

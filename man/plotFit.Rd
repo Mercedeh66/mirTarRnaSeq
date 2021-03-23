@@ -16,8 +16,7 @@ does not return value
 Plot 2D description
 }
 \examples{
-plotFit(lm(x ~ y, data=data.frame(x=runif(10), y=runif(10))))
-
+plotFit(lm(x ~ y, data = data.frame(x = runif(10), y = runif(10))))
 }
 \keyword{2d,}
 \keyword{model}

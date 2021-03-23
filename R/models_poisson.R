@@ -12,7 +12,7 @@ NULL
 #'         \code{aic}, \code{data}, \code{pterm}, \code{pmodel}, and a
 #'         character string "glm_poisson" in \code{model}.
 #' @export
-#' @examples 
+#' @examples
 #' x <- glm_poisson()
 glm_poisson <- function() {
   model_name <- "glm_poisson"
@@ -34,11 +34,11 @@ glm_poisson <- function() {
         return(g)
       },
       warning = function(e, ...) {
-#        warning(e)
+        #        warning(e)
         return(NULL)
       },
       error = function(e, ...) {
-#        warning(e)
+        #        warning(e)
         return(NULL)
       }
     )

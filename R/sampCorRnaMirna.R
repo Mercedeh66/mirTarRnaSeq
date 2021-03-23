@@ -14,7 +14,6 @@
 #' @keywords sampling, sampling, correlation, shuffling
 #' @examples
 #' x <- sampCorRnaMirna(mRNA_fc, miRNA_fc, method = "pearson", Shrounds = 10, Srounds = 10)
-
 sampCorRnaMirna <- function(mRNA, miRNA, method = "pearson", Shrounds = 100, Srounds = 1000) {
   outs <- c()
   for (i in 1:Shrounds) {

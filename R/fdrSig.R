@@ -16,10 +16,10 @@ NULL
 #' @examples
 #' models <- runModels(Combine, geneVariant, "ebv-mir-bart9-5p")
 #' x <- fdrSig(models, value = 0.1, method = "fdr")
-
-# F9 fdrSig ruturns FDR significant genes
-# Desc: The User Can Here Define fdrSig value and get the FDR sig Samples, AllModelsGLMs annova value ,sig_genes names, and pvalues for all sig genes. In put is
-# the run model file obj and a value for FDR correction
+#'
+#' # F9 fdrSig ruturns FDR significant genes
+#' # Desc: The User Can Here Define fdrSig value and get the FDR sig Samples, AllModelsGLMs annova value ,sig_genes names, and pvalues for all sig genes. In put is
+#' # the run model file obj and a value for FDR correction
 fdrSig <- function(RMObj, value = 0.05, method = "fdr") {
   p_adjusted <- apply(RMObj$pvalues, 2, p.adjust, method = method)
   is_significant <- apply(p_adjusted, 1, function(x) any(is.finite(x) & x < value))

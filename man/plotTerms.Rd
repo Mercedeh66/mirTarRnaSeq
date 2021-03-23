@@ -16,7 +16,7 @@ does not return value
 Plot terms description
 }
 \examples{
-plotTerms(lm(x ~ y, data=data.frame(x=runif(10), y=runif(10))))
+plotTerms(lm(x ~ y, data = data.frame(x = runif(10), y = runif(10))))
 }
 \keyword{model}
 \keyword{plot,}

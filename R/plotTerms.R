@@ -12,7 +12,7 @@ NULL
 #' @export
 #' @keywords plot, residuals, model
 #' @examples
-#' plotTerms(lm(x ~ y, data=data.frame(x=runif(10), y=runif(10))))
+#' plotTerms(lm(x ~ y, data = data.frame(x = runif(10), y = runif(10))))
 plotTerms <- function(model) {
   m <- model$model
   plot(m, main = as.character.formula(model$terms))

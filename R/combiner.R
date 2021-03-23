@@ -23,6 +23,3 @@ combiner <- function(mRNA, miRNA, miRNA_select) {
   combination <- combination[, !apply(is.na(combination), 2, any)]
   return(combination)
 }
-
-
-

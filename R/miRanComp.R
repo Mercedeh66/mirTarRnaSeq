@@ -12,7 +12,6 @@
 #' @keywords miRanda expression Intersection
 #' @examples
 #' x <- miRanComp(miRNA, miRanda)
-
 miRanComp <- function(miRNA, miRanda) {
   subset <- intersect(rownames(miRNA), miRanda$V2)
   kept <- miRNA[subset, ]

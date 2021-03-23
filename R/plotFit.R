@@ -12,8 +12,7 @@ NULL
 #' @export
 #' @keywords plot, 2d, model
 #' @examples
-#' plotFit(lm(x ~ y, data=data.frame(x=runif(10), y=runif(10))))
-#'
+#' plotFit(lm(x ~ y, data = data.frame(x = runif(10), y = runif(10))))
 plotFit <- function(model) {
   m <- model$model
   m$Fitted <- model$fitted.values

@@ -18,7 +18,6 @@
 #' @keywords Significance, Threshold, intersect
 #' @examples
 #' x <- miRandaIntersect(sig_InterR, outs2, mRNA_fc, miRNA_fc, miRandaM)
-
 miRandaIntersect <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpeciesDF) {
   result_corrs <- dplyr::inner_join(sig_corrs, getInputSpeciesDF, by = c("V1", "V2"))
   result_mrna <- mRNA[result_corrs$V2, , drop = FALSE]

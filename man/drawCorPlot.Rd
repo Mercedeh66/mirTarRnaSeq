@@ -22,6 +22,7 @@ This function plots correlations for mRNA and miRNAs regression results (negativ
 \donttest{
 x <- drawCorPlot(corMatrix)
 }
+
 }
 \keyword{R}
 \keyword{correlation}

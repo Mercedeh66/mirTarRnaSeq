@@ -22,7 +22,6 @@ if (getRversion() >= "2.15.1") {
 #' @keywords Correlation with miRanda, miRanda Threshold
 #' @examples
 #' x <- corMirnaRnaMiranda(mRNA_fc, miRNA_fc, Cor = -0.9, miRandaM)
-
 corMirnaRnaMiranda <- function(mRNA, miRNA, CorVal, getInputSpeciesDF, method = "pearson") {
   tmRNA <- t(mRNA)
   tmiRNA <- t(miRNA)

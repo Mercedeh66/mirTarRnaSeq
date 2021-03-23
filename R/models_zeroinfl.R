@@ -18,7 +18,7 @@ NULL
 #'         \code{aic}, \code{data}, \code{pterm}, \code{pmodel}, and a
 #'         character string "glm_zeroinfl" in \code{model}.
 #' @export
-#' @examples 
+#' @examples
 #' x <- glm_zeroinfl("negbin")
 glm_zeroinfl <- function(dist = "poisson") { # poisson, negbin
   assert_that(dist %in% c("poisson", "negbin"))
@@ -40,19 +40,21 @@ glm_zeroinfl <- function(dist = "poisson") { # poisson, negbin
     }
     tryCatch(
       {
-        g <- zeroinfl(formula(x), data = data, dist = dist,
-                      control=zeroinfl.control(maxit=100000))
+        g <- zeroinfl(formula(x),
+          data = data, dist = dist,
+          control = zeroinfl.control(maxit = 100000)
+        )
         if (!is.null(g)) {
           attr(g, "model") <- model_name
         }
         return(g)
       },
       warning = function(e, ...) {
-#        warning(e)
+        #        warning(e)
         return(NULL)
       },
       error = function(e, ...) {
-#        warning(e)
+        #        warning(e)
         return(NULL)
       }
     )
