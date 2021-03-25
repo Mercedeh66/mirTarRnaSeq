@@ -1,7 +1,7 @@
 Package: mirTarRnaSeq
 Type: Package
 Title: mirTarRnaSeq 
-Version: 0.99.4
+Version: 0.99.5
 Authors@R: 
     c(person(given = "Mercedeh",
            family = "Movassagh",
@@ -16,7 +16,7 @@ Description: mirTarRnaSeq R package can be used for interactive mRNA miRNA seque
 License: MIT
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 4.0.0)
+Depends: R (>= 4.1.0)
 DeploySubPath: mirTarRnaSeq
 biocViews: miRNA, Regression, Software, Sequencing, SmallRNA, TimeCourse, DifferentialExpression
 RoxygenNote: 7.1.1

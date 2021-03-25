@@ -1,4 +1,4 @@
-setwd("data-raw")
+library(mirTarRnaSeq)
 
 miRNA0_2 <- read.table("test/miRNA0_2.txt", sep = "\t", header = TRUE, as.is = TRUE)
 miRNA2_5 <- read.table("test/miRNA2_5.txt", sep = "\t", header = TRUE, as.is = TRUE)
