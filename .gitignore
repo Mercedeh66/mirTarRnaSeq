@@ -51,3 +51,5 @@ Meta
 /build/
 
 /mirTarRnaSeq.Rproj
+
+/inst/doc/*

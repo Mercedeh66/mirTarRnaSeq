@@ -1,3 +1,4 @@
+Version 0.99.7 dealt with download issue
 Version 0.99.6 dealt with vignette issue
 Version 0.99.5 fixed documentation warnings for datasets and warnings for R CMD file size
 Version 0.99.4 fixed documentation warnings for datasets

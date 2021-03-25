@@ -39,15 +39,15 @@ getInputSpecies <- function(selection, threshold = 60, energy = NULL, targetIden
 # use internal function here so we can R.cache it without changing how it looks like for the user.
 getInputSpecies_ <- function(selection, threshold = 60, energy = NULL, targetIden = NULL, mirnaIden = NULL) {
   if (selection == "Human1") {
-    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Human_miRanda.txt.gz?download=1")
+    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Human_miRanda.txt.gz")
   } else if (selection == "Mouse") {
-    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Mouse_miRanda.txt.gz?download=1")
+    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Mouse_miRanda.txt.gz")
   } else if (selection == "Epstein_Barr") {
     ret <- importMirandaFile("Epstein_Barr_miRanda.txt.gz")
   } else if (selection == "C.elegans") {
-    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/C_elegans_miRanda.txt.gz?download=1")
+    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/C_elegans_miRanda.txt.gz")
   } else if (selection == "Drosophila") {
-    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Drosophila_miRanda.txt.gz?download=1")
+    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Drosophila_miRanda.txt.gz")
   } else if (selection == "Cytomegalovirus") {
     ret <- importMirandaFile("CMV_miRanda.txt.gz")
   } else if (selection == "Kaposi_Sarcoma") {

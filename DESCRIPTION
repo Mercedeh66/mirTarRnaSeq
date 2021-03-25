@@ -1,7 +1,7 @@
 Package: mirTarRnaSeq
 Type: Package
-Title: mirTarRnaSeq 
-Version: 0.99.6
+Title: mirTarRnaSeq
+Version: 0.99.7
 Authors@R: 
     c(person(given = "Mercedeh",
            family = "Movassagh",
@@ -16,25 +16,21 @@ Description: mirTarRnaSeq R package can be used for interactive mRNA miRNA seque
 License: MIT
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 4.1.0)
+Depends: R (>= 4.0.0)
 DeploySubPath: mirTarRnaSeq
-biocViews: miRNA, Regression, Software, Sequencing, SmallRNA, TimeCourse, DifferentialExpression
+biocViews: miRNA, Regression, Software, Sequencing, SmallRNA,
+        TimeCourse, DifferentialExpression
 RoxygenNote: 7.1.1
 Suggests: BiocStyle, knitr, rmarkdown, R.cache
 VignetteBuilder: knitr
-Imports: 
-    purrr,
-    MASS,
-    pscl,
-    assertthat,
-    caTools,
-    dplyr,
-    pheatmap,
-    reshape2,
-    corrplot,
-    grDevices,
-    graphics,
-    stats,
-    utils,
-    data.table,
-    R.utils
+Imports: purrr, MASS, pscl, assertthat, caTools, dplyr, pheatmap,
+        reshape2, corrplot, grDevices, graphics, stats, utils,
+        data.table, R.utils
+NeedsCompilation: no
+Packaged: 2021-03-25 14:06:28 UTC; mercedeh
+Author: Mercedeh Movassagh [aut, cre] (<https://orcid.org/0000-0001-7690-0230>),
+  Sarah Morton [aut],
+  Rafael Irizarry [aut],
+  Jeffrey Bailey [aut],
+  Joseph N Paulson [aut]
+Maintainer: Mercedeh Movassagh <mercedeh@ds.dfci.harvard.edu>
