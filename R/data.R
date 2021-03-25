@@ -166,3 +166,35 @@ NULL
 #' @docType data
 #' @keywords data
 NULL
+
+#' This is data is the results file from mouse miRanda getInputSpecies function.
+#' This data set is used in documentation examples.
+#'
+#' @name miRandaM
+#' @docType data
+#' @keywords data
+NULL
+
+#' This is data is the results file from EBV miRanda getInputSpecies function.
+#' This data set is used in documentation examples.
+#'
+#' @name miRanda
+#' @docType data
+#' @keywords data
+NULL
+
+#' This data is the mRNA fold change data set for difference or interrelation section.
+#' This data set is used in documentation examples.
+#'
+#' @name mRNA_fc2
+#' @docType data
+#' @keywords data
+NULL
+
+#' This data is the miRNA fold change data set for difference or interrelation section.
+#' This data set is used in documentation examples.
+#'
+#' @name miRNA_fc2
+#' @docType data
+#' @keywords data
+NULL
