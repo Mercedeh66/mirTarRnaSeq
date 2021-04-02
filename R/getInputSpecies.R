@@ -6,7 +6,7 @@ NULL
 
 ## quiet concerns of R CMD check regarding unbound global variables (in dplyr::filter() calls)
 if (getRversion() >= "2.15.1") {
-  utils::globalVariables(c("V1", "V2", "V3", "V4", "V5", "V6"))
+    utils::globalVariables(c("V1", "V2", "V3", "V4", "V5", "V6"))
 }
 
 #' Return Miranda data for a given species.
@@ -29,47 +29,47 @@ if (getRversion() >= "2.15.1") {
 #' @examples
 #' x <- getInputSpecies("Epstein_Barr", threshold = 60) # Default is threshold 60
 getInputSpecies <- function(selection, threshold = 60, energy = NULL, targetIden = NULL, mirnaIden = NULL) {
-  return(getInputSpecies_(
-    selection = selection, threshold = threshold,
-    energy = energy, targetIden = targetIden,
-    mirnaIden = mirnaIden
-  ))
+    return(getInputSpecies_(
+        selection = selection, threshold = threshold,
+        energy = energy, targetIden = targetIden,
+        mirnaIden = mirnaIden
+    ))
 }
 
 # use internal function here so we can R.cache it without changing how it looks like for the user.
 getInputSpecies_ <- function(selection, threshold = 60, energy = NULL, targetIden = NULL, mirnaIden = NULL) {
-  if (selection == "Human1") {
-    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Human_miRanda.txt.gz")
-  } else if (selection == "Mouse") {
-    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Mouse_miRanda.txt.gz")
-  } else if (selection == "Epstein_Barr") {
-    ret <- importMirandaFile("Epstein_Barr_miRanda.txt.gz")
-  } else if (selection == "C.elegans") {
-    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/C_elegans_miRanda.txt.gz")
-  } else if (selection == "Drosophila") {
-    ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Drosophila_miRanda.txt.gz")
-  } else if (selection == "Cytomegalovirus") {
-    ret <- importMirandaFile("CMV_miRanda.txt.gz")
-  } else if (selection == "Kaposi_Sarcoma") {
-    ret <- importMirandaFile("Kaposi_miRanda.txt.gz")
-  } else if (selection == "Epstein_Barr_Human") {
-    ret <- importMirandaFile("EBV_Human_miRanda.txt.gz")
-  } else if (selection == "CMV_Human") {
-    ret <- importMirandaFile("CMV_Human_miRanda.txt.gz")
-  } else if (selection == "KSHV_Human") {
-    ret <- importMirandaFile("KSHV_Human_miRanda.txt.gz")
-  }
-  ret <- dplyr::filter(ret, V3 >= threshold)
-  if (!is.null(energy)) {
-    ret <- dplyr::filter(ret, V4 <= energy)
-  }
-  if (!is.null(targetIden)) {
-    ret <- dplyr::filter(ret, V5 >= targetIden)
-  }
-  if (!is.null(mirnaIden)) {
-    ret <- dplyr::filter(ret, V6 >= mirnaIden)
-  }
-  ret <- ret %>% dplyr::select(V1, V2, V3, V4, V5, V6)
-  # ret <- unique(ret)
-  return(ret)
+    if (selection == "Human1") {
+        ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Human_miRanda.txt.gz")
+    } else if (selection == "Mouse") {
+        ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Mouse_miRanda.txt.gz")
+    } else if (selection == "Epstein_Barr") {
+        ret <- importMirandaFile("Epstein_Barr_miRanda.txt.gz")
+    } else if (selection == "C.elegans") {
+        ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/C_elegans_miRanda.txt.gz")
+    } else if (selection == "Drosophila") {
+        ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Drosophila_miRanda.txt.gz")
+    } else if (selection == "Cytomegalovirus") {
+        ret <- importMirandaFile("CMV_miRanda.txt.gz")
+    } else if (selection == "Kaposi_Sarcoma") {
+        ret <- importMirandaFile("Kaposi_miRanda.txt.gz")
+    } else if (selection == "Epstein_Barr_Human") {
+        ret <- importMirandaFile("EBV_Human_miRanda.txt.gz")
+    } else if (selection == "CMV_Human") {
+        ret <- importMirandaFile("CMV_Human_miRanda.txt.gz")
+    } else if (selection == "KSHV_Human") {
+        ret <- importMirandaFile("KSHV_Human_miRanda.txt.gz")
+    }
+    ret <- dplyr::filter(ret, V3 >= threshold)
+    if (!is.null(energy)) {
+        ret <- dplyr::filter(ret, V4 <= energy)
+    }
+    if (!is.null(targetIden)) {
+        ret <- dplyr::filter(ret, V5 >= targetIden)
+    }
+    if (!is.null(mirnaIden)) {
+        ret <- dplyr::filter(ret, V6 >= mirnaIden)
+    }
+    ret <- ret %>% dplyr::select(V1, V2, V3, V4, V5, V6)
+    # ret <- unique(ret)
+    return(ret)
 }

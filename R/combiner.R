@@ -17,9 +17,9 @@
 #' miRNA_select <- c("ebv-mir-bart9-5p")
 #' x <- combiner(mRNA, miRNA, miRNA_select)
 combiner <- function(mRNA, miRNA, miRNA_select) {
-  sub_miRNA <- miRNA[miRNA_select, ]
-  common_samples <- intersect(names(mRNA), names(sub_miRNA))
-  combination <- as.data.frame(t(rbind(mRNA[, common_samples], sub_miRNA[, common_samples])))
-  combination <- combination[, !apply(is.na(combination), 2, any)]
-  return(combination)
+    sub_miRNA <- miRNA[miRNA_select, ]
+    common_samples <- intersect(names(mRNA), names(sub_miRNA))
+    combination <- as.data.frame(t(rbind(mRNA[, common_samples], sub_miRNA[, common_samples])))
+    combination <- combination[, !apply(is.na(combination), 2, any)]
+    return(combination)
 }

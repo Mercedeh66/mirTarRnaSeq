@@ -24,71 +24,71 @@ NULL
 runModels <- function(combination, select_mRNA, select_miRNA, mode = NULL,
                       family = glm_poisson(), scale = 1, cutoff = 0.05,
                       all_coeff = NULL) {
-  assertthat::assert_that(is.numeric(scale) && 1 == length(scale) && scale > 0)
-  assertthat::assert_that(is.numeric(cutoff) && 1 == length(cutoff) && cutoff > 0)
-  assertthat::assert_that(is.null(all_coeff) || (is.logical(all_coeff) && 1 == length(all_coeff)))
-  is_significant <- c()
-  all_models <- list()
-  genes <- c()
-  pvalues <- c()
-  AICvalues <- c()
-  # remove zero-variance columns.
-  combination <- combination[, apply(combination, 2, var) != 0, drop = FALSE]
-  select_mRNA <- intersect(select_mRNA, colnames(combination))
+    assertthat::assert_that(is.numeric(scale) && 1 == length(scale) && scale > 0)
+    assertthat::assert_that(is.numeric(cutoff) && 1 == length(cutoff) && cutoff > 0)
+    assertthat::assert_that(is.null(all_coeff) || (is.logical(all_coeff) && 1 == length(all_coeff)))
+    is_significant <- c()
+    all_models <- list()
+    genes <- c()
+    pvalues <- c()
+    AICvalues <- c()
+    # remove zero-variance columns.
+    combination <- combination[, apply(combination, 2, var) != 0, drop = FALSE]
+    select_mRNA <- intersect(select_mRNA, colnames(combination))
 
-  for (gene in select_mRNA) {
-    model_formula <- formula(paste(sprintf("`%s`", gene),
-      makeFormulaRightSide(select_miRNA, mode = mode),
-      sep = " ~ "
-    ))
+    for (gene in select_mRNA) {
+        model_formula <- formula(paste(sprintf("`%s`", gene),
+            makeFormulaRightSide(select_miRNA, mode = mode),
+            sep = " ~ "
+        ))
 
-    # run the model for a mRNA
-    x <- runModel(model_formula, data = combination, model = family, scale = scale)
+        # run the model for a mRNA
+        x <- runModel(model_formula, data = combination, model = family, scale = scale)
 
-    # check for negative coeffs (if 'all_coeff' is used)
-    keep <- TRUE
-    if (!is.null(all_coeff)) {
-      if (identical(all_coeff, TRUE)) {
-        if (!(all(modelCoefficients(x) < 0))) {
-          keep <- FALSE
+        # check for negative coeffs (if 'all_coeff' is used)
+        keep <- TRUE
+        if (!is.null(all_coeff)) {
+            if (identical(all_coeff, TRUE)) {
+                if (!(all(modelCoefficients(x) < 0))) {
+                    keep <- FALSE
+                }
+            } else {
+                if (!(any(modelCoefficients(x) < 0))) {
+                    keep <- FALSE
+                }
+            }
         }
-      } else {
-        if (!(any(modelCoefficients(x) < 0))) {
-          keep <- FALSE
+
+        # if we were unable to make a model (i.e. it is NULL) or we didn't get
+        # the negative coeffs we wanted, we don't add it to the lists here.
+        if (!is.null(x) && keep) {
+            ret <- modelTermPvalues(x)
+            is_significant <- c(is_significant, any(is.finite(ret) & ret < cutoff))
+            pvalues <- c(pvalues, list(ret))
+            all_models <- c(all_models, list(x))
+            genes <- c(genes, gene)
+            AICvalues <- c(AICvalues, list(modelAIC(x)))
         }
-      }
     }
+    names(is_significant) <- genes
+    names(pvalues) <- genes
+    names(all_models) <- genes
+    names(AICvalues) <- genes
 
-    # if we were unable to make a model (i.e. it is NULL) or we didn't get
-    # the negative coeffs we wanted, we don't add it to the lists here.
-    if (!is.null(x) && keep) {
-      ret <- modelTermPvalues(x)
-      is_significant <- c(is_significant, any(is.finite(ret) & ret < cutoff))
-      pvalues <- c(pvalues, list(ret))
-      all_models <- c(all_models, list(x))
-      genes <- c(genes, gene)
-      AICvalues <- c(AICvalues, list(modelAIC(x)))
-    }
-  }
-  names(is_significant) <- genes
-  names(pvalues) <- genes
-  names(all_models) <- genes
-  names(AICvalues) <- genes
-
-  # turn p-values into data.frame (with columns for every mirna)
-  pvalues <- t(as.data.frame(pvalues))
-  colnames(pvalues) <- gsub("^`?(.*)[^`]`?$", "\\1", colnames(pvalues)) # remove ` ` from colnames...
-  rownames(pvalues) <- genes
-  return(
-    list(
-      is_significant = is_significant, # logical vector TRUE if any term sign.; FALSE otherwise.
-      genes = genes,
-      pvalues = pvalues,
-      all_models = all_models,
-      AICvalues = AICvalues,
-      select_mRNA = select_mRNA,
-      select_miRNA = select_miRNA,
-      combination = combination
+    # turn p-values into data.frame (with columns for every mirna)
+    pvalues <- t(as.data.frame(pvalues))
+    colnames(pvalues) <- gsub("^`?(.*)[^`]`?$", "\\1", colnames(pvalues)) # remove ` ` from colnames...
+    rownames(pvalues) <- genes
+    return(
+        list(
+            is_significant = is_significant, # logical vector TRUE if any term sign.; FALSE otherwise.
+            genes = genes,
+            pvalues = pvalues,
+            all_models = all_models,
+            AICvalues = AICvalues,
+            select_mRNA = select_mRNA,
+            select_miRNA = select_miRNA,
+            combination = combination
+        )
     )
-  )
 }

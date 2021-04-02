@@ -1,4 +1,4 @@
-#' This is data is the mRNA expression across samples and miRNA expression data which is to be 
+#' This is data is the mRNA expression across samples and miRNA expression data which is to be
 #' investigated in one file. This data set is used in documentation examples.
 #'
 #' @name Combine
@@ -6,7 +6,7 @@
 #' @keywords data
 NULL
 
-#' This is data is the mRNA FC and miRNA FC correlation data. 
+#' This is data is the mRNA FC and miRNA FC correlation data.
 #' This data set is used in documentation examples.
 #'
 #' @name corr_0
@@ -14,7 +14,7 @@ NULL
 #' @keywords data
 NULL
 
-#' This is data is the mRNA FC and miRNA FC correlation/interaction data results after filteration. 
+#' This is data is the mRNA FC and miRNA FC correlation/interaction data results after filteration.
 #' This data set is used in documentation examples.
 #'
 #' @name final_results
@@ -22,7 +22,7 @@ NULL
 #' @keywords data
 NULL
 
-#' This is data is the mRNA expression across samples and miRNA expression data which is to be 
+#' This is data is the mRNA expression across samples and miRNA expression data which is to be
 #' investigated giving directions on which data is miRNA and which is mRNA.
 #' This data set is used in documentation examples.
 #'
@@ -31,7 +31,7 @@ NULL
 #' @keywords data
 NULL
 
-#' This is data is the mRNA FC and miRNA FC correlation/interaction original data. 
+#' This is data is the mRNA FC and miRNA FC correlation/interaction original data.
 #' This data set is used in documentation examples.
 #'
 #' @name inter0

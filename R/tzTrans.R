@@ -10,10 +10,10 @@
 #' @examples
 #' x <- tzTrans(miRNA)
 tzTrans <- function(x) {
-  tx <- t(x)
-  tnorm1 <- apply(tx, 1, scale)
-  col1 <- colnames(tx)
-  rownames(tnorm1) <- col1
-  tnorm <- as.data.frame(tnorm1)
-  return(tnorm)
+    tx <- t(x)
+    tnorm1 <- apply(tx, 1, scale)
+    col1 <- colnames(tx)
+    rownames(tnorm1) <- col1
+    tnorm <- as.data.frame(tnorm1)
+    return(tnorm)
 }

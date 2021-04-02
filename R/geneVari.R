@@ -11,7 +11,7 @@
 #' @examples
 #' x <- geneVari(Combine, "ebv-mir-bart9-5p")
 geneVari <- function(Combined, miRNA_select) {
-  # geneVari1 <- colnames(Combined[, 1:(ncol(Combined) - length(miRNA_select))])
-  geneVari1 <- setdiff(colnames(Combined), miRNA_select)
-  return(geneVari1)
+    # geneVari1 <- colnames(Combined[, 1:(ncol(Combined) - length(miRNA_select))])
+    geneVari1 <- setdiff(colnames(Combined), miRNA_select)
+    return(geneVari1)
 }

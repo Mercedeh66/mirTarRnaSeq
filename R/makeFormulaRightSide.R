@@ -13,19 +13,19 @@
 #' }
 #'
 makeFormulaRightSide <- function(variables, mode = "multi") {
-  # be sure to properly quote variable names: `varname`.
-  if (is.null(mode)) {
-    mode <- "multi"
-  }
-  replace <- !grepl("^`.*`$", variables) # all that don't look like `somevar`
-  variables[replace] <- paste("`", variables[replace], "`", sep = "")
-  rightside <- paste(variables, collapse = " + ") # "~ a + b"
-  if ("inter" == mode) {
-    for (i in 1:(length(variables) - 1)) {
-      for (j in (i + 1):length(variables)) {
-        rightside <- paste(rightside, paste(variables[i], variables[j], sep = " * "), sep = " + ") # "~ a + b + a * b"
-      }
+    # be sure to properly quote variable names: `varname`.
+    if (is.null(mode)) {
+        mode <- "multi"
     }
-  }
-  return(rightside)
+    replace <- !grepl("^`.*`$", variables) # all that don't look like `somevar`
+    variables[replace] <- paste("`", variables[replace], "`", sep = "")
+    rightside <- paste(variables, collapse = " + ") # "~ a + b"
+    if ("inter" == mode) {
+        for (i in seq_len(length(variables) - 1)) {
+            for (j in seq(i + 1, length(variables))) {
+                rightside <- paste(rightside, paste(variables[i], variables[j], sep = " * "), sep = " + ") # "~ a + b + a * b"
+            }
+        }
+    }
+    return(rightside)
 }

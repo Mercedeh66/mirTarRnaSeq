@@ -7,7 +7,7 @@ NULL
 
 ## quiet concerns of R CMD check regarding unbound global variables (in dplyr::filter() calls)
 if (getRversion() >= "2.15.1") {
-  utils::globalVariables(c("V1"))
+    utils::globalVariables(c("V1"))
 }
 
 #' mirRnaHeatmap pheatmap for miRTarRNASeq miRNA and mRNA correlation
@@ -30,13 +30,13 @@ if (getRversion() >= "2.15.1") {
 mirRnaHeatmap <- function(finalF, ..., upper_bound = 0,
                           main = "Default mRNA miRNA heatmap",
                           color = c(viridis::inferno(50), "grey90"), fontsize = 7) {
-  dfinalF <- dcast(finalF, V1 ~ V2, fun.aggregate = mean)
-  dfinalF[is.na(dfinalF)] <- upper_bound
-  rownames(dfinalF) <- dfinalF$V1
-  dfinalF <- dfinalF %>% dplyr::select(-V1)
-  p <- pheatmap::pheatmap(dfinalF,
-    color = color, fontsize = fontsize,
-    main = main, ...
-  )
-  return(p)
+    dfinalF <- dcast(finalF, V1 ~ V2, fun.aggregate = mean)
+    dfinalF[is.na(dfinalF)] <- upper_bound
+    rownames(dfinalF) <- dfinalF$V1
+    dfinalF <- dfinalF %>% dplyr::select(-V1)
+    p <- pheatmap::pheatmap(dfinalF,
+        color = color, fontsize = fontsize,
+        main = main, ...
+    )
+    return(p)
 }

@@ -20,7 +20,7 @@ NULL
 #' }
 #'
 threshSig <- function(corr0, corrS, pvalue = 0.05) {
-  threshold <- quantile(corrS, pvalue) # 5% default
-  sig_corrs <- corr0[corr0$value < threshold, ]
-  return(sig_corrs)
+    threshold <- quantile(corrS, pvalue) # 5% default
+    sig_corrs <- corr0[corr0$value < threshold, ]
+    return(sig_corrs)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/finInterResult.R
 \name{finInterResult}
 \alias{finInterResult}
-\title{finInterResult miRNA and mRNA interrelation in two-time points  results in a dataframe.}
+\title{finInterResult miRNA and mRNA interrelation in two-time points results in a dataframe.}
 \usage{
 finInterResult(results)
 }

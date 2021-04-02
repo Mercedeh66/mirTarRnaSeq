@@ -28,79 +28,79 @@ NULL
 #' @examples
 #' mirnas <- c("ebv-mir-bart9-5p", "ebv-mir-bart6-3p")
 #' x <- runAllMirnaModels(mirnas, mRNA, miRNA, miRanda,
-#'   prob = 0.90, fdr_cutoff = 0.1, method = "fdr",
-#'   all_coeff = TRUE, mode = "multi",
-#'   family = glm_poisson(), scale = 100
+#'     prob = 0.90, fdr_cutoff = 0.1, method = "fdr",
+#'     all_coeff = TRUE, mode = "multi",
+#'     family = glm_poisson(), scale = 100
 #' )
 runAllMirnaModels <- function(mirnas, DiffExpmRNA, DiffExpmiRNA, miranda_data,
                               prob = 0.75, fdr_cutoff = 0.1, method = "fdr", cutoff = 0.05,
                               all_coeff = FALSE, mode = NULL, family = glm_poisson(), scale = 1) {
-  assertthat::assert_that(is.character(mirnas))
+    assertthat::assert_that(is.character(mirnas))
 
-  # make unique
-  unique_mirnas <- unique(mirnas)
+    # make unique
+    unique_mirnas <- unique(mirnas)
 
-  # generate combinations of 2 miRNAs
-  if (!is.null(mode)) {
-    # produces list of pair of mirnas, e.g.:
-    #
-    # ...
-    # [[120]]
-    # [1] "ebv-mir-bart11-3p" "ebv-mir-bart18-3p"
-    #
-    # [[121]]
-    # [1] "ebv-mir-bart11-3p" "ebv-mir-bart18-5p"
-    #
-    # [[122]]
-    # [1] "ebv-mir-bart11-3p" "ebv-mir-bart19-3p"
-    # ...
-    unique_mirnas <- caTools::combs(unique_mirnas, 2)
-    unique_mirnas <- lapply(1:nrow(unique_mirnas), function(x) unique_mirnas[x, ])
-  }
-
-  # run models
-  count <- 0
-  ret <- lapply(unique_mirnas, function(mirna) {
-    count <<- count + 1
-    cat(sprintf("%d: %s\n", count, paste(mirna, collapse = ", ")))
-
-    # For Determining Prob it needs to percent
-    valmMedia <- quantile(miranda_data$V3, probs = prob)[1]
-    # MirandaParsingOfmyRNA
-    DiffExpmRNASub <- miRanComp(DiffExpmRNA, miranda_data)
-
-    # everything <- lapply(uni_miRanda, function(mirna) {
-    # combiner
-    Combine <- combiner(DiffExpmRNASub, DiffExpmiRNA, mirna)
-
-    # GeneVari
-    geneVariant <- geneVari(Combine, mirna)
-
-    MRun <- runModels(Combine, geneVariant, mirna, mode = mode, family = family, scale = scale, cutoff = cutoff)
-
-    # #Bonferroni sig Genes
-    FDRModel <- fdrSig(MRun, value = fdr_cutoff, method = method)
-
-    if (length(FDRModel$sig_models) > 0) {
-      # look for negative coeffs; "-1" to exclude intercept while checking...#If true all if false any
-      if (all_coeff) {
-        valid_models <- sapply(FDRModel$sig_models, function(m) all(modelCoefficients(m) < 0))
-      } else {
-        valid_models <- sapply(FDRModel$sig_models, function(m) any(modelCoefficients(m) < 0))
-      }
-      # subset fdrmodel's things
-      FDRModel$sig_models <- FDRModel$sig_models[valid_models]
-      FDRModel$sig_pvalues <- FDRModel$sig_pvalues[valid_models, , drop = FALSE]
-      FDRModel$sig_p_adjusted <- FDRModel$sig_p_adjusted[valid_models, , drop = FALSE]
-      FDRModel$sig_genes <- FDRModel$sig_genes[valid_models]
+    # generate combinations of 2 miRNAs
+    if (!is.null(mode)) {
+        # produces list of pair of mirnas, e.g.:
+        #
+        # ...
+        # [[120]]
+        # [1] "ebv-mir-bart11-3p" "ebv-mir-bart18-3p"
+        #
+        # [[121]]
+        # [1] "ebv-mir-bart11-3p" "ebv-mir-bart18-5p"
+        #
+        # [[122]]
+        # [1] "ebv-mir-bart11-3p" "ebv-mir-bart19-3p"
+        # ...
+        unique_mirnas <- caTools::combs(unique_mirnas, 2)
+        unique_mirnas <- lapply(seq_len(nrow(unique_mirnas)), function(x) unique_mirnas[x, ])
     }
-    # make siggenes data.frame
-    SigFDRGenes <- data.frame(cbind(FDRModel$sig_pvalues, FDRModel$sig_p_adjusted))
 
-    names(SigFDRGenes) <- c("P Value", "FDR")
+    # run models
+    count <- 0
+    ret <- lapply(unique_mirnas, function(mirna) {
+        count <<- count + 1
+        cat(sprintf("%d: %s\n", count, paste(mirna, collapse = ", ")))
 
-    return(list(SigFDRGenes = SigFDRGenes, FDRModel = FDRModel))
-  })
-  names(ret) <- sapply(unique_mirnas, paste, collapse = " and ")
-  return(ret)
+        # For Determining Prob it needs to percent
+        valmMedia <- quantile(miranda_data$V3, probs = prob)[1]
+        # MirandaParsingOfmyRNA
+        DiffExpmRNASub <- miRanComp(DiffExpmRNA, miranda_data)
+
+        # everything <- lapply(uni_miRanda, function(mirna) {
+        # combiner
+        Combine <- combiner(DiffExpmRNASub, DiffExpmiRNA, mirna)
+
+        # GeneVari
+        geneVariant <- geneVari(Combine, mirna)
+
+        MRun <- runModels(Combine, geneVariant, mirna, mode = mode, family = family, scale = scale, cutoff = cutoff)
+
+        # #Bonferroni sig Genes
+        FDRModel <- fdrSig(MRun, value = fdr_cutoff, method = method)
+
+        if (length(FDRModel$sig_models) > 0) {
+            # look for negative coeffs; "-1" to exclude intercept while checking...#If true all if false any
+            if (all_coeff) {
+                valid_models <- sapply(FDRModel$sig_models, function(m) all(modelCoefficients(m) < 0))
+            } else {
+                valid_models <- sapply(FDRModel$sig_models, function(m) any(modelCoefficients(m) < 0))
+            }
+            # subset fdrmodel's things
+            FDRModel$sig_models <- FDRModel$sig_models[valid_models]
+            FDRModel$sig_pvalues <- FDRModel$sig_pvalues[valid_models, , drop = FALSE]
+            FDRModel$sig_p_adjusted <- FDRModel$sig_p_adjusted[valid_models, , drop = FALSE]
+            FDRModel$sig_genes <- FDRModel$sig_genes[valid_models]
+        }
+        # make siggenes data.frame
+        SigFDRGenes <- data.frame(cbind(FDRModel$sig_pvalues, FDRModel$sig_p_adjusted))
+
+        names(SigFDRGenes) <- c("P Value", "FDR")
+
+        return(list(SigFDRGenes = SigFDRGenes, FDRModel = FDRModel))
+    })
+    names(ret) <- sapply(unique_mirnas, paste, collapse = " and ")
+    return(ret)
 }

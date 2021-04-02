@@ -19,25 +19,25 @@
 #' x <- modelsFilter(models, is_significant == FALSE)
 #' }
 modelsFilter <- function(models, expr, quiet = FALSE) {
-  assertthat::assert_that(is.list(models)) # `models` must be a list
-  cond <- eval(substitute(expr), envir = models, enclos = parent.frame(n = 1))
-  if (!is.logical(cond)) {
-    stop(paste0("expression '", deparse(substitute(expr)), "' does not yield logical value"))
-  }
-  for (i in 1:length(models)) {
-    if (length(cond) != length(models[[i]])) {
-      if (identical(quiet, FALSE)) {
-        name <- names(models)[i]
-        if ("" != name) {
-          warning(sprintf("condition length mismatch ('%s')", name))
-        } else {
-          warning(sprintf("condition length mismatch (i=%d)", i))
-        }
-      }
-      models[[i]] <- NA
-    } else {
-      models[[i]] <- models[[i]][which(cond)]
+    assertthat::assert_that(is.list(models)) # `models` must be a list
+    cond <- eval(substitute(expr), envir = models, enclos = parent.frame(n = 1))
+    if (!is.logical(cond)) {
+        stop(paste0("expression '", deparse(substitute(expr)), "' does not yield logical value"))
     }
-  }
-  return(models)
+    for (i in seq_len(length(models))) {
+        if (length(cond) != length(models[[i]])) {
+            if (identical(quiet, FALSE)) {
+                name <- names(models)[i]
+                if ("" != name) {
+                    warning(sprintf("condition length mismatch ('%s')", name))
+                } else {
+                    warning(sprintf("condition length mismatch (i=%d)", i))
+                }
+            }
+            models[[i]] <- NA
+        } else {
+            models[[i]] <- models[[i]][which(cond)]
+        }
+    }
+    return(models)
 }

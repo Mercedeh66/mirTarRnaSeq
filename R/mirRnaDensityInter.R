@@ -21,17 +21,17 @@ NULL
 #' }
 #'
 mirRnaDensityInter <- function(Inter0, OUTS, pvalue = 0.05) {
-  dens_Inter_0 <- density(Inter0$value)
-  dens_outs <- density(OUTS) # this is the distribution for correlations for shuffled data
-  mx_y <- max(dens_Inter_0$y, dens_outs$y)
-  plot(
-    dens_outs,
-    ylim = c(0, mx_y),
-    col = "grey80",
-    lwd = 2
-  )
-  lines(dens_Inter_0, col = "red", lwd = 2) # this is what we got for our original data
-  # find a threshold based on the shuffled data
-  threshold <- quantile(OUTS, 1 - pvalue) # 5% if else user can define
-  abline(v = threshold, col = "blue", lty = 2) # add theshold line to density plots
+    dens_Inter_0 <- density(Inter0$value)
+    dens_outs <- density(OUTS) # this is the distribution for correlations for shuffled data
+    mx_y <- max(dens_Inter_0$y, dens_outs$y)
+    plot(
+        dens_outs,
+        ylim = c(0, mx_y),
+        col = "grey80",
+        lwd = 2
+    )
+    lines(dens_Inter_0, col = "red", lwd = 2) # this is what we got for our original data
+    # find a threshold based on the shuffled data
+    threshold <- quantile(OUTS, 1 - pvalue) # 5% if else user can define
+    abline(v = threshold, col = "blue", lty = 2) # add theshold line to density plots
 }

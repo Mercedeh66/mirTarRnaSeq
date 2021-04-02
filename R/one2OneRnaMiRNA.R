@@ -5,7 +5,7 @@ NULL
 
 ## quiet concerns of R CMD check regarding unbound global variables (in dplyr::filter() calls)
 if (getRversion() >= "2.15.1") {
-  utils::globalVariables(c("pvalue"))
+    utils::globalVariables(c("pvalue"))
 }
 
 ## Inputs mRNA or miRNA dif expression file
@@ -34,73 +34,73 @@ one2OneRnaMiRNA <- function(files, gene_colname = "Gene", fc_colname = "FC",
                             pval_colname = "pvalue", pthreshold = NULL) {
 
 
-  # asser file......
-  # assert is.character(gene_colname) && length(gene_colname) == 1
-  # assert is.character(fc_colname) && length(fc_colname) == 1
-  # assert (is.numeric(pthreshold) && length(pthreshold) == 1) || is.null(pthreshold)
-  # assert ... gene col is.character! not factor.
+    # asser file......
+    # assert is.character(gene_colname) && length(gene_colname) == 1
+    # assert is.character(fc_colname) && length(fc_colname) == 1
+    # assert (is.numeric(pthreshold) && length(pthreshold) == 1) || is.null(pthreshold)
+    # assert ... gene col is.character! not factor.
 
-  # do some mininal cleaning here...
-  files <- lapply(files, function(x) {
-    x <- as.data.frame(x)
-    x[, gene_colname] <- as.character(x[, gene_colname]) # account for users...
-    return(x)
-  })
-
-  # grab fold changes and gene names from each data.frame supplied
-  foldchanges <- lapply(files, function(x) {
-    ret <- x[, c(gene_colname, fc_colname)]
-    rownames(ret) <- ret[, gene_colname, drop = TRUE]
-    return(ret)
-  })
-
-  if (!is.null(pthreshold)) {
-    # grab p-values and gene names from each data.frame supplied
-    pvalues <- lapply(files, function(x) {
-      ret <- x[, c(gene_colname, pval_colname)]
-      rownames(ret) <- ret[, gene_colname, drop = TRUE]
-      return(ret)
+    # do some mininal cleaning here...
+    files <- lapply(files, function(x) {
+        x <- as.data.frame(x)
+        x[, gene_colname] <- as.character(x[, gene_colname]) # account for users...
+        return(x)
     })
 
-    # produce set of genes significant in any of the gene lists
-    # all genes concatenated in one long unique list
-    siggenes <- unique(unlist(sapply(pvalues, function(x) {
-      ret <- filter(x, pvalue < pthreshold)[, gene_colname, drop = TRUE]
-      return(ret)
-    }))) # for some reason sapply doesn't simplify here... hence the 'unlist'
-  } else {
-    # get set of genes regardless of p-value
-    pvalues <- NULL
-    siggenes <- unique(unlist(sapply(foldchanges, function(x) {
-      x[, gene_colname, drop = TRUE] # we're producing a long vector here...
-    })))
-  }
-
-  # filter siggenes for gene names present in all input lists!
-  for (x in foldchanges) {
-    siggenes <- intersect(siggenes, x[, gene_colname, drop = TRUE]) # we're intersecting _vectors_ here
-  }
-
-  # filter and reorder FCs by sig genes
-  foldchanges <- lapply(foldchanges, function(x) {
-    return(x[siggenes, fc_colname, drop = FALSE])
-  })
-
-  # make one data frame with _just_ the FC columns.
-  foldchanges <- do.call(cbind.data.frame, foldchanges)
-  colnames(foldchanges) <- paste("FC", 1:ncol(foldchanges), sep = "") # cleanup column names
-
-  if (!is.null(pthreshold)) {
-    # filter and reorder pvalues by sig genes
-    pvalues <- lapply(pvalues, function(x) {
-      return(x[siggenes, pval_colname, drop = FALSE])
+    # grab fold changes and gene names from each data.frame supplied
+    foldchanges <- lapply(files, function(x) {
+        ret <- x[, c(gene_colname, fc_colname)]
+        rownames(ret) <- ret[, gene_colname, drop = TRUE]
+        return(ret)
     })
 
-    # make one data frame with _just_ the pvalue columns.
-    pvalues <- do.call(cbind.data.frame, pvalues)
-    colnames(pvalues) <- paste("P", 1:ncol(pvalues), sep = "") # cleanup column names
-  }
+    if (!is.null(pthreshold)) {
+        # grab p-values and gene names from each data.frame supplied
+        pvalues <- lapply(files, function(x) {
+            ret <- x[, c(gene_colname, pval_colname)]
+            rownames(ret) <- ret[, gene_colname, drop = TRUE]
+            return(ret)
+        })
 
-  # now 'foldchanges' and 'pvalues' are _data.frame_ with _just_ FC/P columns.
-  return(list(foldchanges = foldchanges, pvalues = pvalues))
+        # produce set of genes significant in any of the gene lists
+        # all genes concatenated in one long unique list
+        siggenes <- unique(unlist(sapply(pvalues, function(x) {
+            ret <- filter(x, pvalue < pthreshold)[, gene_colname, drop = TRUE]
+            return(ret)
+        }))) # for some reason sapply doesn't simplify here... hence the 'unlist'
+    } else {
+        # get set of genes regardless of p-value
+        pvalues <- NULL
+        siggenes <- unique(unlist(sapply(foldchanges, function(x) {
+            x[, gene_colname, drop = TRUE] # we're producing a long vector here...
+        })))
+    }
+
+    # filter siggenes for gene names present in all input lists!
+    for (x in foldchanges) {
+        siggenes <- intersect(siggenes, x[, gene_colname, drop = TRUE]) # we're intersecting _vectors_ here
+    }
+
+    # filter and reorder FCs by sig genes
+    foldchanges <- lapply(foldchanges, function(x) {
+        return(x[siggenes, fc_colname, drop = FALSE])
+    })
+
+    # make one data frame with _just_ the FC columns.
+    foldchanges <- do.call(cbind.data.frame, foldchanges)
+    colnames(foldchanges) <- paste("FC", seq_len(ncol(foldchanges)), sep = "") # cleanup column names
+
+    if (!is.null(pthreshold)) {
+        # filter and reorder pvalues by sig genes
+        pvalues <- lapply(pvalues, function(x) {
+            return(x[siggenes, pval_colname, drop = FALSE])
+        })
+
+        # make one data frame with _just_ the pvalue columns.
+        pvalues <- do.call(cbind.data.frame, pvalues)
+        colnames(pvalues) <- paste("P", seq_len(ncol(pvalues)), sep = "") # cleanup column names
+    }
+
+    # now 'foldchanges' and 'pvalues' are _data.frame_ with _just_ FC/P columns.
+    return(list(foldchanges = foldchanges, pvalues = pvalues))
 }

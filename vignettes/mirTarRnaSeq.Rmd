@@ -95,12 +95,13 @@ print(modelTermPvalues(j))
 
 ## Running Gausian model over all individual miRNA mRNA models
 
-```{r gauss, eval=TRUE, echo=TRUE,out.width="60%", fig.align="center"}
+```{r gauss, eval=TRUE, echo=TRUE,out.width="90%",out.height="90%", fig.align="center"}
 blaGaus <- runModels(Combine,
                      geneVariant, miRNA_select,
                      family = glm_gaussian(), 
                      scale = 100)
-par(mfrow=c(2,2))
+par(oma=c(2,2,2,2))
+par(mfrow=c(2,3),mar=c(4,3,3,2))
 plot(blaGaus[["all_models"]][["BHLF1"]])
 plot(modelData(blaGaus[["all_models"]][["BHLF1"]]))
 #To test AIC model performance
@@ -113,12 +114,13 @@ GM <- melt(G)
 
 ## Running poisson model over all individual miRNA mRNA models
 
-```{r poisson, eval=TRUE, echo=TRUE, out.width="60%", fig.align="center"}
+```{r poisson, eval=TRUE, echo=TRUE, out.width="90%",out.height="90%", fig.align="center"}
 blaPois <- runModels(Combine, 
                      geneVariant, miRNA_select, 
                      family = glm_poisson(), 
                      scale = 100)
-par(mfrow=c(2,3))
+par(oma=c(2,2,2,2))
+par(mfrow=c(2,3),mar=c(4,3,3,2))
 plot(blaPois[["all_models"]][["LMP-2A"]])
 plot(modelData(blaPois[["all_models"]][["LMP-2A"]]))
 P <- do.call(rbind.data.frame, blaPois[["AICvalues"]])
@@ -128,10 +130,11 @@ PM <- melt(P)
 
 ## Running negative binomial model over all individual miRNA mRNA models
 
-```{r negbin, eval=TRUE, echo=TRUE, out.width="60%", fig.align="center"}
+```{r negbin, eval=TRUE, echo=TRUE, out.width="70%",out.height="90%", fig.align="center"}
 blaNB <- runModels(Combine, 
                    geneVariant, miRNA_select, 
                    family = glm_nb(), scale = 100)
+par(mar=c(4,3,3,2))
 plot(modelData(blaNB[["all_models"]][["BALF1"]]))
 B <- do.call(rbind.data.frame, blaNB[["AICvalues"]])
 names(B) <- c("AIC_NB")
@@ -140,7 +143,7 @@ BM <- melt(B)
 
 ## Running zero inflated negative binomial model over all individual miRNA mRNA models
 
-```{r zeroinfnegbin, eval=TRUE, echo=TRUE, out.width="60%", fig.align="center"}
+```{r zeroinfnegbin, eval=TRUE, echo=TRUE, out.width="70%",out.height="90%", fig.align="center"}
 blazeroinflNB <- runModels(Combine, geneVariant,
                             miRNA_select,
                             family = glm_zeroinfl(dist = "negbin"),
@@ -148,13 +151,14 @@ blazeroinflNB <- runModels(Combine, geneVariant,
 # To test AIC model performance
 ZNB <- do.call(rbind.data.frame, blazeroinflNB[["AICvalues"]])
 names(ZNB) <- c("AIC_ZNB")
+par(mar=c(4,3,3,2))
 plot(density(ZNB$AIC_ZNB))
 ZNBM<-melt(ZNB)
 ```
 
 ## Running zero inflated poisson binomial model over all individual miRNA mRNA models
 
-```{r zeroinfpoisson, message=FALSE, echo=TRUE, cache=FALSE, results=TRUE, out.width="60%", fig.align="center"}
+```{r zeroinfpoisson, message=FALSE, echo=TRUE, cache=FALSE, results=TRUE, out.width="70%",out.height="90%", fig.align="center"}
 blazeroinfl <- runModels(Combine, geneVariant,
                          miRNA_select, 
                          family = glm_zeroinfl(), 
@@ -162,6 +166,7 @@ blazeroinfl <- runModels(Combine, geneVariant,
 # To test AIC model performance
 Zp <- do.call(rbind.data.frame, blazeroinfl[["AICvalues"]])
 names(Zp) <- c("AIC_Zp")
+par(mar=c(4,3,3,2))
 plot(density(Zp$AIC_Zp))
 ZpM <- melt(Zp)
 ```

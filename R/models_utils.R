@@ -5,35 +5,35 @@
 NULL
 
 coefficients_ <- function(model) {
-  nm <- attr(terms(model$formula), "term.labels")
-  return(as.data.frame(summary(model)$coefficients)[nm, ])
+    nm <- attr(terms(model$formula), "term.labels")
+    return(as.data.frame(summary(model)$coefficients)[nm, ])
 }
 
 pmodel_ <- function(model) {
-  ret <- pchisq(model$null.deviance - deviance(model), model$df.null - df.residual(model), lower.tail = FALSE)
-  # ret <- pchisq(model$deviance, model$df.residual, lower.tail = FALSE)
-  return(ret)
+    ret <- pchisq(model$null.deviance - deviance(model), model$df.null - df.residual(model), lower.tail = FALSE)
+    # ret <- pchisq(model$deviance, model$df.residual, lower.tail = FALSE)
+    return(ret)
 }
 
 aic_ <- function(model) {
-  return(model$aic)
+    return(model$aic)
 }
 
 data_ <- function(model) {
-  return(model$data)
+    return(model$data)
 }
 
 modelframe_ <- function(x, data) {
-  if (is_formula(x)) {
-    x <- as.character.formula(x)
-  }
-  x <- formula(gsub("\\|", "+", x))
-  model.frame(x, data) # extract model data.frame
+    if (is_formula(x)) {
+        x <- as.character.formula(x)
+    }
+    x <- formula(gsub("\\|", "+", x))
+    model.frame(x, data) # extract model data.frame
 }
 
 termlabels_ <- function(x) {
-  f <- formula(gsub("\\|.*$", "", as.character.formula(x)))
-  nm <- attr(terms(f), "term.labels")
+    f <- formula(gsub("\\|.*$", "", as.character.formula(x)))
+    nm <- attr(terms(f), "term.labels")
 }
 
 # notes on model evaluation

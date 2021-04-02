@@ -5,7 +5,7 @@ NULL
 
 ## quiet concerns of R CMD check regarding unbound global variables (in dplyr::filter() calls)
 if (getRversion() >= "2.15.1") {
-  utils::globalVariables(c("V1", "V2", "value"))
+    utils::globalVariables(c("V1", "V2", "value"))
 }
 
 #' corMirnaRnaMiranda correlation for miRNA and mRNA
@@ -23,17 +23,17 @@ if (getRversion() >= "2.15.1") {
 #' @examples
 #' x <- corMirnaRnaMiranda(mRNA_fc, miRNA_fc, Cor = -0.9, miRandaM)
 corMirnaRnaMiranda <- function(mRNA, miRNA, CorVal, getInputSpeciesDF, method = "pearson") {
-  tmRNA <- t(mRNA)
-  tmiRNA <- t(miRNA)
-  mycor <- cor(cbind(tmRNA, tmiRNA), method = method)
-  mmycor <- reshape2::melt(mycor)
-  names(mmycor) <- c("V1", "V2", "value")
-  mmycor$V1 <- as.character(mmycor$V1)
-  mmycor$V2 <- as.character(mmycor$V2)
-  mycorf <- dplyr::filter(mmycor, !(V2 %in% rownames(miRNA)))
-  mycorf <- dplyr::filter(mycorf, !(V1 %in% rownames(mRNA)))
-  fmycorf <- dplyr::filter(mycorf, value < CorVal)
-  Lfmycorf <- dplyr::left_join(getInputSpeciesDF, fmycorf, by = c("V1", "V2"))
-  FLfmycorf <- Lfmycorf[is.finite(Lfmycorf$value), ]
-  return(as.data.frame(FLfmycorf))
+    tmRNA <- t(mRNA)
+    tmiRNA <- t(miRNA)
+    mycor <- cor(cbind(tmRNA, tmiRNA), method = method)
+    mmycor <- reshape2::melt(mycor)
+    names(mmycor) <- c("V1", "V2", "value")
+    mmycor$V1 <- as.character(mmycor$V1)
+    mmycor$V2 <- as.character(mmycor$V2)
+    mycorf <- dplyr::filter(mmycor, !(V2 %in% rownames(miRNA)))
+    mycorf <- dplyr::filter(mycorf, !(V1 %in% rownames(mRNA)))
+    fmycorf <- dplyr::filter(mycorf, value < CorVal)
+    Lfmycorf <- dplyr::left_join(getInputSpeciesDF, fmycorf, by = c("V1", "V2"))
+    FLfmycorf <- Lfmycorf[is.finite(Lfmycorf$value), ]
+    return(as.data.frame(FLfmycorf))
 }

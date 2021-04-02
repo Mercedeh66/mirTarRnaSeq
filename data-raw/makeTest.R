@@ -23,8 +23,8 @@ geneVariant <- geneVari(Combine, miRNA_select)
 
 corr_0 <- corMirnaRna(mRNA_fc, miRNA_fc, method = "pearson")
 outs <- sampCorRnaMirna(mRNA_fc, miRNA_fc,
-  method = "pearson",
-  Shrounds = 10, Srounds = 10
+    method = "pearson",
+    Shrounds = 10, Srounds = 10
 )
 sig_corrs <- threshSig(corr_0, outs, pvalue = 0.05)
 miRandaM <- getInputSpecies("Mouse", threshold = 150)
@@ -38,13 +38,13 @@ some_model <- runModels(Combine, geneVariant, "ebv-mir-bart9-5p")$all_models[[1]
 
 
 usethis::use_data(miRNA0_2, miRNA2_5, miRNA0_5,
-  mRNA0_2, mRNA2_5, mRNA0_5,
-  mRNA, miRNA, Combine, some_model,
-  mRNA_fc, miRNA_fc, miRanda,
-  geneVariant, mRNA_fc2, miRNA_fc2,
-  corr_0, outs, sig_corrs, sig_InterR,
-  miRandaM, inter0, outs2, results, final_results,
-  overwrite = TRUE,
-  internal = FALSE,
-  compress = TRUE
+    mRNA0_2, mRNA2_5, mRNA0_5,
+    mRNA, miRNA, Combine, some_model,
+    mRNA_fc, miRNA_fc, miRanda,
+    geneVariant, mRNA_fc2, miRNA_fc2,
+    corr_0, outs, sig_corrs, sig_InterR,
+    miRandaM, inter0, outs2, results, final_results,
+    overwrite = TRUE,
+    internal = FALSE,
+    compress = TRUE
 )

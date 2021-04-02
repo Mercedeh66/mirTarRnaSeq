@@ -19,30 +19,30 @@ NULL
 #' }
 #'
 drawCorPlot <- function(corMatrix, ...) {
-  col2 <- colorRampPalette(
-    c(
-      colorRampPalette(c(
-        "black",
-        "#543005",
-        "#8c510a",
-        "#f46d43",
-        "#762a83",
-        "#9970ab",
-        "#c2a5cf",
-        "#e7d4e8",
-        "#f7f7f7",
-        "#d9f0d3",
-        "#a6dba0",
-        "#5aae61",
-        "#1b7837",
-        "#a6d96a",
-        "#9ecae1",
-        "#3182bd",
-        "#08306b"
-      ))(50),
-      "grey50",
-      colorRampPalette(c("red", "#fde0dd", "#fcc5c0", "#fa9fb5", "pink"))(50)
+    col2 <- colorRampPalette(
+        c(
+            colorRampPalette(c(
+                "black",
+                "#543005",
+                "#8c510a",
+                "#f46d43",
+                "#762a83",
+                "#9970ab",
+                "#c2a5cf",
+                "#e7d4e8",
+                "#f7f7f7",
+                "#d9f0d3",
+                "#a6dba0",
+                "#5aae61",
+                "#1b7837",
+                "#a6d96a",
+                "#9ecae1",
+                "#3182bd",
+                "#08306b"
+            ))(50),
+            "grey50",
+            colorRampPalette(c("red", "#fde0dd", "#fcc5c0", "#fa9fb5", "pink"))(50)
+        )
     )
-  )
-  corrplot(corMatrix, ..., col = col2(211))
+    corrplot(corMatrix, ..., col = col2(211))
 }

@@ -5,7 +5,7 @@ NULL
 
 ## quiet concerns of R CMD check regarding unbound global variables (in dplyr::filter() calls)
 if (getRversion() >= "2.15.1") {
-  utils::globalVariables(c("V1", "V2"))
+    utils::globalVariables(c("V1", "V2"))
 }
 
 #' corMirnaRna correlation for miRNA and mRNA
@@ -20,15 +20,15 @@ if (getRversion() >= "2.15.1") {
 #' @examples
 #' x <- corMirnaRna(mRNA_fc, miRNA_fc, method = "spearman")
 corMirnaRna <- function(mRNA, miRNA, method = "pearson") {
-  tmRNA <- t(mRNA)
-  tmiRNA <- t(miRNA)
-  mycor <- cor(cbind(tmRNA, tmiRNA), method = method)
-  mmycor <- reshape2::melt(mycor)
-  names(mmycor) <- c("V1", "V2", "value")
-  # Makes a square matrix the correlation should not be squared
-  mycorf <- dplyr::filter(mmycor, !(V2 %in% rownames(miRNA)))
-  mycorf <- dplyr::filter(mycorf, !(V1 %in% rownames(mRNA)))
-  mycorf$V1 <- as.character(mycorf$V1)
-  mycorf$V2 <- as.character(mycorf$V2)
-  return(as.data.frame(mycorf))
+    tmRNA <- t(mRNA)
+    tmiRNA <- t(miRNA)
+    mycor <- cor(cbind(tmRNA, tmiRNA), method = method)
+    mmycor <- reshape2::melt(mycor)
+    names(mmycor) <- c("V1", "V2", "value")
+    # Makes a square matrix the correlation should not be squared
+    mycorf <- dplyr::filter(mmycor, !(V2 %in% rownames(miRNA)))
+    mycorf <- dplyr::filter(mycorf, !(V1 %in% rownames(mRNA)))
+    mycorf$V1 <- as.character(mycorf$V1)
+    mycorf$V2 <- as.character(mycorf$V2)
+    return(as.data.frame(mycorf))
 }

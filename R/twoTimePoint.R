@@ -14,18 +14,18 @@
 #' x <- twoTimePoint(mRNA_fc2, miRNA_fc2)
 #' }
 twoTimePoint <- function(mRNA, miRNA) {
-  assertthat::assert_that(ncol(mRNA) == 1 && ncol(miRNA) == 1)
-  cc <- matrix(0, nrow = nrow(miRNA), ncol = nrow(mRNA))
-  rownames(cc) <- rownames(miRNA)
-  colnames(cc) <- rownames(mRNA)
-  for (i in 1:nrow(miRNA)) {
-    for (j in 1:nrow(mRNA)) {
-      cc[i, j] <- abs(miRNA[i, 1] - mRNA[j, 1])
+    assertthat::assert_that(ncol(mRNA) == 1 && ncol(miRNA) == 1)
+    cc <- matrix(0, nrow = nrow(miRNA), ncol = nrow(mRNA))
+    rownames(cc) <- rownames(miRNA)
+    colnames(cc) <- rownames(mRNA)
+    for (i in seq_len(nrow(miRNA))) {
+        for (j in seq_len(nrow(mRNA))) {
+            cc[i, j] <- abs(miRNA[i, 1] - mRNA[j, 1])
+        }
     }
-  }
-  mmycc <- reshape2::melt(cc)
-  names(mmycc) <- c("V1", "V2", "value")
-  mmycc$V1 <- as.character(mmycc$V1)
-  mmycc$V2 <- as.character(mmycc$V2)
-  return(as.data.frame(mmycc))
+    mmycc <- reshape2::melt(cc)
+    names(mmycc) <- c("V1", "V2", "value")
+    mmycc$V1 <- as.character(mmycc$V1)
+    mmycc$V2 <- as.character(mmycc$V2)
+    return(as.data.frame(mmycc))
 }

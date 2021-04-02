@@ -19,18 +19,18 @@
 #' @examples
 #' x <- mirandaIntersectInter(sig_InterR, outs2, mRNA_fc2, miRNA_fc2, miRandaM)
 mirandaIntersectInter <- function(sig_corrs, corrS, mRNA, miRNA, getInputSpeciesDF) {
-  result_corrs <- dplyr::inner_join(sig_corrs, getInputSpeciesDF, by = c("V1", "V2"))
-  if (nrow(result_corrs) == 0) {
-    stop("no common mRNA/miRNAs found.")
-  }
-  result_mrna <- mRNA[result_corrs$V2, , drop = FALSE]
-  result_mirna <- miRNA[result_corrs$V1, , drop = FALSE]
-  # count how many values in corrS are > each correlation and calculate 1 - "percentage".
-  pvalueiods <- 1 - sapply(result_corrs$value, function(x) {
-    length(which(corrS < x))
-  }) / length(corrS)
+    result_corrs <- dplyr::inner_join(sig_corrs, getInputSpeciesDF, by = c("V1", "V2"))
+    if (nrow(result_corrs) == 0) {
+        stop("no common mRNA/miRNAs found.")
+    }
+    result_mrna <- mRNA[result_corrs$V2, , drop = FALSE]
+    result_mirna <- miRNA[result_corrs$V1, , drop = FALSE]
+    # count how many values in corrS are > each correlation and calculate 1 - "percentage".
+    pvalueiods <- 1 - sapply(result_corrs$value, function(x) {
+        length(which(corrS < x))
+    }) / length(corrS)
 
-  # add p-value for result_corrs df
-  result_corrs$pvalue <- pvalueiods
-  return(list(mirna = result_mirna, mrna = result_mrna, corrs = result_corrs))
+    # add p-value for result_corrs df
+    result_corrs$pvalue <- pvalueiods
+    return(list(mirna = result_mirna, mrna = result_mrna, corrs = result_corrs))
 }

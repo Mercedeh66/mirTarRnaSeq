@@ -17,18 +17,18 @@ NULL
 #' models <- runModels(Combine, geneVariant, "ebv-mir-bart9-5p")
 #' x <- fdrSig(models, value = 0.1, method = "fdr")
 fdrSig <- function(RMObj, value = 0.05, method = "fdr") {
-  p_adjusted <- apply(RMObj$pvalues, 2, p.adjust, method = method)
-  is_significant <- apply(p_adjusted, 1, function(x) any(is.finite(x) & x < value))
-  sig_models <- RMObj$all_models[is_significant]
-  sig_genes <- RMObj$genes[is_significant]
-  sig_pvalues <- RMObj$pvalues[is_significant, , drop = FALSE]
-  sig_p_adjusted <- p_adjusted[is_significant, , drop = FALSE]
-  # add calculated values to original object and return
-  RMObj$p_adjusted <- p_adjusted
-  RMObj$is_significant <- is_significant
-  RMObj$sig_models <- sig_models
-  RMObj$sig_genes <- sig_genes
-  RMObj$sig_pvalues <- sig_pvalues
-  RMObj$sig_p_adjusted <- sig_p_adjusted
-  return(RMObj)
+    p_adjusted <- apply(RMObj$pvalues, 2, p.adjust, method = method)
+    is_significant <- apply(p_adjusted, 1, function(x) any(is.finite(x) & x < value))
+    sig_models <- RMObj$all_models[is_significant]
+    sig_genes <- RMObj$genes[is_significant]
+    sig_pvalues <- RMObj$pvalues[is_significant, , drop = FALSE]
+    sig_p_adjusted <- p_adjusted[is_significant, , drop = FALSE]
+    # add calculated values to original object and return
+    RMObj$p_adjusted <- p_adjusted
+    RMObj$is_significant <- is_significant
+    RMObj$sig_models <- sig_models
+    RMObj$sig_genes <- sig_genes
+    RMObj$sig_pvalues <- sig_pvalues
+    RMObj$sig_p_adjusted <- sig_p_adjusted
+    return(RMObj)
 }

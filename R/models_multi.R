@@ -13,29 +13,29 @@
 #' @examples
 #' x <- glm_multi()
 glm_multi <- function(models = c(
-                        glm_gaussian, glm_nb, glm_poisson,
-                        glm_zeroinfl_poisson, glm_zeroinfl_negbin
+                          glm_gaussian, glm_nb, glm_poisson,
+                          glm_zeroinfl_poisson, glm_zeroinfl_negbin
                       )) {
 
-  # fit
-  fit <- function(x, data, ...) {
-    bestaic <- NULL
-    bestmodel <- NULL
-    for (m in models) {
-      model <- runModel(x, data, model = m, ...)
-      if (!is.null(model)) {
-        currentaic <- modelAIC(model)
-        if (is.null(bestaic) || currentaic < bestaic) {
-          bestaic <- currentaic
-          bestmodel <- model
+    # fit
+    fit <- function(x, data, ...) {
+        bestaic <- NULL
+        bestmodel <- NULL
+        for (m in models) {
+            model <- runModel(x, data, model = m, ...)
+            if (!is.null(model)) {
+                currentaic <- modelAIC(model)
+                if (is.null(bestaic) || currentaic < bestaic) {
+                    bestaic <- currentaic
+                    bestmodel <- model
+                }
+            }
         }
-      }
+        return(bestmodel)
     }
-    return(bestmodel)
-  }
 
-  structure(list(
-    fit = fit, coefficients = modelCoefficients, aic = modelAIC, data = modelData,
-    pterm = modelTermPvalues, pmodel = modelModelPvalue, model = "glm_multi"
-  ))
+    structure(list(
+        fit = fit, coefficients = modelCoefficients, aic = modelAIC, data = modelData,
+        pterm = modelTermPvalues, pmodel = modelModelPvalue, model = "glm_multi"
+    ))
 }
