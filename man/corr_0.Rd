@@ -3,10 +3,10 @@
 \docType{data}
 \name{corr_0}
 \alias{corr_0}
-\title{This is data is the mRNA FC and miRNA FC correlation data. 
+\title{This is data is the mRNA FC and miRNA FC correlation data.
 This data set is used in documentation examples.}
 \description{
-This is data is the mRNA FC and miRNA FC correlation data. 
+This is data is the mRNA FC and miRNA FC correlation data.
 This data set is used in documentation examples.
 }
 \keyword{data}

@@ -3,11 +3,11 @@
 \docType{data}
 \name{geneVariant}
 \alias{geneVariant}
-\title{This is data is the mRNA expression across samples and miRNA expression data which is to be 
+\title{This is data is the mRNA expression across samples and miRNA expression data which is to be
 investigated giving directions on which data is miRNA and which is mRNA.
 This data set is used in documentation examples.}
 \description{
-This is data is the mRNA expression across samples and miRNA expression data which is to be 
+This is data is the mRNA expression across samples and miRNA expression data which is to be
 investigated giving directions on which data is miRNA and which is mRNA.
 This data set is used in documentation examples.
 }

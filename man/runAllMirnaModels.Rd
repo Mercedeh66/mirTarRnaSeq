@@ -56,9 +56,9 @@ list with significant genes and FDR models
 \examples{
 mirnas <- c("ebv-mir-bart9-5p", "ebv-mir-bart6-3p")
 x <- runAllMirnaModels(mirnas, mRNA, miRNA, miRanda,
-  prob = 0.90, fdr_cutoff = 0.1, method = "fdr",
-  all_coeff = TRUE, mode = "multi",
-  family = glm_poisson(), scale = 100
+    prob = 0.90, fdr_cutoff = 0.1, method = "fdr",
+    all_coeff = TRUE, mode = "multi",
+    family = glm_poisson(), scale = 100
 )
 }
 \keyword{all_miRNAs}

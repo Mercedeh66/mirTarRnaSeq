@@ -3,10 +3,10 @@
 \docType{data}
 \name{final_results}
 \alias{final_results}
-\title{This is data is the mRNA FC and miRNA FC correlation/interaction data results after filteration. 
+\title{This is data is the mRNA FC and miRNA FC correlation/interaction data results after filteration.
 This data set is used in documentation examples.}
 \description{
-This is data is the mRNA FC and miRNA FC correlation/interaction data results after filteration. 
+This is data is the mRNA FC and miRNA FC correlation/interaction data results after filteration.
 This data set is used in documentation examples.
 }
 \keyword{data}

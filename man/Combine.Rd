@@ -3,10 +3,10 @@
 \docType{data}
 \name{Combine}
 \alias{Combine}
-\title{This is data is the mRNA expression across samples and miRNA expression data which is to be 
+\title{This is data is the mRNA expression across samples and miRNA expression data which is to be
 investigated in one file. This data set is used in documentation examples.}
 \description{
-This is data is the mRNA expression across samples and miRNA expression data which is to be 
+This is data is the mRNA expression across samples and miRNA expression data which is to be
 investigated in one file. This data set is used in documentation examples.
 }
 \keyword{data}
