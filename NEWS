@@ -1,35 +1,35 @@
 Changes in Version 0.99.11 (2021-05-14)
-+Changed News file
++ Changed News file
 
 Changes in Version 0.99.10 
-+shrunk repo
++ shrunk repo
 
 Changes in Version 0.99.9 
-+updated with suggested notes
++ updated with suggested notes
 
 Changes in Version 0.99.8
-+fixed check error
++ fixed check error
 
 Changes in Version 0.99.7 
-+dealt with download issue
++ dealt with download issue
 
 Changes in Version 0.99.6
-+dealt with vignette issue
++ dealt with vignette issue
 
 Changes in Version 0.99.5
-+fixed documentation warnings for datasets and warnings for R CMD file size
++ fixed documentation warnings for datasets and warnings for R CMD file size
 
 Changes in Version 0.99.4 
-+fixed documentation warnings for datasets
++ fixed documentation warnings for datasets
 
 Changes in Version 0.99.3
-+fixed documentation warnings for code
++ fixed documentation warnings for code
 
 Changes in Version 0.99.2
-+initiated
++ initiated
 
 Changes in Version 0.99.1
-+initiated
++ initiated
 
 Changes in Version 0.99.0
-+initiated
++ initiated
