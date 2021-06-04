@@ -1,7 +1,7 @@
 Package: mirTarRnaSeq
 Type: Package
 Title: mirTarRnaSeq
-Version: 1.2.0
+Version: 1.1.1
 Authors@R: 
     c(person(given = "Mercedeh",
            family = "Movassagh",
