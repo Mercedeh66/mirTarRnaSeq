@@ -49,15 +49,15 @@ getInputSpecies_ <- function(selection, threshold = 60, energy = NULL, targetIde
     } else if (selection == "Drosophila") {
         ret <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Drosophila_miRanda.txt.gz")
     } else if (selection == "Cytomegalovirus") {
-        ret <- importMirandaFile("CMV_miRanda.txt.gz")
+        ret <- downloadMirandaFile("https://zenodo.org/record/4898541/files/CMV_miRanda.txt.gz")
     } else if (selection == "Kaposi_Sarcoma") {
-        ret <- importMirandaFile("Kaposi_miRanda.txt.gz")
+        ret <- downloadMirandaFile("https://zenodo.org/record/4898541/files/Kaposi_miRanda.txt.gz")
     } else if (selection == "Epstein_Barr_Human") {
-        ret <- importMirandaFile("EBV_Human_miRanda.txt.gz")
+        ret <- downloadMirandaFile("EBV_Human_miRanda.txt.gz")
     } else if (selection == "CMV_Human") {
-        ret <- importMirandaFile("CMV_Human_miRanda.txt.gz")
+        ret <- downloadMirandaFile("https://zenodo.org/record/4898541/files/CMV_Human_miRanda.txt.gz")
     } else if (selection == "KSHV_Human") {
-        ret <- importMirandaFile("KSHV_Human_miRanda.txt.gz")
+        ret <- downloadMirandaFile("https://zenodo.org/record/4898541/files/KSHV_Human_miRanda.txt.gz")
     }
     ret <- dplyr::filter(ret, V3 >= threshold)
     if (!is.null(energy)) {
