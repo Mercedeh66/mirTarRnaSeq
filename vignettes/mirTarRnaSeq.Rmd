@@ -49,6 +49,7 @@ The second example set set is the simulated mouse fibroblast differntiated to mu
 * For the first approach ([Part1](#part1-uploading-data-into-the-application)) we use a table of  expressed mRNA genes in EBV from TCGA stomach cancer samples with high levels of EBV miRNA expression. 
 * Next we use a list of normalized (tpm) EBV miRNA experession data from the same samples.The user has the option to use count data and model accordingly or use tzTrans() function for zscore normalization and then model.
 * For the second part (Part2, Part3) of the experiment we are using two tables of differentially expressed mRNA and miRNA sequencing fold change results from mouse time point specific differntiation experiments.
+* The example data is available at https://doi.org/10.5281/zenodo.5234278 .
 
 # Part1 - miRNA mRNA regressions across sample cohorts
 
