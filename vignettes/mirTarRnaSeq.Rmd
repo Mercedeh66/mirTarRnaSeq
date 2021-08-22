@@ -40,15 +40,15 @@ mirTarRnaSeq is a package for miRNA and mRNA interaction analysis through regres
 
 The example data set for the first approach is 25 matching miRNA and mRNA EBV positive samples from TCGA identified as high EBV load based on Movassagh et al, Scientific Reports, 2019 paper. We attempt to identify the EBV miRNA targets on EBV genome (part1).
 
-The second example set set is the simulated mouse fibroblast differntiated to muscle cells in three time points. Here, we try to identify mRNA targets of miRNA experssed at various time points (parts 2 and 3).
+The second example set set is the simulated mouse fibroblast differentiated to muscle cells in three time points. Here, we try to identify mRNA targets of miRNA expressed at various time points (parts 2 and 3).
 
 ## Data upload
 
 ### mirTarRnaSeq accepts data in dataframe or table formats
 
 * For the first approach ([Part1](#part1-uploading-data-into-the-application)) we use a table of  expressed mRNA genes in EBV from TCGA stomach cancer samples with high levels of EBV miRNA expression. 
-* Next we use a list of normalized (tpm) EBV miRNA experession data from the same samples.The user has the option to use count data and model accordingly or use tzTrans() function for zscore normalization and then model.
-* For the second part (Part2, Part3) of the experiment we are using two tables of differentially expressed mRNA and miRNA sequencing fold change results from mouse time point specific differntiation experiments.
+* Next we use a list of normalized (tpm) EBV miRNA expression data from the same samples.The user has the option to use count data and model accordingly or use tzTrans() function for zscore normalization and then model.
+* For the second part (Part2, Part3) of the experiment we are using two tables of differentially expressed mRNA and miRNA sequencing fold change results from mouse time point specific differentiation experiments.
 * The example data is available at https://doi.org/10.5281/zenodo.5234278 .
 
 # Part1 - miRNA mRNA regressions across sample cohorts
