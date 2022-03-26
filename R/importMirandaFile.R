@@ -1,6 +1,6 @@
 ## Written by Mercedeh Movassagh <mercedeh@ds.dfci.harvard.edu>, Aug 2020
 
-#' @importFrom utils read.table
+#' @importFrom utils read.table download.file
 #' @importFrom data.table fread
 #' @import R.utils
 NULL

@@ -24,5 +24,5 @@ RoxygenNote: 7.1.2
 Suggests: BiocStyle, knitr, rmarkdown, R.cache
 VignetteBuilder: knitr
 Imports: purrr, MASS, pscl, assertthat, caTools, dplyr, pheatmap,
-        reshape2, corrplot, grDevices, graphics, stats, utils,
-        data.table, R.utils, SPONGE, reshape2, ggplot2
+         reshape2, corrplot, grDevices, graphics, stats, utils,
+         data.table, R.utils, SPONGE, ggplot2
