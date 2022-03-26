@@ -54,3 +54,7 @@ Meta
 
 /inst/doc/*
 doc
+/doc/
+/Meta/
+
+*.log
