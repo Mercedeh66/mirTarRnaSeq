@@ -13,7 +13,7 @@ Authors@R:
            person("Jeffrey", "Bailey", role= "aut"),
            person("Joseph N", "Paulson", email="paulson.joseph@gene.com", role="aut"))
 Description: mirTarRnaSeq R package can be used for interactive mRNA miRNA sequencing statistical analysis. This package utilizes expression or differential expression mRNA and miRNA sequencing results and performs interactive correlation and various GLMs (Regular GLM, Multivariate GLM, and Interaction GLMs ) analysis between mRNA and miRNA expriments. These experiments can be time point experiments, and or condition expriments.
-License: MIT
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 4.1.0)
