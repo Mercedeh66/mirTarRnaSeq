@@ -47,7 +47,7 @@ The second example set set is the simulated mouse fibroblast differentiated to m
 
 ### mirTarRnaSeq accepts data in dataframe or table formats
 
-* For the first approach ([Part1](#part1-uploading-data-into-the-application)) we use a table of differential expressed mRNA genes in EBV from TCGA stomach cancer samples with high levels of EBV miRNA expression. 
+* For the first approach ([Part1](#part1-uploading-data-into-the-application)) we use a table of differential expressed mRNA genes in EBV from TCGA stomach cancer samples with high levels of EBV miRNA expression.
 * Next we use a list of normalized (tpm) EBV miRNA expression data from the same samples.The user has the option to use count data and model accordingly or use tzTrans() function for zscore normalization and then model.
 * For the second part (Part2, Part3) of the experiment we are using two tables of differentially expressed mRNA and miRNA sequencing fold change results from mouse time point specific differentiation experiments.
 * The example data are also available at https://doi.org/10.5281/zenodo.6371713.
@@ -73,7 +73,7 @@ miRNAExp<-read.table(get_test_file("EBV_miRNA.txt.gz"), as.is=TRUE, header=TRUE,
 
 ## Get miRanda file
 
-We currently support miRanda runs (potential miRNA target parsing by score,interaction energy, and interaction or miRNA length ) on seven species ("Human", "Mouse", "Drosophila", "C.elegans", "Epstein_Barr" (EBV), "Cytomegalovirus" (CMV) and "Kaposi_Sarcoma" (KSHV)). We also support the viral miRNAs targeting human genes for EBV "Epstein_Barr_Human", CMV "CMV_Human" and KSHV "KSHV_Human". 
+We currently support miRanda runs (potential miRNA target parsing by score,interaction energy, and interaction or miRNA length ) on seven species ("Human", "Mouse", "Drosophila", "C.elegans", "Epstein_Barr" (EBV), "Cytomegalovirus" (CMV) and "Kaposi_Sarcoma" (KSHV)). We also support the viral miRNAs targeting human genes for EBV "Epstein_Barr_Human", CMV "CMV_Human" and KSHV "KSHV_Human".
 1) Here we first import the relevant miRanda file .
 2) We only keep targets which are also targets of EBV miRNAs based on our EBV miRanda file.
 Note, for other organisms (not provided by the pacakged) the appropriate format for miRanda input file is V1 column: name of the miRNA, V2 column: name of the predicted gene, V3: column score/rank of the miranda interaction (or any other score for interaction if TargetScan ( for TargetScan prediction user can provide context++ score and threshold accordingly) is used, note these three columns are required), V4 column: folding energy of miRNA-mRNA interaction. V5 column: target Identity value and V6 column: miRNA idnetity value. (Note, all these values are available after miRanda analysis but V1-V3 must be provided not matter the prediction method)
@@ -102,12 +102,12 @@ Running various univariate models(1 to 1 miRNA-mRNA relationships) with various 
 Here LMP_1 is EBV mRNA and the ebv-mir-BART9-5p is the miRNA and we are running a glm poisson model.
 
 ```{r eval=TRUE, echo=TRUE}
-j <- runModel(`LMP-1` ~ `ebv-mir-BART9-5p`, 
-              Combine, model = glm_poisson(), 
+j <- runModel(`LMP-1` ~ `ebv-mir-BART9-5p`,
+              Combine, model = glm_poisson(),
               scale = 100)
 # Print P value of poisson model of association between between LMP_1 and
 # ebv-mir-BART9-5p
-print(modelTermPvalues(j)) 
+print(modelTermPvalues(j))
 ```
 
 ## Running Gaussian model over all individual miRNA mRNA models (univatiate model for every mRNA and miRNA relationship across the input dataset with Gaussian distribution assumptions)
@@ -115,7 +115,7 @@ print(modelTermPvalues(j))
 ```{r gauss, eval=TRUE, echo=TRUE,out.width="90%",out.height="90%", fig.align="center"}
 blaGaus <- runModels(Combine,
                      geneVariant, miRNA_select,
-                     family = glm_gaussian(), 
+                     family = glm_gaussian(),
                      scale = 100)
 # Plot the regression relationship for the mRNA and miRNAs (BHLF1 is the EBV
 # mRNA). Note, these are standard quality check plot outputs from plot
@@ -128,10 +128,10 @@ plot(modelData(blaGaus[["all_models"]][["BHLF1"]]))
 # criterion (AIC) across all miRNA-mRNA model performances and then look at
 # the density plots. Note, the models with lower comparitive AICs have better
 # performace.
-G <- do.call(rbind.data.frame, blaGaus[["AICvalues"]]) 
+G <- do.call(rbind.data.frame, blaGaus[["AICvalues"]])
 names(G) <- c("AIC_G")
 # Low values seems like a reasonable model
-plot(density(G$AIC_G)) 
+plot(density(G$AIC_G))
 # Print out the AIC of all miRNA-mRNA models ( All observed AIC values for the
 # miRNA-mRNA models)
 GM <- melt(G)
@@ -140,9 +140,9 @@ GM <- melt(G)
 ## Running poisson model over all individual miRNA mRNA models (univatiate model for every mRNA and miRNA relationship across the input dataset with poisson distribution assumptions)
 
 ```{r poisson, eval=TRUE, echo=TRUE, out.width="90%",out.height="90%", fig.align="center"}
-blaPois <- runModels(Combine, 
-                     geneVariant, miRNA_select, 
-                     family = glm_poisson(), 
+blaPois <- runModels(Combine,
+                     geneVariant, miRNA_select,
+                     family = glm_poisson(),
                      scale = 100)
 par(oma=c(2,2,2,2))
 par(mfrow=c(2,3),mar=c(4,3,3,2))
@@ -156,8 +156,8 @@ PM <- melt(P)
 ## Running negative binomial model over all individual miRNA mRNA models (univatiate model for every mRNA and miRNA relationship across the input dataset with negative bionomial distribution assumptions).
 
 ```{r negbin, eval=TRUE, echo=TRUE, out.width="70%",out.height="90%", fig.align="center"}
-blaNB <- runModels(Combine, 
-                   geneVariant, miRNA_select, 
+blaNB <- runModels(Combine,
+                   geneVariant, miRNA_select,
                    family = glm_nb(), scale = 100)
 par(mar=c(4,3,3,2))
 plot(modelData(blaNB[["all_models"]][["BALF1"]]))
@@ -185,8 +185,8 @@ ZNBM<-melt(ZNB)
 
 ```{r zeroinfpoisson, message=FALSE, echo=TRUE, cache=FALSE, results=TRUE, out.width="70%",out.height="90%", fig.align="center"}
 blazeroinfl <- runModels(Combine, geneVariant,
-                         miRNA_select, 
-                         family = glm_zeroinfl(), 
+                         miRNA_select,
+                         family = glm_zeroinfl(),
                          scale = 100)
 # To test AIC model performance
 Zp <- do.call(rbind.data.frame, blazeroinfl[["AICvalues"]])
@@ -196,11 +196,11 @@ plot(density(Zp$AIC_Zp))
 ZpM <- melt(Zp)
 ```
 
-## Including Plots for all models to decide which to use 
+## Including Plots for all models to decide which to use
 
 ```{r plots, eval=TRUE, echo=TRUE, fig.width = 5, fig.height=5, out.width="80%", dpi=300, fig.align="center"}
 bindM <- rbind(PM, BM, GM, ZpM, ZNBM)
-p2 <- ggplot(data = bindM, aes(x = value, group = variable, 
+p2 <- ggplot(data = bindM, aes(x = value, group = variable,
                                fill = variable)) +
   geom_density(adjust = 1.5, alpha = .3) +
   xlim(-400, 2000)+
@@ -217,12 +217,12 @@ miRNA_select<-c("ebv-mir-BART9-5p","ebv-mir-BART6-3p")
 Combine <- combiner(DiffExp, miRNAExp, miRNA_select)
 geneVariant <- geneVari(Combine, miRNA_select)
 MultiModel <- runModels(Combine, geneVariant,
-                        miRNA_select, family = glm_multi(), 
+                        miRNA_select, family = glm_multi(),
                         mode="multi", scale = 10)
 # Print the name of the models used for the analysis (note the printed outputs
 # are the number of models ran by various models based on the AIC scores using
 # the glm_multi())
-print(table(unlist(lapply(MultiModel$all_models, modelModelName)))) 
+print(table(unlist(lapply(MultiModel$all_models, modelModelName))))
 ```
 
 ## GLM multi and GLM inter
@@ -253,7 +253,7 @@ vMiRNA<-rownames(miRNAExp)
 # Note, the user can run all miRNAs but for speed reasons we have chosen the
 # first 5 here for mirnas input for the analysis.
 All_miRNAs_run<-runAllMirnaModels(mirnas =vMiRNA[1:5] ,
-                                  DiffExpmRNA = DiffExpmRNASub, 
+                                  DiffExpmRNA = DiffExpmRNASub,
                                   DiffExpmiRNA = miRNAExp,
                                   miranda_data = miRanda,prob=0.75,
                                   cutoff=0.05,fdr_cutoff = 0.1, method = "fdr",
@@ -277,11 +277,11 @@ print(
 ```
 
 ## One2manySponge
-miRNA-mRNA sparse partial correlation prediction using elastic net and compatibility with SPONGE package.Note, we do not recommend using this method 
+miRNA-mRNA sparse partial correlation prediction using elastic net and compatibility with SPONGE package.Note, we do not recommend using this method
 for low number of samples (20 or less), or in miRNAs/mRNAs with low variance as the sample size increases the confidence in this analysis increases same goes for miRNA and mRNA variance. Optimal analysis using this method is in 100 or more samples in high variance miRNAs/mRNAs. For viral analysis or samples with low mRNA miRNA variance we recommend using part1 of mirTarRnaSeq or narrowing down the miRNAs and mRNAs to high variance ones.
 
 ```{r eval=TRUE, echo=TRUE, results='hide'}
-# Make miRanda file compatible with SPONGE package mir_predicted_targets() 
+# Make miRanda file compatible with SPONGE package mir_predicted_targets()
 sponge_mir_input<-miranda_sponge_predict(miRNAExp,DiffExp,miRanda)
 
 #Perform sparse partial correlation for miRNA-mRNA relationships
@@ -338,7 +338,7 @@ outs <- sampCorRnaMirna(mrna, mirna,method="pearson",
                         Shrounds = 100, Srounds = 1000)
 ```
 
-## Plot density plots 
+## Plot density plots
 Density plot for background and corrs in our data. Note grey is the background distribution and red is the actual data.
 ```{r eval=TRUE, echo=TRUE, fig.width = 3, fig.height=3, out.width="80%", dpi=300, fig.align="center"}
 #Draw density plot
@@ -359,7 +359,7 @@ sig_corrs <- threshSig(corr_0, outs,pvalue = 0.05)
 miRanda <- getInputSpecies("Mouse", threshold = 150)
 ```
 
-## mRNA miRNA correlation heatmap 
+## mRNA miRNA correlation heatmap
 
 Correlation heatmap for cor equal or less than -0.7.
 Note upperbound for heatmap should be always less than the correlation threshold.
@@ -369,11 +369,11 @@ newcorr <- corMirnaRnaMiranda(mrna, mirna, -0.7, miRanda)
 mirRnaHeatmap(newcorr,upper_bound = -0.6)
 ```
 
-## Get intersection of miRanda 
+## Get intersection of miRanda
 
 Get miRanda intersection and significant miRNA and mRNA interactions and the plot it.
 ```{r eval=TRUE, echo=TRUE, fig.width = 5, fig.height=4, out.width="80%", dpi=300, fig.align="center"}
-#Make final results file for significant 
+#Make final results file for significant
 #correlations intersecting with miRanda file
 results <- miRandaIntersect(sig_corrs, outs, mrna, mirna, miRanda)
 #Draw correlation heatmap
@@ -446,13 +446,13 @@ par(mar=c(4,4,2,1))
 drawInterPlots(mrna,mirna,final_results)
 ```
 
-## mRNA miRNA heatmap of miRNA mRNA FC differences 
-Heatmap for p value significant miRNA mRNA fold change differences 
+## mRNA miRNA heatmap of miRNA mRNA FC differences
+Heatmap for p value significant miRNA mRNA fold change differences
 when compared to backgound
 ```{r eval=TRUE, echo=TRUE, fig.width = 3, fig.height=2, out.width="80%", dpi=300, fig.align="center"}
 CorRes<-results$corrs
 #Draw heatmap for miRNA mRNA significant differences
-#Note: you do not have to use the upper_bound function unless you want  
+#Note: you do not have to use the upper_bound function unless you want
 #investigate a particular range for miRNA mRNA differences/relationships
 mirRnaHeatmapDiff(CorRes,upper_bound = 9.9)
 ```

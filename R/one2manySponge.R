@@ -1,16 +1,16 @@
 #' @importFrom SPONGE sponge_gene_miRNA_interaction_filter
 NULL
 
-#' Sparse Partial Correlations On mRNA/miRNA Expression 
+#' Sparse Partial Correlations On mRNA/miRNA Expression
 #' We make mirTarRnaSeq compatible to SPONGE package in order to estimate
 #' sparse matrix correlation (using elstic net) for prediction potential miRNA-mRNA
 #' interaction. Note this function/method is suggested for miRNA/mRNA interactions
-#' in many samples with a notable variance of mRNA/miRNA expression. This model also 
+#' in many samples with a notable variance of mRNA/miRNA expression. This model also
 #' only reports negative sparse partial correlation predictions.
 #' @param mirna_exp miRna expression data.frame with miRNA for rows and samples for columns
 #' @param diff_exp mRNA expression data.frame with mRNA for rows and samples for columns
-#' @param miranda_sponge_predict miRanda sponge compatible matrix produced by miranda_sponge_predict function 
-#' @param non_null  The default for this parameter is TRUE, hence it returns only non-null estimated if 
+#' @param miranda_sponge_predict miRanda sponge compatible matrix produced by miranda_sponge_predict function
+#' @param non_null  The default for this parameter is TRUE, hence it returns only non-null estimated if
 #' FALSE it would return all NULL and TRUE estimates.
 #' @return matrix adjacency matrix with column names miRNA and row names mRNA
 #' @keywords Sponge, mirTarRnaSeq, sparse partial correlation, ceRNA
