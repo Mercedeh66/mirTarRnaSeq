@@ -17,6 +17,8 @@ Reads internal Miranda file from extdata and returns it as a data.frame
 }
 \examples{
 \donttest{
-x <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Mouse_miRanda.txt.gz")
+x <- downloadMirandaFile(
+       "https://zenodo.org/record/4615670/files/Mouse_miRanda.txt.gz"
+     )
 }
 }
