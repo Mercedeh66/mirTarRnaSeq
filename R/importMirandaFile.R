@@ -28,7 +28,9 @@ importMirandaFile <- function(fn) {
 #' @return data.frame containing downloaded miRanda file
 #' @examples
 #' \donttest{
-#' x <- downloadMirandaFile("https://zenodo.org/record/4615670/files/Mouse_miRanda.txt.gz")
+#' x <- downloadMirandaFile(
+#'        "https://zenodo.org/record/4615670/files/Mouse_miRanda.txt.gz"
+#'      )
 #' }
 downloadMirandaFile <- function(urlf) {
     return(downloadMirandaFile_(urlf))
