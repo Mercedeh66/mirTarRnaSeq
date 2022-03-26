@@ -20,9 +20,9 @@ Depends: R (>= 4.1.0)
 DeploySubPath: mirTarRnaSeq
 biocViews: miRNA, Regression, Software, Sequencing, SmallRNA,
         TimeCourse, DifferentialExpression
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: BiocStyle, knitr, rmarkdown, R.cache
 VignetteBuilder: knitr
 Imports: purrr, MASS, pscl, assertthat, caTools, dplyr, pheatmap,
         reshape2, corrplot, grDevices, graphics, stats, utils,
-        data.table, R.utils
+        data.table, R.utils, SPONGE, reshape2, ggplot2
