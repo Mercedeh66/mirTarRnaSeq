@@ -1,7 +1,7 @@
 Package: mirTarRnaSeq
 Type: Package
 Title: mirTarRnaSeq
-Version: 1.3.1
+Version: 1.3.2
 Authors@R: 
     c(person(given = "Mercedeh",
            family = "Movassagh",
@@ -16,13 +16,13 @@ Description: mirTarRnaSeq R package can be used for interactive mRNA miRNA seque
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 4.1.0)
+Depends: R (>= 4.1.0), ggplot2
 DeploySubPath: mirTarRnaSeq
 biocViews: miRNA, Regression, Software, Sequencing, SmallRNA,
         TimeCourse, DifferentialExpression
 RoxygenNote: 7.1.2
-Suggests: BiocStyle, knitr, rmarkdown, R.cache
+Suggests: BiocStyle, knitr, rmarkdown, R.cache, SPONGE
 VignetteBuilder: knitr
 Imports: purrr, MASS, pscl, assertthat, caTools, dplyr, pheatmap,
          reshape2, corrplot, grDevices, graphics, stats, utils,
-         data.table, R.utils, SPONGE, ggplot2
+         data.table, R.utils

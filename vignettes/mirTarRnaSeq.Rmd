@@ -280,7 +280,7 @@ print(
 miRNA-mRNA sparse partial correlation prediction using elastic net and compatibility with SPONGE package.Note, we do not recommend using this method
 for low number of samples (20 or less), or in miRNAs/mRNAs with low variance as the sample size increases the confidence in this analysis increases same goes for miRNA and mRNA variance. Optimal analysis using this method is in 100 or more samples in high variance miRNAs/mRNAs. For viral analysis or samples with low mRNA miRNA variance we recommend using part1 of mirTarRnaSeq or narrowing down the miRNAs and mRNAs to high variance ones.
 
-```{r eval=TRUE, echo=TRUE, results='hide'}
+```{r eval=TRUE, echo=TRUE, results='hide', error=TRUE}
 # Make miRanda file compatible with SPONGE package mir_predicted_targets()
 sponge_mir_input<-miranda_sponge_predict(miRNAExp,DiffExp,miRanda)
 
