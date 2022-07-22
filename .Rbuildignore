@@ -5,3 +5,4 @@
 ^conda.yml$
 ^data-raw$
 ^LICENSE\.md$
+^\.github$

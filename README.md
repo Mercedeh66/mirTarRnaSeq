@@ -3,7 +3,7 @@
 # mirTarRnaSeq
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/Mercedeh66/mirTarRnaSeq/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/Mercedeh66/mirTarRnaSeq/actions)
+[![BioC status](http://www.bioconductor.org/shields/build/release/bioc/mirTarRnaSeq.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/mirTarRnaSeq)
 <!-- badges: end -->
 
 ## Installation
