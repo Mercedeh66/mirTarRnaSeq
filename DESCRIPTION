@@ -1,7 +1,7 @@
 Package: mirTarRnaSeq
 Type: Package
 Title: mirTarRnaSeq
-Version: 1.5.1
+Version: 1.5.2
 Authors@R: 
     c(person(given = "Mercedeh",
            family = "Movassagh",
@@ -20,9 +20,9 @@ Depends: R (>= 4.1.0), ggplot2
 DeploySubPath: mirTarRnaSeq
 biocViews: miRNA, Regression, Software, Sequencing, SmallRNA,
         TimeCourse, DifferentialExpression
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Suggests: BiocStyle, knitr, rmarkdown, R.cache, SPONGE
 VignetteBuilder: knitr
 Imports: purrr, MASS, pscl, assertthat, caTools, dplyr, pheatmap,
          reshape2, corrplot, grDevices, graphics, stats, utils,
-         data.table, R.utils
+         data.table, R.utils, viridis

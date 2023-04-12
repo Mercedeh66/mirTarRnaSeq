@@ -3,6 +3,7 @@
 #' @importFrom reshape2 dcast
 #' @importFrom dplyr `%>%`
 #' @importFrom pheatmap pheatmap
+#' @importFrom viridis inferno
 NULL
 
 ## quiet concerns of R CMD check regarding unbound global variables (in dplyr::filter() calls)
